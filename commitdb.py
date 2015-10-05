@@ -6,7 +6,7 @@ class CommitDB:
                 self.CRMPath = CRMPath
                 self.serverPath = CRMPath + r'\Server'
                 self.DBPath = CRMPath + r'\Db'
-                self.DBPathUTF = create_string_buffer(bytes(self.DBPath, 'UTF-8')
+                self.DBPath_bytes = create_string_buffer(bytes(self.DBPath, 'UTF-8'))
                 self.appName = appName
 
                 os.environ['PATH'] = self.serverPath + ';' + os.environ['PATH']
@@ -16,11 +16,9 @@ class CommitDB:
                 self.status = c_int()
                 
         def InitDbEngDll(self):
-                path = create_string_buffer(bytes(self.DBPath, 'UTF-8'))
-                self.CmDBEngDll.CmtInitDbEngDll(self.appName, path, byref(self.status))
+                self.CmDBEngDll.CmtInitDbEngDll(self.appName, self.DBPath_bytes, byref(self.status))
 
         def InitDbQryDll(self):
-                path = create_string_buffer(bytes(self.DBPath, 'UTF-8'))
                 self.CmDBEngDll.CmtInitDbQryDll(self.appName, self.DBPath, byref(self.status))
                                                 
         def InsUpdRec(self):

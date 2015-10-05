@@ -17,10 +17,10 @@ CommitAppEntityDict = {
 }
 
 class CommitRecord:
-        def __init__(tableID, dataBuff, mapBuff, recIDBuff, errMsgBuff = None):
-                self.tableID            = create_string_buffer(tableID)
-                self.dataBuff           = create_string_buffer(dataBuff)
-                self.mapBuff            = create_string_buffer(mapBuff)
+        def __init__(self, tableID, dataBuff, mapBuff):
+                self.tableID            = tableID
+                self.dataBuff           = create_string_buffer(bytes(dataBuff, "ascii"))
+                self.mapBuff            = create_string_buffer(bytes(mapBuff, "ascii"))
 
                 self.errMsgBuffSize     = 1024
                 self.errMsgBuff         = create_string_buffer(self.errMsgBuffSize)

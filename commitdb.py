@@ -27,13 +27,13 @@ class CommitDB:
                 self.CmDBEngDll = windll.LoadLibrary(self.serverPath + r'\cmtdbeng.dll')
                 self.CmDBQryDll = windll.LoadLibrary(self.serverPath + r'\cmtdbqry.dll')
 
-                self.status = c_int()
-                
+                self.status = c_int()                
+
         def InitDbEngDll(self):
                 self.CmDBEngDll.CmtInitDbEngDll(self.appName, self.DBPath_bytes, byref(self.status))
 
         def InitDbQryDll(self):
-                self.CmDBEngDll.CmtInitDbQryDll(self.appName, self.DBPath, byref(self.status))
+                self.CmDBQryDll.CmtInitDbQryDll(self.appName, self.DBPath, byref(self.status))
                                                 
         def InsUpdRec(self):
                 CmtInsUpdRec(self.appName, table_id, data_buff, map_buff, flag, tbd, rec_id_buff_size,

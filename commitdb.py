@@ -35,10 +35,12 @@ class CommitDB:
         def InitDbQryDll(self):
                 self.CmDBQryDll.CmtInitDbQryDll(self.appName, self.DBPath, byref(self.status))
                                                 
-        def InsUpdRec(self):
-                CmtInsUpdRec(self.appName, table_id, data_buff, map_buff, flag, tbd, rec_id_buff_size,
-                             error_codes_buff_size, err_msg_buff_size,rec_id_buff, err_codes_buff,
-                             err_msg_buff, status)
+        def InsUpdRec(self, record):
+                flag = 1
+                tbd = 0
+                CmtInsUpdRec(self.appName, record.tableID, record.dataBuff, record.mapBuff, flag, tbd, record.recIDBuffSize,
+                             record.errCodesBuffSize, record.errMsgBuffSize, record.recIDBuff, record.errCodesBuff,
+                             record.errorMsgBuff, byref(self.status)
 
         def GetQueryRecIds(self, xml_request_buff, xml_request_buff_len,
                 xml_response_data_buff, xml_response_data_buff_len, status):

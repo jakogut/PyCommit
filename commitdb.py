@@ -27,7 +27,7 @@ class CommitDB:
                 self.CmDBEngDll = windll.LoadLibrary(self.serverPath + r'\cmtdbeng.dll')
                 self.CmDBQryDll = windll.LoadLibrary(self.serverPath + r'\cmtdbqry.dll')
 
-                self.status = c_int()                
+                self.status = c_int()
 
         def InitDbEngDll(self):
                 self.CmDBEngDll.CmtInitDbEngDll(self.appName, self.DBPath_bytes, byref(self.status))
@@ -38,9 +38,9 @@ class CommitDB:
         def InsUpdRec(self, record):
                 flag = 1
                 tbd = 0
-                CmtInsUpdRec(self.appName, record.tableID, record.dataBuff, record.mapBuff, flag, tbd, record.recIDBuffSize,
-                             record.errCodesBuffSize, record.errMsgBuffSize, record.recIDBuff, record.errCodesBuff,
-                             record.errorMsgBuff, byref(self.status))
+                self.CmDBEngDll.CmtInsUpdRec(self.appName, record.tableID, record.dataBuff, record.mapBuff, flag, tbd,
+                             record.recIDBuffSize, record.errCodesBuffSize, record.errMsgBuffSize, record.recIDBuff,
+                             record.errCodesBuff, record.errMsgBuff, byref(self.status))
 
         def GetQueryRecIds(self, xml_request_buff, xml_request_buff_len,
                 xml_response_data_buff, xml_response_data_buff_len, status):

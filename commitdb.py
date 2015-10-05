@@ -3,7 +3,18 @@ from ctypes import *
 
 from enum import Enum
 
+class CommitRecord:
+        def __init__(tableID, dataBuff, mapBuff, recIDBuff, errMsgBuff = None):
+                self.tableID            = create_string_buffer(tableID)
+                self.dataBuff           = create_string_buffer(dataBuff)
+                self.mapBuff            = create_string_buffer(mapBuff)
 
+                self.errMsgBuff         = create_string_buffer(self.errMsgBuffSize)
+                self.errMsgBuffSize     = 1024
+                self.recIDBuff          = create_string_buffer(self.recIDBuffSize)
+                self.recIDBuffSize      = 64
+                self.errCodesBuff       = create_string_buffer(self.errCodesBuffSize)
+                self.errCodesBuffSize   = 64
 class CommitDB:        
         def __init__(self, appName = 'CommitAgent', CRMPath = r'C:\CommitCRM'):
                 self.CRMPath = CRMPath

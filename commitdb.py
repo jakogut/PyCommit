@@ -1,6 +1,20 @@
 import os
 from ctypes import *
 
+from enum import Enum
+
+class CommitAppEntity(Enum):
+        Account         = 10
+        Opportunities   = 20
+        Documents       = 30
+        Charges         = 40
+        Event           = 50
+        HistoryNote     = 60
+        Ticket          = 70
+        Item            = 80
+        Asset           = 90
+        KBArticle       = 100
+
 class CommitDB:        
         def __init__(self, appName = 'CommitAgent', CRMPath = r'C:\CommitCRM'):
                 self.CRMPath = CRMPath

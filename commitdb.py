@@ -3,6 +3,19 @@ from ctypes import *
 
 from enum import Enum
 
+CommitAppEntityDict = {
+        "Account"       : 10,
+        "Opportunitie"  : 20,
+        "Document"      : 30,
+        "Charge"        : 40,
+        "Event"         : 50,
+        "HistoryNote"   : 60,
+        "Ticket"        : 70,
+        "Item"          : 80,
+        "Asset"         : 90,
+        "KBArticle"     : 100
+}
+
 class CommitRecord:
         def __init__(tableID, dataBuff, mapBuff, recIDBuff, errMsgBuff = None):
                 self.tableID            = create_string_buffer(tableID)
@@ -66,19 +79,6 @@ class CommitDB:
                 
         def GetDescriptionByStatus(self):
                 pass
-
-        CommitAppEntityDict = {
-                "Account"       : "10",
-                "Opportunitie"  : "20",
-                "Document"      : "30",
-                "Charge"        : "40",
-                "Event"         : "50",
-                "HistoryNote"   : "60",
-                "Ticket"        : "70",
-                "Item"          : "80",
-                "Asset"         : "90",
-                "KBArticle"     : "100"
-        }
                 
 if __name__ == '__main__':
         db = CommitDB()

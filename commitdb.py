@@ -19,8 +19,8 @@ CommitEntityDict = {
         "Item"          : 80,
         "Items"         : 80,
         "Asset"         : 90,
-        "Assets"        : 90
-        "KBArticle"     : 100
+        "Assets"        : 90,
+        "KBArticle"     : 100,
         "KBArticles"    : 100
 }
 

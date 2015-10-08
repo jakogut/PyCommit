@@ -89,7 +89,7 @@ if __name__ == '__main__':
 
         # Add an account to the database
         dataStr = "'Bart De Hantsetters','Hantsetters'"
-        mapStr = "'\n,\nFLDCRDFULLNAME\nFLDCRDCONTACT"
+        mapStr = "'\n,\n" + CommitAccountFields["FileAs"] + "\n" + CommitAccountFields["Contact"]
         
         rec = CommitRecord(tableID = CommitEntity["Account"],
                            dataBuff = dataStr,
@@ -102,7 +102,7 @@ if __name__ == '__main__':
 
         # Update the existing record
         dataStr = "'De Hantsetters','" + rec.getRecID() + "'"
-        mapStr = "'\n,\nFLDCRDLASTNAME\nFLDCRDRECID"
+        mapStr = "'\n,\n" + CommitAccountFields["LastName"] + '\n' + CommitAccountFields["AccountRecID"]
 
         rec = CommitRecord(tableID = CommitEntity["Account"],
                            dataBuff = dataStr,

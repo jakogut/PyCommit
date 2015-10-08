@@ -26,7 +26,7 @@ CommitAccountFields = {
     "AccountMgr"    : "FLDCRDASSIGNCARDID",
     "SubContStatus" : "FLDCRDSUBCONTSTATUS",
     "CompanyName"   : "FLDCRDCOMPANY",
-    "CntFirstLast"  : "FLDCRDCONTACT",
+    "Contact"       : "FLDCRDCONTACT",
     "Assistant"     : "FLDCRDASSISTANT",
     "Contract"      : "FLDCRDBCRECID",
     "AccountNumber" : "FLDCRDCARDID2",

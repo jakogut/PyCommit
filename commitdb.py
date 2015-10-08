@@ -20,12 +20,14 @@ class CommitRecord:
                 self.dataBuff           = create_string_buffer(bytes(dataBuff, "ascii"))
                 self.mapBuff            = create_string_buffer(bytes(mapBuff, "ascii"))
 
-                self.errMsgBuffSize     = 1024
-                self.errMsgBuff         = create_string_buffer(self.errMsgBuffSize)
-                self.recIDBuffSize      = 64
-                self.recIDBuff          = create_string_buffer(self.recIDBuffSize)
+                self.recIDBuffSize      = 21
                 self.errCodesBuffSize   = 64
+                self.errMsgBuffSize     = 1024
+
+                self.recIDBuff          = create_string_buffer(self.recIDBuffSize)
                 self.errCodesBuff       = create_string_buffer(self.errCodesBuffSize)
+                self.errMsgBuff         = create_string_buffer(self.errMsgBuffSize)
+                
 class CommitDB:        
         def __init__(self, appName = 'CommitAgent', CRMPath = r'C:\CommitCRM'):
                 self.CRMPath = CRMPath

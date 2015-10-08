@@ -33,7 +33,7 @@ class CommitDB:
                 self.CRMPath = CRMPath
                 self.serverPath = CRMPath + r'\Server'
                 self.DBPath = CRMPath + r'\Db'
-                self.DBPath_bytes = create_string_buffer(bytes(self.DBPath, 'UTF-8'))
+                self.DBPath_bytes = create_string_buffer(bytes(self.DBPath, 'ascii'))
                 self.appName = appName
 
                 os.environ['PATH'] = self.serverPath + ';' + os.environ['PATH']

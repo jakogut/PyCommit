@@ -9,7 +9,7 @@ class CommitRecord:
                 self.dataBuff           = create_string_buffer(bytes(dataBuff, "ascii"))
                 self.mapBuff            = create_string_buffer(bytes(mapBuff, "ascii"))
 
-                self.recIDBuffSize      = 21
+                self.recIDBuffSize      = 20
                 self.errCodesBuffSize   = 64
                 self.errMsgBuffSize     = 1024
 

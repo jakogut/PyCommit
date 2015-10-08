@@ -154,3 +154,49 @@ CommitHistoryNoteFields = {
     "CreatedByUser"     : "FLDHISCREATEUSER"
 }
 
+CommitAssetFields = {
+    "AssetCode"         : "FLDASTASSETCODE",
+    "AssetType"         : "FLDASTASSETTYPE",
+    "AssetName"         : "FLDASTNAME",
+    "Status"            : "FLDASTSTATUS",
+    "RecordID"          : "FLDASTRECID",
+    "SerialNo"          : "FLDASTSERIALNO",
+    "Account"           : "FLDASTACCRECID",
+    "Contact"           : "FLDASTCONTACTRECID",
+    "CreatedByUser"     : "FLDASTCREATEUSER",
+    "PurchaseDate"      : "FLDASTCUSTPURDATE",
+    "PurchasedFromUs"   : "FLDASTCUSTPURFROMUS",
+    "PurchaseInvoiceNo" : "FLDASTCUSTPUROURINV",
+    "CustomerPO"        : "FLDASTCUSTPURPO",
+    "PurchasePrice"     : "FLDASTCUSTPURPRICE",
+    "DeliveredDate"     : "FLDASTDELIVEDATE",
+    "Description"       : "FLDASTDESC",
+    "InstalledBy"       : "FLDASTINSTALBY",
+    "InstalledDate"     : "FLDASTINSTALDATE",
+    "LicenseCodes"      : "FLDASTLICENSECODE",
+    "LicenseKeys"       : "FLDASTLICENSEKEYS",
+    "LicenseNotes"      : "FLDASTLICENSENOTES",
+    "Location"          : "FLDASTLOCATION",
+    "Manufacturer"      : "FLDASTMANUFACTURER",
+    "MnfSerialNo"       : "FLDASTMNFSERIALNO",
+    "Model"             : "FLDASTMODEL",
+    "Notes"             : "FLDASTNOTES",
+    "Quantity"          : "FLDASTQUANTITY",
+    "LastUpdateBy"      : "FLDASTUPDATEUSER",
+    "Field1"            : "FLDASTUSER1",
+    "Field2"            : "FLDASTUSER2",
+    "Field3"            : "FLDASTUSER3",
+    "Field4"            : "FLDASTUSER4",
+    "Field5"            : "FLDASTUSER5",
+    "Date1"             : "FLDASTUSERDATE1",
+    "Number1"           : "FLDASTUSERNUMBER1"
+    "VendorPurchDate"   : "FLDASTVENDORDATEPURC"
+    "VendorInvoiceNo"   : "FLDASTVENDORINVNO"
+    "VendorPO"          : "FLDASTVENDOROURPO",
+    "VendorPrice"       : "FLDASTVENDORPRICE",
+    "Vendor"            : "FLDASTVENDORRECID",
+    "VendorSerialNo"    : "FLDASTVENDORSERNO",
+    "VendorWarrExp"     : "FLDASTVENDORWARREXP"
+    "Version"           : "FLDASTVERSION",
+    "WarrExpDate"       : "FLDASTWARREXPDATE"
+}

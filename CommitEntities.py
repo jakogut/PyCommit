@@ -96,4 +96,26 @@ CommitTicketFields = {
     "DueDate"           : "FLDTKTDUEDATETIME",
     "Resolution"        : "FLDTKTSOLUTION"
 }
-        
+
+CommitChargeFields = {
+    "RecordID"          : "FLDSLPRECID",
+    "ChargeSource"      : "FLDSLPSOURCERECID",
+    "AccountRecID"      : "FLDSLPCARDID",
+    "EmployeeRecID"     : "FLDSLPWORKERID",
+    "ChargedItem"       : "FLDSLPITEMID",
+    "ContractRecID"     : "FLDSLPBCRECID",
+    "TicketRecID"       : "FLDSLPTICKETID",
+    "Date"              : "FLDSLPSLIPDATE",
+    "Description"       : "FLDSLPDESC",
+    "Units"             : "FLDSLPQUANTITY",
+    "AdjustAmount"      : "FLDSLPADJUSTAMOUNT",
+    "AdjustPercent"     : "FLDSLPADJUSTPERCENT",
+    "FromTime"          : "FLDSLPSTARTTIME",
+    "ToTime"            : "FLDSLPENDTIME",
+    "Price"             : "FLDSLPPRICE",
+    "Billable"          : "FLDSLPBILLKIND",
+    "Billed"            : "FLDSLPSTAGE",
+    "Field1"            : "FLDSLPUSER1",
+    "CreateUser"        : "FLDSLPCREATEUSER"
+}
+

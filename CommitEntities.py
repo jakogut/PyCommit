@@ -139,3 +139,18 @@ CommitItemFields = {
     "CreateUser"        : "FLDITMCREATEUSER",
     "CreatedByUSer"     : "FLDITMCREATEUSER"
 }
+
+CommitHistoryNoteFields = {
+    "RecordID"          : "FLDHISRECID",
+    "Date"              : "FLDHISNOTEDATETIME",
+    "Description"       : "FLDHISDESCRIPTION",
+    "LinkRecID"         : "FLDHISLINKRECID",
+    "Field"             : "FLDHISUSER1",
+    "About"             : "FLDHISKIND",
+    "Employee"          : "FLDHISWORKERID",
+    "Account"           : "FLDHISCARDID",
+    "Contact"           : "FLDHISCONTACTID",
+    "Document"          : "FLDHISDOCID",
+    "CreatedByUser"     : "FLDHISCREATEUSER"
+}
+

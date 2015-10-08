@@ -49,9 +49,19 @@ class CommitDB:
         def InsUpdRec(self, record):            
                 flag = 1
                 tbd = 0
-                self.CmDBEngDll.CmtInsUpdRec(self.appName, record.tableID, record.dataBuff, record.mapBuff, flag, tbd,
-                             record.recIDBuffSize, record.errCodesBuffSize, record.errMsgBuffSize, record.recIDBuff,
-                             record.errCodesBuff, record.errMsgBuff, byref(self.status))
+
+                self.CmDBEngDll.CmtInsUpdRec(create_string_buffer(bytes(self.appName, "ascii")),
+                                             record.tableID,
+                                             record.dataBuff,
+                                             record.mapBuff,
+                                             flag, tbd,
+                                             record.recIDBuffSize,
+                                             record.errCodesBuffSize,
+                                             record.errMsgBuffSize,
+                                             record.recIDBuff,
+                                             record.errCodesBuff,
+                                             record.errMsgBuff,
+                                             byref(self.status))
 
         def GetQueryRecIds(self, xml_request_buff, xml_request_buff_len,
                 xml_response_data_buff, xml_response_data_buff_len, status):

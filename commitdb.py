@@ -16,6 +16,9 @@ class CommitRecord:
                 self.recIDBuff          = create_string_buffer(bytes(recID, "ascii"), self.recIDBuffSize)
                 self.errCodesBuff       = create_string_buffer(self.errCodesBuffSize)
                 self.errMsgBuff         = create_string_buffer(self.errMsgBuffSize)
+
+        def getRecID(self):
+                return str(self.recIDBuff.raw, encoding='ascii')
                 
 class CommitDB:        
         def __init__(self, appName = 'CommitAgent', CRMPath = r'C:\CommitCRM'):

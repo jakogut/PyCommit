@@ -93,7 +93,17 @@ class CommitDB:
 if __name__ == '__main__':
         db = CommitDB()
         db.InitDbEngDll()
-        print(db.status)
+
+        print('Init status: ', db.status)
+        
+        rec = CommitRecord(tableID = CommitEntityDict["Account"],
+                           dataBuff = "'Bart De Hantsetters','De Hantsetters','Hantsetters'",
+                           mapBuff = "'\n,\nFLDCRDFULLNAME\nFLDCRDDEAR\nFLDCRDCONTACT")
+
+        db.InsUpdRec(rec)
+
+        print('Write status: ', db.status)
+        print(rec.tableID, rec.dataBuff.value, rec.mapBuff.value, rec.recIDBuff.raw)
+        
         db.TerminateDbEngDll()
-        print(db.status)
         

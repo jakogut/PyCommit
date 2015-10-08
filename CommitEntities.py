@@ -119,3 +119,23 @@ CommitChargeFields = {
     "CreateUser"        : "FLDSLPCREATEUSER"
 }
 
+CommitItemFields = {
+    "RecordID"          : "FLDITMRECID",
+    "ItemGroup"         : "FLDITMITEMTYPEGROUP",
+    "ItemCode"          : "FLDITMITEMNO",
+    "ItemName"          : "FLDITMNAME",
+    "PriceSource"       : "FLDITMPRICESOURCE",
+    "PricePerUnit"      : "FLDITMUNITISHOUR",
+    "Price"             : "FLDITMUNITPRICE",
+    "Cost"              : "FLDITMSTANDARDCOST",
+    "Taxes1"            : "FLDITMTAXCODE1",
+    "Taxes2"            : "FLDITMTAXCODE2",
+    "Taxes3"            : "FLDITMTAXCODE3",
+    "DescByName"        : "FLDITMDESCBYNAME",
+    "Description"       : "FLDITMDESC",
+    "Suspend"           : "FLDITMSUSPENDED",
+    "Notes"             : "FLDITMNOTES",
+    "Field1"            : "FLDITMUSER1",
+    "CreateUser"        : "FLDITMCREATEUSER",
+    "CreatedByUSer"     : "FLDITMCREATEUSER"
+}

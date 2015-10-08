@@ -3,15 +3,25 @@ from ctypes import *
 
 CommitEntityDict = {
         "Account"       : 10,
-        "Opportunitie"  : 20,
+        "Accounts"      : 10,
+        "Opportunitity" : 20,
+        "Opportunities" : 20,
         "Document"      : 30,
+        "Documents"     : 30,
         "Charge"        : 40,
+        "Charges"       : 40,
         "Event"         : 50,
+        "Events"        : 50,
         "HistoryNote"   : 60,
+        "HistoryNotes"  : 60,
         "Ticket"        : 70,
+        "Tickets"       : 70,
         "Item"          : 80,
+        "Items"         : 80,
         "Asset"         : 90,
+        "Assets"        : 90
         "KBArticle"     : 100
+        "KBArticles"    : 100
 }
 
 class CommitRecord:

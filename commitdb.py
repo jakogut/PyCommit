@@ -83,19 +83,33 @@ class CommitDB:
                 pass
                 
 if __name__ == '__main__':
+        # db.status should be 1 if library initialized properly
         db = CommitDB()
         db.InitDbEngDll()
 
-        print('Init status: ', db.status)
+        # Add an account to the database
+        dataStr = "'Bart De Hantsetters','Hantsetters'"
+        mapStr = "'\n,\nFLDCRDFULLNAME\nFLDCRDCONTACT"
         
-        rec = CommitRecord(tableID = CommitEntityDict["Account"],
-                           dataBuff = "'Bart De Hantsetters','De Hantsetters','Hantsetters'",
-                           mapBuff = "'\n,\nFLDCRDFULLNAME\nFLDCRDDEAR\nFLDCRDCONTACT")
+        rec = CommitRecord(tableID = CommitEntity["Account"],
+                           dataBuff = dataStr,
+                           mapBuff = mapStr)
 
+        # db.status should be 1 if operation was successful
         db.InsUpdRec(rec)
+        print("Insert status: ", db.status)
+        print("RecID: ", rec.getRecID())
 
-        print('Write status: ', db.status)
-        print(rec.tableID, rec.dataBuff.value, rec.mapBuff.value, rec.recIDBuff.raw)
+        # Update the existing record
+        dataStr = "'De Hantsetters','" + rec.getRecID() + "'"
+        mapStr = "'\n,\nFLDCRDLASTNAME\nFLDCRDRECID"
+
+        rec = CommitRecord(tableID = CommitEntity["Account"],
+                           dataBuff = dataStr,
+                           mapBuff = mapStr)
+        
+        db.InsUpdRec(rec)
+        print("Update status: ", db.status)
         
         db.TerminateDbEngDll()
         

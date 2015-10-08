@@ -46,7 +46,7 @@ class CommitDB:
         def InitDbQryDll(self):
                 self.CmDBQryDll.CmtInitDbQryDll(self.appName, self.DBPath_bytes, byref(self.status))
                                                 
-        def InsUpdRec(self, record):
+        def InsUpdRec(self, record):            
                 flag = 1
                 tbd = 0
                 self.CmDBEngDll.CmtInsUpdRec(self.appName, record.tableID, record.dataBuff, record.mapBuff, flag, tbd,

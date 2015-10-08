@@ -1,8 +1,6 @@
 import os
 from ctypes import *
 
-from enum import Enum
-
 CommitAppEntityDict = {
         "Account"       : 10,
         "Opportunitie"  : 20,

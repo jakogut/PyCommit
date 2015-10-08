@@ -1,7 +1,7 @@
 import os
 from ctypes import *
 
-CommitAppEntityDict = {
+CommitEntityDict = {
         "Account"       : 10,
         "Opportunitie"  : 20,
         "Document"      : 30,

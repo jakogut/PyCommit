@@ -189,14 +189,14 @@ CommitAssetFields = {
     "Field4"            : "FLDASTUSER4",
     "Field5"            : "FLDASTUSER5",
     "Date1"             : "FLDASTUSERDATE1",
-    "Number1"           : "FLDASTUSERNUMBER1"
-    "VendorPurchDate"   : "FLDASTVENDORDATEPURC"
-    "VendorInvoiceNo"   : "FLDASTVENDORINVNO"
+    "Number1"           : "FLDASTUSERNUMBER1",
+    "VendorPurchDate"   : "FLDASTVENDORDATEPURC",
+    "VendorInvoiceNo"   : "FLDASTVENDORINVNO",
     "VendorPO"          : "FLDASTVENDOROURPO",
     "VendorPrice"       : "FLDASTVENDORPRICE",
     "Vendor"            : "FLDASTVENDORRECID",
     "VendorSerialNo"    : "FLDASTVENDORSERNO",
-    "VendorWarrExp"     : "FLDASTVENDORWARREXP"
+    "VendorWarrExp"     : "FLDASTVENDORWARREXP",
     "Version"           : "FLDASTVERSION",
     "WarrExpDate"       : "FLDASTWARREXPDATE"
 }

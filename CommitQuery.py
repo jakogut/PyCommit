@@ -40,7 +40,6 @@ class CommitQueryDataRequest:
 
     def __parseQuery(self):
         parsedQuery = sqlparse.parse(self.query)
-        print(parsedQuery)
 
     def getDomTreeStr(self):
         return self.declaration + tostring(self.tree)

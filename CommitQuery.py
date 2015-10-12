@@ -7,7 +7,7 @@ import sqlparse
 import untangle
 
 class CommitQueryDataRequest:
-    treeHeader = '<?xml version="1.0" ?><?commitcrmxmlqueryrequest version="1.0" ?>'
+    declaration = bytes('<?commitcrmxmlqueryrequest version="1.0" ?>', "ascii")
     
     def __init__(self, query, dataKind, name = "CommitAgent", maxRecordCnt = 255):
         self.query = query
@@ -17,8 +17,6 @@ class CommitQueryDataRequest:
         self.maxRecordCnt = maxRecordCnt
 
         self.__createDomTree()
-
-        self.declaration = bytes('<?commitcrmxmlqueryrequest version="1.0" ?>', "ascii")
         
     def __createDomTree(self):
         self.tree = Element('CommitCRMQueryDataRequest')

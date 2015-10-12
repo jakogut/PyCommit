@@ -47,9 +47,11 @@ class CommitTests:
 
     def qryDB(self):        
         req = CommitQueryDataRequest(dataKind = "ACCOUNT", query = 'FROM ASSET SELECT FLDTKTCARDID WHERE FLDCRDCONTACT = "JOHN DOE"')
-        resp = self.db.GetQueryRecIds(req)
+        recIds = self.db.GetQueryRecIds(req)
 
-        print(resp)
+        req.printDomTree()
+
+        print(recIds)
 
     def runAll(self):
         self.createRec()

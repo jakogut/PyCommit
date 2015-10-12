@@ -2,6 +2,7 @@ import os
 from ctypes import *
 
 from CommitEntities import *
+from CommitQuery import *
 
 class CommitRecord:
         def __init__(self, tableID, dataBuff, mapBuff, recID = ""):

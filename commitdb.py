@@ -87,10 +87,17 @@ class CommitDB:
                                                         respBuffSize,
                                                         byref(self.status))
 
-        def GetFieldAttributesByRecId(self, xml_request_buff,
-                xml_request_buff_len, xml_response_data_buff,
-                xml_response_data_buff_len, status):
-                pass
+        def GetFieldAttributesByRecId(self, req):
+                req_str = req.getDomTreeStr()
+
+                respBufferSize = 16384
+                respBuffer = create_string_buffer(respBufferSize)
+
+                self.CmDBQryDll.CmtGetRecordDataByRecId(create_string_buffer(req_str),
+                                                        len(req_str),
+                                                        respBuff,
+                                                        respBuffSize,
+                                                        byref(self.status))
                 
         def TerminateDbEngDll(self):
                 self.CmDBEngDll.CmtTerminateDbEngDll()

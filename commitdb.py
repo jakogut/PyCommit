@@ -58,20 +58,22 @@ class CommitDB:
                                              record.errMsgBuff,
                                              byref(self.status))
 
-        def GetQueryRecIds(self, reqBuff):
-                respBuffSize = 65535
+        def GetQueryRecIds(self, req):
+                req_str = req.getDomTreeStr()
+                print(req_str)
+                
+                respBuffSize = 16384
                 respBuff = create_string_buffer(respBuffSize)
                 
-                CmDBQryDll.CmtGetQueryRecIds(create_string_buffer(bytes(xml_request_buff, "ascii"),
-                                             len(reqBuff)),
-                                             respBuff,
-                                             respBuffSize,
-                                             byref(self.status))
+                self.CmDBQryDll.CmtGetQueryRecIds(
+                                                create_string_buffer(req_str),
+                                                len(req_str),
+                                                respBuff,
+                                                respBuffSize,
+                                                byref(self.status))
 
-                return str(respBuff.raw, encoding = "ascii")
-        def GetQueryRecIds(self, xml_request_buff, xml_request_buff_len,
-                xml_response_data_buff, xml_response_data_buff_len, status):
-                pass
+                resp = str(respBuff.value, encoding = "ascii")
+                return resp
         
         def GetRecordDataByRecId(self, xml_request_buff, xml_request_buff_len,
                 xml_response_data_buff, xml_response_data_buff_len, status):

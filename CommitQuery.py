@@ -50,7 +50,11 @@ class CommitQueryDataRequest:
     def __prettify(self, dom_str):
         reparsed = minidom.parseString(dom_str)
         return reparsed.toprettyxml(indent="    ")
-        
+
+class CommitGetRecordDataRequest:
+    def __init__(recId, fieldsList):
+        pass
+
 class CommitQueryDataResponse:
     def __init__(self, response):
         self.response_str = response

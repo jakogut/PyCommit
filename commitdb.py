@@ -60,7 +60,6 @@ class CommitDB:
 
         def GetQueryRecIds(self, req):
                 req_str = req.getDomTreeStr()
-                print(req_str)
                 
                 respBuffSize = 16384
                 respBuff = create_string_buffer(respBuffSize)
@@ -71,9 +70,8 @@ class CommitDB:
                                                 respBuff,
                                                 respBuffSize,
                                                 byref(self.status))
-
-                resp = str(respBuff.value, encoding = "ascii")
-                return resp
+                resp = CommitQueryDataResponse(str(respBuff.value, encoding = "ascii"))
+                return resp.getRecIds()
         
         def GetRecordDataByRecId(self, req):
                 req_str = req.getDomTreeStr()

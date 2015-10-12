@@ -1,9 +1,10 @@
 from CommitEntities import *
 
-from xml.etree.cElementTree import Element, SubElement, Comment, tostring
+from xml.etree.cElementTree import ElementTree, Element, SubElement, Comment, tostring, fromstring
 from xml.dom import minidom
 
 import sqlparse
+import untangle
 
 class CommitQueryDataRequest:
     treeHeader = '<?xml version="1.0" ?><?commitcrmxmlqueryrequest version="1.0" ?>'

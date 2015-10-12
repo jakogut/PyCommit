@@ -53,8 +53,15 @@ class CommitQueryDataRequest:
         
 class CommitQueryDataResponse:
     def __init__(self, response):
-        self.response = response
-        self.tree = None
+        self.response_str = response
+        self.doc = untangle.parse(self.response_str)
+
+    def getRecIds(self):
+        self.recIds = []
+        for data in self.doc.CommitCRMQueryDataResponse.RecordData:
+            self.recIds.append(data.get_elements()[0].cdata)
+
+        return self.recIds
 
 if __name__ == "__main__":
     req = CommitQueryDataRequest(dataKind = "ACCOUNT", query = 'FROM ASSET SELECT FLDTKTCARDID WHERE FLDCRDCONTACT = "JOHN DOE"')

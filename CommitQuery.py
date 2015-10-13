@@ -8,11 +8,17 @@ import untangle
 class CommitQueryDataRequest:
     declaration = bytes('<?commitcrmxmlqueryrequest version="1.0" ?>', "ascii")
     
-    def __init__(self, query, dataKind, name = "CommitAgent", maxRecordCnt = 255):
-        self.query = query
+    def __init__(
+            self, q_from, q_select, q_where, q_op, q_value,
+            name = "CommitAgent", maxRecordCnt = 255):
+
+        self.q_from = q_from
+        self.q_select = q_select
+        self.q_where = q_where
+        self.q_op = q_op
+        self.q_value = q_value
         
         self.extAppName = name
-        self.dataKind = dataKind
         self.maxRecordCnt = maxRecordCnt
 
         self.__createDomTree()
@@ -22,16 +28,15 @@ class CommitQueryDataRequest:
         self.nameElement = SubElement(self.tree, 'ExternalApplicationName')
         self.nameElement.text = self.extAppName
         self.dataKindElement = SubElement(self.tree, 'Datakind')
-        self.dataKindElement.text = self.dataKind
+        self.dataKindElement.text = self.q_from
         self.recordCountElement = SubElement(self.tree, 'MaxRecordCount')
         self.recordCountElement.text = str(self.maxRecordCnt)
 
         self.queryElement = SubElement(self.tree, 'Query')
         self.whereElement = SubElement(self.queryElement, 'Where')
-
-        #test
-        self.queryContentElement = SubElement(self.whereElement, "FLDCRDFULLNAME", {"op" : "="})
-        self.queryContentElement.text = "Bart De Hantsetters"
+        
+        self.queryContentElement = SubElement(self.whereElement, self.q_where, {"op" : self.q_op})
+        self.queryContentElement.text = self.q_value
 
         self.orderElement = SubElement(self.queryElement, 'Order')
 

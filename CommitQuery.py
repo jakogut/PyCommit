@@ -3,7 +3,6 @@ from CommitEntities import *
 from xml.etree.cElementTree import ElementTree, Element, SubElement, Comment, tostring, fromstring
 from xml.dom import minidom
 
-import sqlparse
 import untangle
 
 class CommitQueryDataRequest:
@@ -35,11 +34,6 @@ class CommitQueryDataRequest:
         self.queryContentElement.text = "Bart De Hantsetters"
 
         self.orderElement = SubElement(self.queryElement, 'Order')
-
-        self.__parseQuery()
-
-    def __parseQuery(self):
-        parsedQuery = sqlparse.parse(self.query)
 
     def getDomTreeStr(self):
         return self.declaration + tostring(self.tree)

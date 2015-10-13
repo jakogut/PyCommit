@@ -2,11 +2,12 @@ from CommitDB import CommitDB, CommitRecord
 from CommitEntities import *
 from CommitQuery import *
 
-class CommitTests:
+class CommitTests:  
     def __init__(self):
         self.db = CommitDB()
-        self.db.InitDbEngDll()
-        self.db.InitDbQryDll()
+        
+        db_init = [self.db.InitDbEngDll, self.db.InitDbQryDll]
+        for init in db_init: init()
 
         self.rec = None
 
@@ -54,8 +55,7 @@ class CommitTests:
 
         print(recIds)
 
-    def runAll(self):
-        self.createRec()
-        self.updRec()
-        self.qryDB()
+    def run_all(self):
+        tests = [self.create_rec, self.update_rec, self.query_db]
+        for t in tests: run = t()
         

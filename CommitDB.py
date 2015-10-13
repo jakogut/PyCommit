@@ -121,8 +121,11 @@ class CommitDB:
                 
         def GetDescriptionByStatus(self):
                 pass
+
+        def get_status(self):
+                return self.status.value
                 
 if __name__ == '__main__':
         from CommitTests import CommitTests
         tests = CommitTests()
-        tests.runAll()
+        tests.run_all()

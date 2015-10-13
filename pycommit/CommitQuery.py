@@ -5,6 +5,20 @@ from xml.dom import minidom
 
 import untangle
 
+class SimpleSQLQuery:
+    def __init__(self, q_from, q_select, q_where, q_op, q_value):
+        _query = [(q_from, q_select, q_where, q_op, q_value)]
+
+    def add_statement(self, q_link_op, q_from, q_select, q_where, q_op, q_value):
+        _query.append((q_link_op, q_from, q_select, q_where, q_op, q_value))
+
+    def get_query():
+        return _query
+
+    def is_multi_statement():
+        if len(_query) > 1: return True
+        else: return False
+
 class CommitQueryDataRequest:
     declaration = bytes('<?commitcrmxmlqueryrequest version="1.0" ?>', "ascii")
     

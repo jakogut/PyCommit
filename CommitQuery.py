@@ -60,8 +60,4 @@ class CommitQueryDataResponse:
             self.recIds.append(data.get_elements()[0].cdata)
 
         return self.recIds
-
-if __name__ == "__main__":
-    req = CommitQueryDataRequest(dataKind = "ACCOUNT", query = 'FROM ASSET SELECT FLDTKTCARDID WHERE FLDCRDCONTACT = "JOHN DOE"')
-    req.printDomTree()
     

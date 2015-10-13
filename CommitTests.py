@@ -14,7 +14,7 @@ class CommitTests:
         self.db.TerminateDbEngDll()
         self.db.TerminateDbQryDll()
     
-    def createRec(self):
+    def create_rec(self):      
         # Add an account to the database
         dataStr = "'Bart De Hantsetters','Hantsetters'"
         mapStr = "'\n,\n" + CommitAccountFields["FileAs"] + "\n" + CommitAccountFields["Contact"]
@@ -28,7 +28,8 @@ class CommitTests:
         print("Insert status: ", self.db.status)
         print("RecID: ", self.rec.getRecID())
 
-    def updRec(self):
+            
+    def update_rec(self):      
         # Update the existing record
         if self.rec == None:
             print("Record for updating does not exist.")
@@ -45,7 +46,7 @@ class CommitTests:
         self.db.InsUpdRec(self.rec)
         print("Update status: ", self.db.status)
 
-    def qryDB(self):        
+    def query_db(self):       
         req = CommitQueryDataRequest(dataKind = "ACCOUNT", query = 'FROM ASSET SELECT FLDTKTCARDID WHERE FLDCRDCONTACT = "JOHN DOE"')
         recIds = self.db.GetQueryRecIds(req)
 

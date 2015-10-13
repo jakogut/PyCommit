@@ -20,9 +20,10 @@ class CommitTests:
         dataStr = "'Bart De Hantsetters','Hantsetters'"
         mapStr = "'\n,\n" + CommitAccountFields["FileAs"] + "\n" + CommitAccountFields["Contact"]
         
-        self.rec = CommitRecord(tableID = CommitEntity["Account"],
-                           dataBuff = dataStr,
-                           mapBuff = mapStr)
+        self.rec = CommitRecord(
+                            tableID = CommitEntity["Account"],
+                            dataBuff = dataStr,
+                            mapBuff = mapStr)
         
         self.db.InsUpdRec(self.rec)
 

@@ -35,19 +35,26 @@ class CommitDB:
 
                 self.status = c_int()
 
-        def InitDbEngDll(self):
+                self._init_db_eng_dll()
+                self._init_db_qry_dll()
+
+        def __del__(self):
+                self._terminate_db_eng_dll()
+                self._terminate_db_qry_dll()
+
+        def _init_db_eng_dll(self):
                 self.CmDBEngDll.CmtInitDbEngDll(self.appName, self.DBPath_bytes, byref(self.status))
 
                 if self.status.value != 1: raise RuntimeError(
-                        "DB not initialized. Error code {}".format(self.status))
+                        "DB not initialized for writing. Error code {}".format(self.status))
 
-        def InitDbQryDll(self):
+        def _init_db_qry_dll(self):
                 self.CmDBQryDll.CmtInitDbQryDll(self.appName, self.DBPath_bytes, byref(self.status))
 
                 if self.status.value != 1: raise RuntimeError(
-                        "DB not initialized. Error code {}".format(self.status))
+                        "DB not initialized for queries. Error code {}".format(self.status))
                 
-        def InsUpdRec(self, record):            
+        def update_rec(self, record):            
                 flag = 1
                 tbd = 0
 
@@ -67,7 +74,7 @@ class CommitDB:
                 if self.status.value != 1: raise RuntimeError(
                         "DB insertion failed with code {}.".format(self.status))
 
-        def GetQueryRecIds(self, req):
+        def query_recids(self, req):
                 req_str = req.getDomTreeStr()
                 
                 respBuffSize = 16384
@@ -110,10 +117,10 @@ class CommitDB:
                                                         respBuffSize,
                                                         byref(self.status))
                 
-        def TerminateDbEngDll(self):
+        def _terminate_db_eng_dll(self):
                 self.CmDBEngDll.CmtTerminateDbEngDll()
 
-        def TerminateDbQryDll(self):
+        def _terminate_db_qry_dll(self):
                 self.CmDBEngDll.CmtTerminateDbQryDll()
                 
         def GetDescriptionByCode(self, code, desc_size, desc):

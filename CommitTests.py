@@ -5,17 +5,9 @@ from CommitQuery import *
 class CommitTests:  
     def __init__(self):
         self.db = CommitDB()
-        
-        db_init = [self.db.InitDbEngDll, self.db.InitDbQryDll]
-        for init in db_init: init()
-
         self.rec = None
-
-    def __del__(self):
-        self.db.TerminateDbEngDll()
-        self.db.TerminateDbQryDll()
     
-    def create_rec(self):      
+    def create_rec_test(self):      
         # Add an account to the database
         dataStr = "'Bart De Hantsetters','Hantsetters'"
         mapStr = "'\n,\n" + CommitAccountFields["FileAs"] + "\n" + CommitAccountFields["Contact"]
@@ -25,12 +17,12 @@ class CommitTests:
                             dataBuff = dataStr,
                             mapBuff = mapStr)
         
-        self.db.InsUpdRec(self.rec)
+        self.db.update_rec(self.rec)
 
         print("Insert completed successfully.")
         print("RecID: {}".format(self.rec.getRecID()))
             
-    def update_rec(self):      
+    def update_rec_test(self):      
         # Update the existing record
         if self.rec == None:
             print("Record for updating does not exist.")
@@ -44,13 +36,13 @@ class CommitTests:
                            dataBuff = dataStr,
                            mapBuff = mapStr)
 
-        self.db.InsUpdRec(self.rec)
+        self.db.update_rec(self.rec)
         
         print("DB record update completed successfully")
 
-    def query_db(self):       
+    def query_db_test(self):       
         req = CommitQueryDataRequest(dataKind = "ACCOUNT", query = 'FROM ASSET SELECT FLDTKTCARDID WHERE FLDCRDCONTACT = "JOHN DOE"')
-        recIds = self.db.GetQueryRecIds(req)
+        recIds = self.db.query_recids(req)
 
         req.printDomTree()
 
@@ -58,6 +50,6 @@ class CommitTests:
         print(recIds)
 
     def run_all(self):
-        tests = [self.create_rec, self.update_rec, self.query_db]
+        tests = [self.create_rec_test, self.update_rec_test, self.query_db_test]
         for t in tests: run = t()
         

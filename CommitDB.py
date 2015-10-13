@@ -93,7 +93,7 @@ class CommitDB:
                 resp = CommitQueryDataResponse(str(respBuff.value, encoding = "ascii"))
                 return resp.getRecIds()
         
-        def GetRecordDataByRecId(self, req):
+        def get_rec_data_by_recid(self, req):
                 req_str = req.getDomTreeStr()
 
                 respBufferSize = 16384
@@ -105,7 +105,7 @@ class CommitDB:
                                                         respBuffSize,
                                                         byref(self.status))
 
-        def GetFieldAttributesByRecId(self, req):
+        def get_field_attribs_by_recid(self, req):
                 req_str = req.getDomTreeStr()
 
                 respBufferSize = 16384
@@ -123,10 +123,10 @@ class CommitDB:
         def _terminate_db_qry_dll(self):
                 self.CmDBEngDll.CmtTerminateDbQryDll()
                 
-        def GetDescriptionByCode(self, code, desc_size, desc):
+        def get_desc_by_code(self, code, desc_size, desc):
                 pass
                 
-        def GetDescriptionByStatus(self):
+        def get_desc_by_status(self):
                 pass
 
         def get_status(self):

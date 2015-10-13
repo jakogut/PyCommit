@@ -41,10 +41,17 @@ class CommitTests:
         print("DB record update completed successfully")
 
     def query_db_test(self):       
-        req = CommitQueryDataRequest(dataKind = "ACCOUNT", query = 'FROM ASSET SELECT FLDTKTCARDID WHERE FLDCRDCONTACT = "JOHN DOE"')
-        recIds = self.db.query_recids(req)
+        req = CommitQueryDataRequest(
+            q_from = "ACCOUNT",
+            q_select = CommitAccountFields['AccountRecID'],
+            q_where = CommitAccountFields['Contact'],
+            q_op = '=',
+            q_value = 'John Doe')
 
+        print("Request: ")
         req.printDomTree()
+        
+        recIds = self.db.query_recids(req)
 
         print("Query completed successfully.")
         print(recIds)

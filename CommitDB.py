@@ -38,9 +38,15 @@ class CommitDB:
         def InitDbEngDll(self):
                 self.CmDBEngDll.CmtInitDbEngDll(self.appName, self.DBPath_bytes, byref(self.status))
 
+                if self.status.value != 1: raise RuntimeError(
+                        "DB not initialized. Error code {}".format(self.status))
+
         def InitDbQryDll(self):
                 self.CmDBQryDll.CmtInitDbQryDll(self.appName, self.DBPath_bytes, byref(self.status))
-                                                
+
+                if self.status.value != 1: raise RuntimeError(
+                        "DB not initialized. Error code {}".format(self.status))
+                
         def InsUpdRec(self, record):            
                 flag = 1
                 tbd = 0
@@ -58,6 +64,9 @@ class CommitDB:
                                              record.errMsgBuff,
                                              byref(self.status))
 
+                if self.status.value != 1: raise RuntimeError(
+                        "DB insertion failed with code {}.".format(self.status))
+
         def GetQueryRecIds(self, req):
                 req_str = req.getDomTreeStr()
                 
@@ -70,6 +79,10 @@ class CommitDB:
                                                 respBuff,
                                                 respBuffSize,
                                                 byref(self.status))
+
+                if self.status.value != 1: raise RuntimeError(
+                        "DB query failed with code {}.".format(self.status))
+
                 resp = CommitQueryDataResponse(str(respBuff.value, encoding = "ascii"))
                 return resp.getRecIds()
         

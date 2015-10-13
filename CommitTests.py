@@ -24,11 +24,10 @@ class CommitTests:
                            dataBuff = dataStr,
                            mapBuff = mapStr)
         
-        # db.status should be 1 if operation was successful
         self.db.InsUpdRec(self.rec)
-        print("Insert status: ", self.db.status)
-        print("RecID: ", self.rec.getRecID())
 
+        print("Insert completed successfully.")
+        print("RecID: {}".format(self.rec.getRecID()))
             
     def update_rec(self):      
         # Update the existing record
@@ -45,7 +44,8 @@ class CommitTests:
                            mapBuff = mapStr)
 
         self.db.InsUpdRec(self.rec)
-        print("Update status: ", self.db.status)
+        
+        print("DB record update completed successfully")
 
     def query_db(self):       
         req = CommitQueryDataRequest(dataKind = "ACCOUNT", query = 'FROM ASSET SELECT FLDTKTCARDID WHERE FLDCRDCONTACT = "JOHN DOE"')
@@ -53,6 +53,7 @@ class CommitTests:
 
         req.printDomTree()
 
+        print("Query completed successfully.")
         print(recIds)
 
     def run_all(self):

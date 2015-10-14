@@ -76,8 +76,13 @@ class DataResponse:
         self.doc = untangle.parse(self.response_str)
 
     def getRecIds(self):
+        try:
+                RecordData = self.doc.CommitCRMQueryDataResponse.RecordData
+        except IndexError("Invalid record data returned."):
+                return None
+            
         self.recIds = []
-        for data in self.doc.CommitCRMQueryDataResponse.RecordData:
+        for data in RecordData:
             self.recIds.append(data.get_elements()[0].cdata)
 
         return self.recIds

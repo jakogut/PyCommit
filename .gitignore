@@ -43,6 +43,6 @@ Temporary Items
 .apdisk
 
 # Python
-__pycache__
 dist
-
+MANIFEST
+__pycache__

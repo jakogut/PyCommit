@@ -1,4 +1,4 @@
-CommitEntity = {
+Entity = {
     "Account"       : 10,
     "Accounts"      : 10,
     "Opportunitity" : 20,
@@ -21,7 +21,7 @@ CommitEntity = {
     "KBArticles"    : 100
 }
 
-CommitAccountFields = {
+AccountFields = {
     "AccountRecID"  : "FLDCRDRECID",
     "AccountMgr"    : "FLDCRDASSIGNCARDID",
     "SubContStatus" : "FLDCRDSUBCONTSTATUS",
@@ -79,7 +79,7 @@ CommitAccountFields = {
     "Field4"        : "FLDCRDUSER5"
 }
 
-CommitTicketFields = {
+TicketFields = {
     "AccountRecID"      : "FLDTKTCARDID",
     "ContactRecID"      : "FLDTKTCONTACTID",
     "ContractRecID"     : "FLDTKTBCRECID",
@@ -97,7 +97,7 @@ CommitTicketFields = {
     "Resolution"        : "FLDTKTSOLUTION"
 }
 
-CommitChargeFields = {
+ChargeFields = {
     "RecordID"          : "FLDSLPRECID",
     "ChargeSource"      : "FLDSLPSOURCERECID",
     "AccountRecID"      : "FLDSLPCARDID",
@@ -119,7 +119,7 @@ CommitChargeFields = {
     "CreateUser"        : "FLDSLPCREATEUSER"
 }
 
-CommitItemFields = {
+ItemFields = {
     "RecordID"          : "FLDITMRECID",
     "ItemGroup"         : "FLDITMITEMTYPEGROUP",
     "ItemCode"          : "FLDITMITEMNO",
@@ -140,7 +140,7 @@ CommitItemFields = {
     "CreatedByUSer"     : "FLDITMCREATEUSER"
 }
 
-CommitHistoryNoteFields = {
+HistoryNoteFields = {
     "RecordID"          : "FLDHISRECID",
     "Date"              : "FLDHISNOTEDATETIME",
     "Description"       : "FLDHISDESCRIPTION",
@@ -154,7 +154,7 @@ CommitHistoryNoteFields = {
     "CreatedByUser"     : "FLDHISCREATEUSER"
 }
 
-CommitAssetFields = {
+AssetFields = {
     "AssetCode"         : "FLDASTASSETCODE",
     "AssetType"         : "FLDASTASSETTYPE",
     "AssetName"         : "FLDASTNAME",

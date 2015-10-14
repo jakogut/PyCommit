@@ -1,19 +1,18 @@
-from CommitDB import CommitDB, CommitRecord
-from CommitEntities import *
-from CommitQuery import *
+from commit import DBInterface, DBRecord, DataRequest, DataResponse
+from entities import *
 
 class CommitTests:  
     def __init__(self):
-        self.db = CommitDB()
+        self.db = DBInterface()
         self.rec = None
     
     def create_rec_test(self):      
         # Add an account to the database
         dataStr = "'Bart De Hantsetters','Hantsetters'"
-        mapStr = "'\n,\n" + CommitAccountFields["FileAs"] + "\n" + CommitAccountFields["Contact"]
+        mapStr = "'\n,\n" + AccountFields["FileAs"] + "\n" + AccountFields["Contact"]
         
-        self.rec = CommitRecord(
-                            tableID = CommitEntity["Account"],
+        self.rec = DBRecord(
+                            tableID = Entity["Account"],
                             dataBuff = dataStr,
                             mapBuff = mapStr)
         
@@ -29,10 +28,10 @@ class CommitTests:
             return
         
         dataStr = "'De Hantsetters','" + self.rec.getRecID() + "'"
-        mapStr = "'\n,\n" + CommitAccountFields["LastName"]
-        mapStr += '\n'    + CommitAccountFields["AccountRecID"]
+        mapStr = "'\n,\n" + AccountFields["LastName"]
+        mapStr += '\n'    + AccountFields["AccountRecID"]
 
-        self.rec = CommitRecord(tableID = CommitEntity["Account"],
+        self.rec = DBRecord(tableID = Entity["Account"],
                            dataBuff = dataStr,
                            mapBuff = mapStr)
 
@@ -41,10 +40,10 @@ class CommitTests:
         print("DB record update completed successfully")
 
     def query_db_test(self):       
-        req = CommitQueryDataRequest(
+        req = DataRequest(
             q_from = "ACCOUNT",
-            q_select = CommitAccountFields['AccountRecID'],
-            q_where = CommitAccountFields['Contact'],
+            q_select = AccountFields['AccountRecID'],
+            q_where = AccountFields['Contact'],
             q_op = '=',
             q_value = 'John Doe')
 

@@ -1,10 +1,14 @@
 import os
 from ctypes import *
 
-from CommitEntities import *
-from CommitQuery import *
+from xml.etree.cElementTree import ElementTree, Element, SubElement, Comment, tostring, fromstring
+from xml.dom import minidom
 
-class CommitRecord:
+import untangle
+
+from pycommit.entities import *
+
+class DBRecord:
         def __init__(self, tableID, dataBuff, mapBuff, recID = ""):
                 self.tableID            = tableID
                 self.dataBuff           = create_string_buffer(bytes(dataBuff, "ascii"))
@@ -20,8 +24,65 @@ class CommitRecord:
 
         def getRecID(self):
                 return str(self.recIDBuff.raw, encoding='ascii')
+
+class DataRequest:
+    declaration = bytes('<?commitcrmxmlqueryrequest version="1.0" ?>', "ascii")
+    
+    def __init__(
+            self, q_from, q_select, q_where, q_op, q_value,
+            name = "CommitAgent", maxRecordCnt = 255):
+
+        self.q_from = q_from
+        self.q_select = q_select
+        self.q_where = q_where
+        self.q_op = q_op
+        self.q_value = q_value
+        
+        self.extAppName = name
+        self.maxRecordCnt = maxRecordCnt
+
+        self.__createDomTree()
+        
+    def __createDomTree(self):
+        self.tree = Element('CommitCRMQueryDataRequest')
+        self.nameElement = SubElement(self.tree, 'ExternalApplicationName')
+        self.nameElement.text = self.extAppName
+        self.dataKindElement = SubElement(self.tree, 'Datakind')
+        self.dataKindElement.text = self.q_from
+        self.recordCountElement = SubElement(self.tree, 'MaxRecordCount')
+        self.recordCountElement.text = str(self.maxRecordCnt)
+
+        self.queryElement = SubElement(self.tree, 'Query')
+        self.whereElement = SubElement(self.queryElement, 'Where')
+        
+        self.queryContentElement = SubElement(self.whereElement, self.q_where, {"op" : self.q_op})
+        self.queryContentElement.text = self.q_value
+
+        self.orderElement = SubElement(self.queryElement, 'Order')
+
+    def getDomTreeStr(self):
+        return self.declaration + tostring(self.tree)
+
+    def printDomTree(self):
+        print(self.__prettify(self.getDomTreeStr()))
+
+    def __prettify(self, dom_str):
+        reparsed = minidom.parseString(dom_str)
+        return reparsed.toprettyxml(indent="    ")
+
+class DataResponse:
+    def __init__(self, response):
+        self.response_str = response
+        self.doc = untangle.parse(self.response_str)
+
+    def getRecIds(self):
+        self.recIds = []
+        for data in self.doc.CommitCRMQueryDataResponse.RecordData:
+            self.recIds.append(data.get_elements()[0].cdata)
+
+        return self.recIds
                 
-class CommitDB:        
+class DBInterface:        
         def __init__(self, appName = 'CommitAgent', CRMPath = r'C:\CommitCRM'):
                 self.CRMPath = CRMPath
                 self.serverPath = CRMPath + r'\Server'
@@ -90,7 +151,7 @@ class CommitDB:
                 if self.status.value != 1: raise RuntimeError(
                         "DB query failed with code {}.".format(self.status))
 
-                resp = CommitQueryDataResponse(str(respBuff.value, encoding = "ascii"))
+                resp = DataResponse(str(respBuff.value, encoding = "ascii"))
                 return resp.getRecIds()
         
         def get_rec_data_by_recid(self, req):
@@ -133,6 +194,6 @@ class CommitDB:
                 return self.status.value
                 
 if __name__ == '__main__':
-        from CommitTests import CommitTests
+        from tests import CommitTests
         tests = CommitTests()
         tests.run_all()

@@ -1,4 +1,2 @@
-from CommitDB import CommitDB, CommitRecord
-from CommitEntities import *
-from CommitQuery import CommitQueryDataRequest, CommitQueryDataResponse
-
+from pycommit.commit import DBInterface, DBRecord, DataRequest, DataResponse 
+from pycommit.entities import *  

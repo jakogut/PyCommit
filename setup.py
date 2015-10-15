@@ -12,5 +12,6 @@ setup(
     long_description = open('README.txt').read(),
     install_required=[
         "untangle" >= "1.1.0"
+        "pyparsing" >= "2.0.3"
         ],
     )

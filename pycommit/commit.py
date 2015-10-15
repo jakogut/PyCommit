@@ -28,36 +28,56 @@ class DBRecord:
 class DataRequest:
     declaration = bytes('<?commitcrmxmlqueryrequest version="1.0" ?>', "ascii")
     
-    def __init__(
-            self, q_from, q_select, q_where, q_op, q_value,
-            name = "CommitAgent", maxRecordCnt = 255):
+    def __init__(self, query = None, name = "CommitAgent", maxRecordCnt = 255):
 
-        self.q_from = q_from
-        self.q_select = q_select
-        self.q_where = q_where
-        self.q_op = q_op
-        self.q_value = q_value
+        self.query = self._query_to_dict(query)
         
         self.extAppName = name
         self.maxRecordCnt = maxRecordCnt
 
         self.__createDomTree()
+
+    def _query_to_dict(self, query):
+        from pyparsing import Word, Literal, alphas, alphanums, oneOf, QuotedString
+
+        operator = oneOf("= > >= < <= like not not like")
         
+        _from = 'FROM' + Word(alphas)
+        _select = 'SELECT' + Word(alphas)
+        _where = 'WHERE' + Word(alphanums)
+        _op = operator
+        _val = operator + QuotedString('"')
+
+        stmt_list = [_from, _select, _where]
+
+        d = {}
+        for stmt in stmt_list:
+            k, v = stmt.searchString(query)[0]
+            d[k] = v
+
+        d['OP'] = _op.searchString(query)[0][0]
+        d['VAL'] = _val.searchString(query)[0][1]
+        return d
+
     def __createDomTree(self):
         self.tree = Element('CommitCRMQueryDataRequest')
         self.nameElement = SubElement(self.tree, 'ExternalApplicationName')
         self.nameElement.text = self.extAppName
         self.dataKindElement = SubElement(self.tree, 'Datakind')
-        self.dataKindElement.text = self.q_from
+        self.dataKindElement.text = self.query['FROM']
         self.recordCountElement = SubElement(self.tree, 'MaxRecordCount')
         self.recordCountElement.text = str(self.maxRecordCnt)
 
         self.queryElement = SubElement(self.tree, 'Query')
         self.whereElement = SubElement(self.queryElement, 'Where')
         
-        self.queryContentElement = SubElement(self.whereElement, self.q_where, {"op" : self.q_op})
-        self.queryContentElement.text = self.q_value
-
+        self.queryContentElement = SubElement(
+            self.whereElement,
+            self.query['WHERE'],
+            {"op" : self.query['OP']}
+        )
+        
+        self.queryContentElement.text = self.query['VAL']
         self.orderElement = SubElement(self.queryElement, 'Order')
 
     def getDomTreeStr(self):

@@ -41,11 +41,9 @@ class CommitTests:
 
     def query_db_test(self):       
         req = DataRequest(
-            q_from = "ACCOUNT",
-            q_select = AccountFields['AccountRecID'],
-            q_where = AccountFields['Contact'],
-            q_op = '=',
-            q_value = 'John Doe')
+            query = 'FROM ACCOUNT SELECT {} WHERE {} = "John Doe"'.format(
+            AccountFields['AccountRecID'], AccountFields['Contact'])
+        )
 
         print("Request: ")
         req.printDomTree()

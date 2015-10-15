@@ -78,8 +78,8 @@ class DataResponse:
     def getRecIds(self):
         try:
                 RecordData = self.doc.CommitCRMQueryDataResponse.RecordData
-        except IndexError("Invalid record data returned."):
-                return None
+        except IndexError:
+                return
             
         self.recIds = []
         for data in RecordData:

@@ -1,7 +1,7 @@
 from distutils.core import setup
 
 setup(
-    name = 'PyCommit',
+    name = 'pycommit',
     version = 'git',
     author = 'Joseph Kogut',
     author_email = 'joseph.kogut@gmail.com',

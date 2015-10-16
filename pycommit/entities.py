@@ -161,7 +161,7 @@ AssetFields = {
     "Status"            : "FLDASTSTATUS",
     "RecordID"          : "FLDASTRECID",
     "SerialNo"          : "FLDASTSERIALNO",
-    "Account"           : "FLDASTACCRECID",
+    "AccountRecID"      : "FLDASTACCRECID",
     "Contact"           : "FLDASTCONTACTRECID",
     "CreatedByUser"     : "FLDASTCREATEUSER",
     "PurchaseDate"      : "FLDASTCUSTPURDATE",

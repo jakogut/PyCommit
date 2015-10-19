@@ -155,10 +155,10 @@ HistoryNoteFields = {
 }
 
 AssetFields = {
-    "AssetCode"         : "FLDASTASSETCODE",
-    "AssetType"         : "FLDASTASSETTYPE",
-    "AssetName"         : "FLDASTNAME",
-    "Status"            : "FLDASTSTATUS",
+    "Code"              : "FLDASTASSETCODE",
+    "Type"              : "FLDASTASSETTYPE",# Required
+    "Name"              : "FLDASTNAME",
+    "Status"            : "FLDASTSTATUS",   # Required
     "RecordID"          : "FLDASTRECID",
     "SerialNo"          : "FLDASTSERIALNO",
     "AccountRecID"      : "FLDASTACCRECID",

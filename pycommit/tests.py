@@ -46,7 +46,7 @@ class CommitTests:
         )
 
         print("Request: ")
-        req.printDomTree()
+        req.print_dom_tree()
         
         recIds = self.db.query_recids(req)
 

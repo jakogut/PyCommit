@@ -35,7 +35,7 @@ class DataRequest:
         self.extAppName = name
         self.maxRecordCnt = maxRecordCnt
 
-        self.__createDomTree()
+        self._create_dom_tree()
 
     def _query_to_dict(self, query):
         from pyparsing import Word, Literal, alphas, alphanums, oneOf, QuotedString
@@ -59,7 +59,7 @@ class DataRequest:
         d['VAL'] = _val.searchString(query)[0][1]
         return d
 
-    def __createDomTree(self):
+    def _create_dom_tree(self):
         self.tree = Element('CommitCRMQueryDataRequest')
         self.nameElement = SubElement(self.tree, 'ExternalApplicationName')
         self.nameElement.text = self.extAppName
@@ -80,13 +80,13 @@ class DataRequest:
         self.queryContentElement.text = self.query['VAL']
         self.orderElement = SubElement(self.queryElement, 'Order')
 
-    def getDomTreeStr(self):
+    def get_dom_tree_str(self):
         return self.declaration + tostring(self.tree)
 
-    def printDomTree(self):
-        print(self.__prettify(self.getDomTreeStr()))
+    def print_dom_tree(self):
+        print(self._prettify(self.get_dom_tree_str()))
 
-    def __prettify(self, dom_str):
+    def _prettify(self, dom_str):
         reparsed = minidom.parseString(dom_str)
         return reparsed.toprettyxml(indent="    ")
 
@@ -95,7 +95,7 @@ class DataResponse:
         self.response_str = response
         self.doc = untangle.parse(self.response_str)
 
-    def getRecIds(self):
+    def get_recids(self):
         try:
                 RecordData = self.doc.CommitCRMQueryDataResponse.RecordData
         except IndexError:
@@ -191,7 +191,7 @@ class DBInterface:
                         "DB insertion failed with code {}.".format(self.status))
 
         def query_recids(self, req):
-                req_str = req.getDomTreeStr()
+                req_str = req.get_dom_tree_str()
                 
                 respBuffSize = 16384
                 respBuff = create_string_buffer(respBuffSize)
@@ -207,10 +207,10 @@ class DBInterface:
                         "DB query failed with code {}.".format(self.status))
 
                 resp = DataResponse(str(respBuff.value, encoding = "ascii"))
-                return resp.getRecIds()
+                return resp.get_recids()
         
         def get_rec_data_by_recid(self, req):
-                req_str = req.getDomTreeStr()
+                req_str = req.get_dom_tree_str()
 
                 respBufferSize = 16384
                 respBuffer = create_string_buffer(respBufferSize)
@@ -222,7 +222,7 @@ class DBInterface:
                                                         byref(self.status))
 
         def get_field_attribs_by_recid(self, req):
-                req_str = req.getDomTreeStr()
+                req_str = req.get_dom_tree_str()
 
                 respBufferSize = 16384
                 respBuffer = create_string_buffer(respBufferSize)

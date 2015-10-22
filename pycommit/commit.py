@@ -116,18 +116,36 @@ class FieldAttributesRequest:
         self.extAppName = name
         self.maxRecordCnt = maxRecordCnt
 
-        self.__createDomTree()
+        self._create_dom_tree()
 
-    def _query_to_dict():
+    def _query_to_dict(self, query):
+        from pyparsing import Word, Literal, alphas, alphanums, oneOf, QuotedString
+        from pyparsing import delimitedList, Suppress
+        
+        operator = oneOf("= > >= < <= like not not like")
+        
+        _from = Suppress('FROM') + Word(alphas)
+        _select = Suppress('SELECT') + Suppress('(') + delimitedList(Word(alphas)) + Suppress(')')
+        _where = Suppress('WHERE') + Word(alphanums)
+        _op = operator
+        _val = Suppress(operator) + QuotedString('"')
+
+        d = {}
+        d['FROM'] = _from.searchString(query)[0]
+        d['SELECT'] = _select.searchString(query)[0]
+        d['WHERE'] = _where.searchString(query)[0]
+        d['OP'] = _op.searchString(query)[0]
+        d['VAL'] = _val.searchString(query)[0]
+
+        return d
+
+    def _create_dom_tree(self):
         pass
 
-    def _create_dom_tree():
+    def get_dom_tree_str(self):
         pass
 
-    def get_dom_tree_str():
-        pass
-
-    def print_dom_tree():
+    def print_dom_tree(self):
         pass
 
 class FieldAttributesResponse:

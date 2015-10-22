@@ -106,6 +106,36 @@ class DataResponse:
             self.recIds.append(data.get_elements()[0].cdata)
 
         return self.recIds
+
+class FieldAttributesRequest:
+    declaration = bytes('<?commitxmlgetfieldattributesrequest version="1.0" ?>', "ascii")
+    def __init__(self, query = None, name = "CommitAgent", maxRecordCnt = 255):
+
+        self.query = self._query_to_dict(query)
+        
+        self.extAppName = name
+        self.maxRecordCnt = maxRecordCnt
+
+        self.__createDomTree()
+
+    def _query_to_dict():
+        pass
+
+    def _create_dom_tree():
+        pass
+
+    def get_dom_tree_str():
+        pass
+
+    def print_dom_tree():
+        pass
+
+class FieldAttributesResponse:
+    def __init__():
+        pass
+
+    def get_dictionary():
+        pass
                 
 class DBInterface:        
         def __init__(self, appName = 'CommitAgent', CRMPath = r'C:\CommitCRM'):

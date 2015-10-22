@@ -207,7 +207,7 @@ class DBInterface:
                 self.CmDBEngDll.CmtTerminateDbEngDll()
 
         def _terminate_db_qry_dll(self):
-                self.CmDBEngDll.CmtTerminateDbQryDll()
+                self.CmDBQryDll.CmtTerminateDbQryDll()
                 
         def get_desc_by_code(self, code, desc_size, desc):
                 pass

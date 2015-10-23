@@ -241,7 +241,7 @@ class DBInterface:
                                                 byref(self.status))
 
                 if self.status.value != 1: raise RuntimeError(
-                        "DB query failed with code {}.".format(self.status))
+                    "DB query failed with code {}.".format(self.status))
 
                 resp = DataResponse(str(respBuff.value, encoding = "ascii"))
                 return resp.get_recids()

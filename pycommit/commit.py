@@ -258,6 +258,12 @@ class DBInterface:
                                                         respBuffSize,
                                                         byref(self.status))
 
+                if self.status.value != 1: raise RuntimeError(
+                    "DB query failed with code {}.".format(self.status))
+
+                resp = FieldAttributesResponse(str(respBuff.value, encoding = "ascii"))
+                return resp.get_dictionary()
+
         def get_field_attribs_by_recid(self, req):
                 req_str = req.get_dom_tree_str()
 

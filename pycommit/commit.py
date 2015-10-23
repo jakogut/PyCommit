@@ -134,7 +134,13 @@ class FieldAttributesRequest:
         return d
 
     def _create_dom_tree(self):
-        pass
+        self.tree = Element('CommitCRMGetRecordDataRequest')
+        self.nameElement = SubElement(self.tree, 'ExternalApplicationName')
+        self.nameElement.text = self.extAppName
+        self.recidElement = SubElement(self.tree, 'GetRecordByRecId')
+        self.recidElement.text = self.query['FROM']
+        self.selectFieldsElement = SubElement(self.tree, 'SelectFieldsList')
+        self.selectFieldsElement.text = ', '.join(self.query['SELECT'])
 
     def get_dom_tree_str(self):
         pass

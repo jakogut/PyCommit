@@ -153,11 +153,26 @@ class FieldAttributesRequest:
         return reparsed.toprettyxml(indent="    ")
 
 class FieldAttributesResponse:
-    def __init__():
-        pass
+    def __init__(self, response):
+        self.response_str = response
+        self.doc = untangle.parse(self.response_str)
 
-    def get_dictionary():
-        pass
+    def get_dictionary(self):
+        try:
+                RecordData = self.doc.CommitCRMGetRecordDataResponse.RecordData
+        except IndexError:
+                return
+            
+        elements = RecordData.get_elements()
+
+        _dict = {}
+        for e in elements:
+            if e._name not in _dict:
+                _dict[e._name] = [e.cdata]
+            else:
+                _dict[e.name].append(e.cdata)
+
+        return _dict
                 
 class DBInterface:        
         def __init__(self, appName = 'CommitAgent', CRMPath = r'C:\CommitCRM'):

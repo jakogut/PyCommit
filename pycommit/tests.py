@@ -44,14 +44,9 @@ class CommitTests:
             query = 'FROM ACCOUNT SELECT {} WHERE {} = "John Doe"'.format(
             AccountFields['AccountRecID'], AccountFields['Contact'])
         )
-
-        print("Request: ")
-        req.print_dom_tree()
         
         recIds = self.db.query_recids(req)
 
-        print("Query completed successfully.")
-        print(recIds)
 
     def run_all(self):
         tests = [self.create_rec_test, self.update_rec_test, self.query_db_test]

@@ -41,8 +41,10 @@ class CommitTests:
 
     def query_db_test(self):       
         req = DataRequest(
-            query = 'FROM ACCOUNT SELECT {} WHERE {} = "John Doe"'.format(
-            AccountFields['AccountRecID'], AccountFields['Contact'])
+            query = 'FROM ACCOUNT SELECT {} WHERE {} = "Hantsetters"'.format(
+                AccountFields['AccountRecID'],
+                AccountFields['Contact']
+            )
         )
         
         recIds = self.db.query_recids(req)

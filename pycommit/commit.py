@@ -249,8 +249,8 @@ class DBInterface:
         def get_rec_data_by_recid(self, req):
                 req_str = req.get_dom_tree_str()
 
-                respBufferSize = 16384
-                respBuffer = create_string_buffer(respBufferSize)
+                respBuffSize = 16384
+                respBuff = create_string_buffer(respBuffSize)
 
                 self.CmDBQryDll.CmtGetRecordDataByRecId(create_string_buffer(req_str),
                                                         len(req_str),

@@ -108,7 +108,7 @@ class DataResponse:
         return self.recIds
 
 class FieldAttributesRequest:
-    declaration = bytes('<?commitxmlgetfieldattributesrequest version="1.0" ?>', "ascii")
+    declaration = bytes('<?commitcrmxmlgetrecorddatarequest version="1.0" ?>', "ascii")
     def __init__(self, query = None, name = "CommitAgent", maxRecordCnt = 255):
 
         self.query = self._query_to_dict(query)

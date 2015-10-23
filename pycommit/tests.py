@@ -1,4 +1,4 @@
-from commit import DBInterface, DBRecord, DataRequest, DataResponse
+from commit import *
 from entities import *
 
 class CommitTests:  

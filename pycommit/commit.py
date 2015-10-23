@@ -143,10 +143,14 @@ class FieldAttributesRequest:
         self.selectFieldsElement.text = ', '.join(self.query['SELECT'])
 
     def get_dom_tree_str(self):
-        pass
+        return self.declaration + tostring(self.tree)
 
     def print_dom_tree(self):
-        pass
+        print(self._prettify(self.get_dom_tree_str()))
+
+    def _prettify(self, dom_str):
+        reparsed = minidom.parseString(dom_str)
+        return reparsed.toprettyxml(indent="    ")
 
 class FieldAttributesResponse:
     def __init__():

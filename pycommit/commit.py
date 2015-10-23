@@ -119,23 +119,17 @@ class FieldAttributesRequest:
         self._create_dom_tree()
 
     def _query_to_dict(self, query):
-        from pyparsing import Word, Literal, alphas, alphanums, oneOf, QuotedString
+        from pyparsing import Word, alphas, alphanums, oneOf
         from pyparsing import delimitedList, Suppress
         
         operator = oneOf("= > >= < <= like not not like")
         
-        _from = Suppress('FROM') + Word(alphas)
+        _from = Suppress('FROM') + Word(alphanums)
         _select = Suppress('SELECT') + Suppress('(') + delimitedList(Word(alphas)) + Suppress(')')
-        _where = Suppress('WHERE') + Word(alphanums)
-        _op = operator
-        _val = Suppress(operator) + QuotedString('"')
 
         d = {}
-        d['FROM'] = _from.searchString(query)[0]
+        d['FROM'] = _from.searchString(query)[0][0]
         d['SELECT'] = _select.searchString(query)[0]
-        d['WHERE'] = _where.searchString(query)[0]
-        d['OP'] = _op.searchString(query)[0]
-        d['VAL'] = _val.searchString(query)[0]
 
         return d
 

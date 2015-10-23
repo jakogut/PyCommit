@@ -47,6 +47,20 @@ class CommitTests:
         
         recIds = self.db.query_recids(req)
 
+        print("RecID Query completed successfully.")
+
+        req = FieldAttributesRequest(
+            query = 'FROM {RECID} SELECT ({F0},{F1},{F2})'.format(
+                RECID = 'CRDGBX99GRPAC8RH0Y9Z',
+                F0 = AccountFields['AccountRecID'],
+                F1 = AccountFields['Contact'],
+                F2 = AccountFields['CompanyName'],
+            )
+        )
+
+        data = self.db.get_rec_data_by_recid(req)
+        print('Data Query completed successfully.')
+            
 
     def run_all(self):
         tests = [self.create_rec_test, self.update_rec_test, self.query_db_test]

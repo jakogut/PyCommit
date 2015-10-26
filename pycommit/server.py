@@ -69,7 +69,7 @@ class CommitRemoteInterface:
             if not recid: return
             assert len(recid) == 1
 
-            return recid
+            return recid[0]
 
         @staticmethod
         def tktrecid_from_tktno(tktno):
@@ -86,7 +86,7 @@ class CommitRemoteInterface:
             if not recid: return
             assert len(recid) == 1
 
-            return recid
+            return recid[0]
 
         @staticmethod
         def tktdesc_from_tktno(tktno):

@@ -40,7 +40,19 @@ class CommitRemoteInterface:
     class ticket:
         @staticmethod
         def fingerprint(tktno):
-            pass
+            recid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)            
+            req = pycommit.FieldAttributesRequest(
+                query = "FROM {} SELECT ({},{})".format(
+                    recid,
+                    pycommit.TicketFields['Description'],
+                    pycommit.TicketFields['ContactRecID']
+                )
+            )
+
+            data = crm_db.get_rec_data_by_recid(req)
+            print(data)
+            
+            return data[pycommit.TicketFields['Description']][0]
 
         @staticmethod
         def acctrecid_from_tktno(tktno):

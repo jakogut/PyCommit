@@ -83,6 +83,7 @@ TicketFields = {
     "AccountRecID"      : "FLDTKTCARDID",
     "ContactRecID"      : "FLDTKTCONTACTID",
     "ContractRecID"     : "FLDTKTBCRECID",
+    "AssetRecID"        : "FLDTKTASSETRECID",
     "EmpRecID"          : "FLDTKTWORKERID",
     "Priority"          : "FLDTKTPRIORITY",
     "TicketNumber"      : "FLDTKTTICKETNO",

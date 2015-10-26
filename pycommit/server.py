@@ -37,6 +37,36 @@ class CommitRemoteInterface:
                 rec_ids = self.crm_db.query_recids(req)
                 if rec_ids is not None: return rec_ids[0]
 
+        @staticmethod
+        def find_employee(search_str):
+            req = pycommit.DataRequest(
+                query='FROM ACCOUNT SELECT {} WHERE {} = "{}"'.format(
+                    pycommit.AccountFields['AccountRecID'],
+                    pycommit.AccountFields['AccountType'],
+                    '4'
+                )
+            )
+
+            rec_ids = crm_db.query_recids(req)
+
+            employees = {}
+            for _id in rec_ids:
+                req = pycommit.FieldAttributesRequest(
+                    query = "FROM {} SELECT ({})".format(
+                        _id,
+                        pycommit.AccountFields['Contact']
+                    )
+                )
+
+                data = crm_db.get_rec_data_by_recid(req)
+                contact = data[pycommit.AccountFields['Contact']][0]
+                employees[_id] = contact
+
+            for (key, value) in employees.items():
+                fname, lname = value.lower().split(' ')
+                if fname[0] + lname == search_str:
+                    return key               
+
     class ticket:
         @staticmethod
         def fingerprint(tktno):

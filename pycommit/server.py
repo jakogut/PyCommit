@@ -80,7 +80,6 @@ class CommitRemoteInterface:
             )
 
             data = crm_db.get_rec_data_by_recid(req)
-            print(data)
             
             return data[pycommit.TicketFields['Description']][0]
 

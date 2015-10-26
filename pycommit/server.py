@@ -34,7 +34,7 @@ class CommitRemoteInterface:
                 )
 
                 # TODO: Handle multiple recids in an intelligible fashion
-                rec_ids = self.crm_db.query_recids(req)
+                rec_ids = crm_db.query_recids(req)
                 if rec_ids is not None: return rec_ids[0]
 
         @staticmethod

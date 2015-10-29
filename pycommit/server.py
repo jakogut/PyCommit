@@ -134,6 +134,22 @@ class CommitRemoteInterface:
 
             return data[pycommit.TicketFields['AssetRecID']][0]
 
+        def link_asset(tktno, asset_recid):
+            data_str = "'{}','{}'".format(tktno, asset_recid)
+
+            map_str = "\n,\n{}\n{}".format(
+                pycommit.TicketFields['TicketNumber'],
+                pycommit.TicketFields['AssetRecID'],
+            )
+
+            rec = pycommit.DBRecord(
+                tableID = pycommit.Entity['Ticket'],
+                dataBuff = data_str,
+                mapBuff = map_str,
+            )
+
+            crm_db.update_rec(rec)
+
     class history:
         @staticmethod
         def insert_note(tkt, msg, employee_id):

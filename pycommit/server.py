@@ -173,7 +173,48 @@ class CommitRemoteInterface:
 
             crm_db.update_rec(rec)
             return rec.getRecID()
-            
+
+    class asset:
+        @staticmethod
+        def update(acct, name, code, desc, status = 'A', _type = 'H'):
+            data_str = "'{}','{}','{}','{}','{}','{}'".format(
+                acct, name, code, desc, status, _type
+            )
+
+            map_str = "'\n,\n{}\n{}\n{}\n{}\n{}\n{}".format(
+                pycommit.AssetFields['AccountRecID'],
+                pycommit.AssetFields['Name'],
+                pycommit.AssetFields['Code'],
+                pycommit.AssetFields['Description'],
+                pycommit.AssetFields['Status'],
+                pycommit.AssetFields['Type'],
+            )
+
+            rec = pycommit.DBRecord(
+                pycommit.Entity['Asset'],
+                data_str,
+                map_str
+            )
+
+            crm_db.update_rec(rec)
+
+        def find(uuid):
+            req = pycommit.DataRequest(
+                query = 'FROM ASSET SELECT {} WHERE {} = "{}" AND {} = "{}"'.format(
+                    pycommit.AssetFields['RecordID'],
+                    pycommit.AssetFields['Code'],
+                    uuid,
+                    pycommit.AssetFields['Status'],
+                    'A'
+                )
+            )
+
+            recid = crm_db.query_recids(req)
+
+            if not recid: return
+            assert len(recid) == 1
+
+            return recid[0]
 
 if __name__ == '__main__':
     addr = ('localhost', 8000)

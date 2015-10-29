@@ -121,6 +121,19 @@ class CommitRemoteInterface:
             
             return data[pycommit.TicketFields['Description']][0]
 
+        def assetrecid_from_tktno(tktno):
+            recid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)            
+            req = pycommit.FieldAttributesRequest(
+                query = "FROM {} SELECT ({})".format(
+                    recid,
+                    pycommit.TicketFields['AssetRecID']
+                )
+            )
+
+            data = crm_db.get_rec_data_by_recid(req)
+
+            return data[pycommit.TicketFields['AssetRecID']][0]
+
     class history:
         @staticmethod
         def insert_note(tkt, msg, employee_id):

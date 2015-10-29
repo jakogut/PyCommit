@@ -7,6 +7,7 @@ from xml.dom import minidom
 import untangle
 
 from pycommit.entities import *
+from pyparsing import *
 
 class DBRecord:
     def __init__(self, tableID, dataBuff, mapBuff, recID = ""):
@@ -30,54 +31,71 @@ class DataRequest:
     
     def __init__(self, query = None, name = "CommitAgent", maxRecordCnt = 255):
 
-        self.query = self._query_to_dict(query)
+        self.query = self._parse_query(query)
         
         self.extAppName = name
         self.maxRecordCnt = maxRecordCnt
 
         self._create_dom_tree()
 
-    def _query_to_dict(self, query):
-        from pyparsing import Word, Literal, alphas, alphanums, oneOf, QuotedString
-
+    def _parse_query(self, query):
         operator = oneOf("= > >= < <= like not not like")
+        joiner = oneOf('AND OR')
         
-        _from = 'FROM' + Word(alphas)
-        _select = 'SELECT' + Word(alphas)
-        _where = 'WHERE' + Word(alphanums)
-        _op = operator
-        _val = operator + QuotedString('"')
+        _from = Suppress(Literal('FROM')) + Word(alphas)
+        _from = _from.setResultsName('FROM')
+        
+        _select = Suppress(Literal('SELECT')) + Word(alphas)
+        _select = _select.setResultsName('SELECT')
+        
+        _val = QuotedString('"')
+        _val = _val.setResultsName('VAL')
+        
+        _conditional = Word(alphanums) + operator + _val
+        _conditional = _conditional.setResultsName('COND')
+        
+        lparen, rparen = Literal('('), Literal(')')
+        _where = Suppress(Literal('WHERE')) + ZeroOrMore(lparen) + OneOrMore(Group(_conditional) + ZeroOrMore(joiner)) + ZeroOrMore(rparen)
+        _where = _where.setResultsName('WHERE')
 
-        stmt_list = [_from, _select, _where]
-
-        d = {}
-        for stmt in stmt_list:
-            k, v = stmt.searchString(query)[0]
-            d[k] = v
-
-        d['OP'] = _op.searchString(query)[0][0]
-        d['VAL'] = _val.searchString(query)[0][1]
-        return d
+        _query = _from + _select + _where
+    
+        self.parsed_query = _query.parseString(query, parseAll=True)
 
     def _create_dom_tree(self):
         self.tree = Element('CommitCRMQueryDataRequest')
         self.nameElement = SubElement(self.tree, 'ExternalApplicationName')
         self.nameElement.text = self.extAppName
         self.dataKindElement = SubElement(self.tree, 'Datakind')
-        self.dataKindElement.text = self.query['FROM']
+        self.dataKindElement.text = self.parsed_query.FROM[0]
         self.recordCountElement = SubElement(self.tree, 'MaxRecordCount')
         self.recordCountElement.text = str(self.maxRecordCnt)
 
         self.queryElement = SubElement(self.tree, 'Query')
         self.whereElement = SubElement(self.queryElement, 'Where')
+        self.queryContentElements = []
+
+        for exp in self.parsed_query.WHERE:
+            if isinstance(exp, str):
+                if exp in ['AND', 'OR']:
+                    tag = 'Link'
+                    newElement = SubElement(
+                        self.whereElement,
+                        tag
+                    )
+                    
+                    newElement.text = exp
+                    self.queryContentElements.append(newElement)        
+            elif isinstance(exp, ParseResults):
+                newElement = SubElement(
+                    self.whereElement,
+                    exp[0],
+                    {"op" : exp[1]}
+                )
+
+                newElement.text = exp[2]
+                self.queryContentElements.append(newElement)
         
-        self.queryContentElement = SubElement(
-            self.whereElement,
-            self.query['WHERE'],
-            {"op" : self.query['OP']}
-        )
-        
-        self.queryContentElement.text = self.query['VAL']
         self.orderElement = SubElement(self.queryElement, 'Order')
 
     def get_dom_tree_str(self):

@@ -199,14 +199,16 @@ class CommitRemoteInterface:
 
             crm_db.update_rec(rec)
 
-        def find(uuid):
+        def find(uuid, acct):
             req = pycommit.DataRequest(
-                query = 'FROM ASSET SELECT {} WHERE {} = "{}" AND {} = "{}"'.format(
+                query = 'FROM ASSET SELECT {} WHERE {} = "{}" AND {} = "{}" AND {} = "{}"'.format(
                     pycommit.AssetFields['RecordID'],
-                    pycommit.AssetFields['Code'],
+                    pycommit.AssetFields['Name'],
                     uuid,
                     pycommit.AssetFields['Status'],
-                    'A'
+                    'A',
+                    pycommit.AssetFields['AccountRecID'],
+                    acct
                 )
             )
 

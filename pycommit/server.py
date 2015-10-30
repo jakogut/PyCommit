@@ -114,8 +114,7 @@ class CommitRemoteInterface:
         @staticmethod
         def tktrecid_from_tktno(tktno):
             req = pycommit.DataRequest(
-                query = 'FROM TICKET SELECT {} WHERE {} = "{}"'.format(
-                    pycommit.TicketFields['TicketNumber'],
+                query = 'FROM TICKET SELECT * WHERE {} = "{}"'.format(
                     pycommit.TicketFields['TicketNumber'],
                     tktno
                 )

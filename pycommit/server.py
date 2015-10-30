@@ -81,7 +81,10 @@ class CommitRemoteInterface:
                 employees[_id] = contact
 
             for (key, value) in employees.items():
-                fname, lname = value.lower().split(' ')
+                try:
+                    fname, lname = value.lower().split(' ')
+                except ValueError:
+                    continue
                 if fname[0] + lname == search_str:
                     return key               
 

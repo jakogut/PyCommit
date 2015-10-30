@@ -108,20 +108,8 @@ class CommitRemoteInterface:
 
         @staticmethod
         def acctrecid_from_tktno(tktno):
-            req = pycommit.DataRequest(
-                query = 'FROM TICKET SELECT {} WHERE {} = "{}"'.format(
-                    pycommit.TicketFields['AccountRecID'],
-                    pycommit.TicketFields['TicketNumber'],
-                    tktno
-                )
-            )
-            
-            recid = crm_db.query_recids(req)
-
-            if not recid: return
-            assert len(recid) == 1
-
-            return recid[0]
+            tktrecid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)
+            return CommitRemoteInterface._get_field(tktrecid, pycommit.TicketFields['AccountRecID'])
 
         @staticmethod
         def tktrecid_from_tktno(tktno):

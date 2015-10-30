@@ -5,7 +5,7 @@ from xmlrpc.server import SimpleXMLRPCServer
 
 import sys
 
-crm_db = pycommit.DBInterface()
+crm_db = pycommit.DBInterface(CRMPath='E:\COMMIT\CommitCRM')
 
 class CommitRemoteInterface:
     @staticmethod
@@ -99,7 +99,7 @@ class CommitRemoteInterface:
             for (key, value) in employees.items():
                 fname, lname = value.lower().split(' ')
                 if fname[0] + lname == search_str:
-                    return key               
+                    return key
 
     class ticket:
         @staticmethod

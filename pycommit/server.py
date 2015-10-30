@@ -56,8 +56,7 @@ class CommitRemoteInterface:
             return rec_ids[0]'''
             
             req = pycommit.DataRequest(
-                query='FROM ACCOUNT SELECT {} WHERE {} = "{}"'.format(
-                    pycommit.AccountFields['AccountRecID'],
+                query='FROM ACCOUNT SELECT * WHERE {} = "{}"'.format(
                     pycommit.AccountFields['AccountType'],
                     '4'
                 )

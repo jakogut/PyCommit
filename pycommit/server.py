@@ -131,17 +131,7 @@ class CommitRemoteInterface:
         @staticmethod
         def tktdesc_from_tktno(tktno):
             recid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)            
-            req = pycommit.FieldAttributesRequest(
-                query = "FROM {} SELECT ({},{})".format(
-                    recid,
-                    pycommit.TicketFields['Description'],
-                    pycommit.TicketFields['ContactRecID']
-                )
-            )
-
-            data = crm_db.get_rec_data_by_recid(req)
-            
-            return data[pycommit.TicketFields['Description']][0]
+            return CommitRemoteInterface._get_field(recid, pycommit.TicketFields['Description'])
 
         def assetrecid_from_tktno(tktno):
             recid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)            

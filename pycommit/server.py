@@ -50,6 +50,13 @@ class CommitRemoteInterface:
                 if rec_ids is not None: return rec_ids[0]
 
         @staticmethod
+        def contact(recid):
+            return CommitRemoteInterface._get_field(
+                recid,
+                pycommit.AccountFields['Contact']
+            )
+
+        @staticmethod
         def find_employee(search_str):
             # This is much better, but it doesn't fucking work right now
             # http://www.commitcrm.com/forum/showthread.php?t=3861

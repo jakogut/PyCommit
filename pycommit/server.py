@@ -178,15 +178,14 @@ class CommitRemoteInterface:
 
     class asset:
         @staticmethod
-        def update(acct, name, code, desc, status = 'A', _type = 'H'):
-            data_str = "'{}','{}','{}','{}','{}','{}'".format(
-                acct, name, code, desc, status, _type
+        def update(acct, name, desc, status = 'A', _type = 'H'):
+            data_str = "'{}','{}','{}','{}','{}'".format(
+                acct, name, desc, status, _type
             )
 
-            map_str = "'\n,\n{}\n{}\n{}\n{}\n{}\n{}".format(
+            map_str = "'\n,\n{}\n{}\n{}\n{}\n{}".format(
                 pycommit.AssetFields['AccountRecID'],
                 pycommit.AssetFields['Name'],
-                pycommit.AssetFields['Code'],
                 pycommit.AssetFields['Description'],
                 pycommit.AssetFields['Status'],
                 pycommit.AssetFields['Type'],

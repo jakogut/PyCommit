@@ -133,17 +133,8 @@ class CommitRemoteInterface:
             return CommitRemoteInterface._get_field(recid, pycommit.TicketFields['Description'])
 
         def assetrecid_from_tktno(tktno):
-            recid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)            
-            req = pycommit.FieldAttributesRequest(
-                query = "FROM {} SELECT ({})".format(
-                    recid,
-                    pycommit.TicketFields['AssetRecID']
-                )
-            )
-
-            data = crm_db.get_rec_data_by_recid(req)
-
-            return data[pycommit.TicketFields['AssetRecID']][0]
+            recid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)
+            return CommitRemoteInterface._get_field(recid, pycommit.TicketFields['AssetRecID'])
 
         def link_asset(tktno, asset_recid):
             data_str = "'{}','{}'".format(tktno, asset_recid)

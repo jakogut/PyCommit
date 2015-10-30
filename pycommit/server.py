@@ -220,7 +220,7 @@ class CommitRemoteInterface:
             return recid[0]
 
 if __name__ == '__main__':
-    addr = ('localhost', 8000)
+    addr = ('10.10.100.11', 8000)
     server = SimpleXMLRPCServer(addr, allow_none = True)
 
     server.register_introspection_functions()

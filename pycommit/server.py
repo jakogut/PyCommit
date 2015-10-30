@@ -8,6 +8,18 @@ import sys
 crm_db = pycommit.DBInterface()
 
 class CommitRemoteInterface:
+    @staticmethod
+    def _get_field(recid, field):
+        req = pycommit.FieldAttributesRequest(
+            query = "FROM {} SELECT ({})".format(
+                recid,
+                field
+            )
+        )
+
+        data = crm_db.get_rec_data_by_recid(req)
+        return data[field][0]
+        
     class account:
         @staticmethod
         def fingerprint():

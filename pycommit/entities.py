@@ -27,6 +27,7 @@ AccountFields = {
     "SubContStatus" : "FLDCRDSUBCONTSTATUS",
     "CompanyName"   : "FLDCRDCOMPANY",
     "Contact"       : "FLDCRDCONTACT",
+    "Username"      : "FLDWRKUSERNAME",
     "Assistant"     : "FLDCRDASSISTANT",
     "Contract"      : "FLDCRDBCRECID",
     "AccountNumber" : "FLDCRDCARDID2",

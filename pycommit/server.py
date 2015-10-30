@@ -39,6 +39,22 @@ class CommitRemoteInterface:
 
         @staticmethod
         def find_employee(search_str):
+            # This is much better, but it doesn't fucking work right now
+            # http://www.commitcrm.com/forum/showthread.php?t=3861
+            '''req = pycommit.DataRequest(
+                query = 'FROM ACCOUNT SELECT * WHERE {_user} = "{_search}"'.format(
+                    _user = pycommit.AccountFields['Contact'],
+                    _search = search_str
+                )
+            )
+
+            rec_ids = crm_db.query_recids(req)
+
+            if not rec_ids: return
+            #assert len(rec_ids) == 1
+
+            return rec_ids[0]'''
+            
             req = pycommit.DataRequest(
                 query='FROM ACCOUNT SELECT {} WHERE {} = "{}"'.format(
                     pycommit.AccountFields['AccountRecID'],

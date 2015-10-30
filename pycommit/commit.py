@@ -42,16 +42,16 @@ class DataRequest:
         operator = oneOf("= > >= < <= like not not like")
         joiner = oneOf('AND OR')
         
-        _from = Suppress(Literal('FROM')) + Word(alphas)
+        _from = Suppress(Literal('FROM')) + Word(printables)
         _from = _from.setResultsName('FROM')
         
-        _select = Suppress(Literal('SELECT')) + Word(alphas)
+        _select = Suppress(Literal('SELECT')) + Word(printables)
         _select = _select.setResultsName('SELECT')
         
         _val = QuotedString('"')
         _val = _val.setResultsName('VAL')
         
-        _conditional = Word(alphanums) + operator + _val
+        _conditional = Word(printables) + operator + _val
         _conditional = _conditional.setResultsName('COND')
         
         lparen, rparen = Literal('('), Literal(')')

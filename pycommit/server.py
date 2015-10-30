@@ -152,7 +152,7 @@ class CommitRemoteInterface:
         def link_asset(tktno, asset_recid):
             data_str = "'{}','{}'".format(tktno, asset_recid)
 
-            map_str = "\n,\n{}\n{}".format(
+            map_str = "'\n,\n{}\n{}".format(
                 pycommit.TicketFields['TicketNumber'],
                 pycommit.TicketFields['AssetRecID'],
             )

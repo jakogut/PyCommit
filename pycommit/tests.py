@@ -41,19 +41,22 @@ class CommitTests:
 
     def query_db_test(self):       
         req = DataRequest(
-            query = 'FROM ACCOUNT SELECT {} WHERE {} = "Hantsetters"'.format(
+            query = 'FROM ACCOUNT SELECT {} WHERE {} = "{}" AND {} = "{}"'.format(
                 AccountFields['AccountRecID'],
-                AccountFields['Contact']
+                AccountFields['Contact'],
+                'Hantsetters',
+                AccountFields['LastName'],
+                'De Hantsetters'
             )
         )
         
         recIds = self.db.query_recids(req)
 
-        print("RecID Query completed successfully.")
+        print("RecID Query completed successfully.\n", recIds)
 
         req = FieldAttributesRequest(
             query = 'FROM {RECID} SELECT ({F0},{F1},{F2})'.format(
-                RECID = 'CRDGBX99GRPAC8RH0Y9Z',
+                RECID = recIds[0],
                 F0 = AccountFields['AccountRecID'],
                 F1 = AccountFields['Contact'],
                 F2 = AccountFields['CompanyName'],
@@ -62,6 +65,7 @@ class CommitTests:
 
         data = self.db.get_rec_data_by_recid(req)
         print('Data Query completed successfully.')
+        print(data)
             
 
     def run_all(self):

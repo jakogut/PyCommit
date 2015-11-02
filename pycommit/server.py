@@ -192,9 +192,10 @@ class CommitRemoteInterface:
 
     class asset:
         @staticmethod
-        def update(acct, name, desc, status = 'A', _type = 'H'):
-            data_str = "'{}','{}','{}','{}','{}'".format(
-                acct, name, desc, status, _type
+        def update(**kwargs):
+            return update_record(
+                pycommit.Entity['Asset'],
+                **kwargs
             )
 
             map_str = "'\n,\n{}\n{}\n{}\n{}\n{}".format(

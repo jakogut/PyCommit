@@ -10,18 +10,16 @@ crm_db = pycommit.DBInterface()
 class AmbiguousValue(Exception):
     pass
 
-class CommitRemoteInterface:
-    @staticmethod
-    def _get_field(recid, field):
-        req = pycommit.FieldAttributesRequest(
-            query = "FROM {} SELECT ({})".format(
-                recid,
-                field
-            )
+def get_field(recid, field):
+    req = pycommit.FieldAttributesRequest(
+        query = "FROM {} SELECT ({})".format(
+            recid,
+            field
         )
+    )
 
-        data = crm_db.get_rec_data_by_recid(req)
-        return data[field][0]
+    data = crm_db.get_rec_data_by_recid(req)
+    return data[field][0]
 
     @staticmethod
     def _update_record(entity, **kwargs):

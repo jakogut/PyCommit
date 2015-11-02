@@ -183,26 +183,12 @@ class CommitRemoteInterface:
     class history:
         @staticmethod
         def insert_note(tkt, msg, employee_id):
-            data_str = "'{tktno}','{employee}','{desc}'".format(
-                tktno = tkt,
-                employee = employee_id,
-                desc = msg,
-            )
-
-            map_str = "'\n,\n{}\n{}\n{}".format(
-                pycommit.HistoryNoteFields['LinkRecID'],
-                pycommit.HistoryNoteFields['Employee'],
-                pycommit.HistoryNoteFields['Description'],
-            )
-
-            rec = pycommit.DBRecord(
+            return update_record(
                 pycommit.Entity['HistoryNote'],
-                data_str,
-                map_str
+                **{pycommit.HistoryNoteFields['LinkRecID'] : tkt,
+                pycommit.HistoryNoteFields['Employee'] : employee_id,
+                pycommit.HistoryNoteFields['Description'] : msg}
             )
-
-            crm_db.update_rec(rec)
-            return rec.getRecID()
 
     class asset:
         @staticmethod

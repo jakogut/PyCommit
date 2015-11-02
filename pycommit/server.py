@@ -123,11 +123,15 @@ class CommitRemoteInterface:
     class ticket:
         @staticmethod
         def fingerprint(tktno):
-            return CommitRemoteInterface.ticket.tktdesc_from_tktno(tktno)
+            return CommitRemoteInterface.ticket.get_desc(tktno)
+
+        @staticmethod
+        def update():
+            pass
 
         @staticmethod
         def get_acctrecid(tktno):
-            tktrecid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)
+            tktrecid = CommitRemoteInterface.ticket.get_recid(tktno)
             return CommitRemoteInterface._get_field(tktrecid, pycommit.TicketFields['AccountRecID'])
 
         @staticmethod
@@ -150,12 +154,12 @@ class CommitRemoteInterface:
 
         @staticmethod
         def get_desc(tktno):
-            recid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)            
+            recid = CommitRemoteInterface.ticket.get_recid(tktno)            
             return CommitRemoteInterface._get_field(recid, pycommit.TicketFields['Description'])
 
         @staticmethod
         def get_assetrecid(tktno):
-            recid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)
+            recid = CommitRemoteInterface.ticket.get_recid(tktno)
             return CommitRemoteInterface._get_field(recid, pycommit.TicketFields['AssetRecID'])
 
         @staticmethod

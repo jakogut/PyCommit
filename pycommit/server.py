@@ -7,6 +7,9 @@ import sys
 
 crm_db = pycommit.DBInterface()
 
+class AmbiguousReference(Exception):
+    pass
+
 class CommitRemoteInterface:
     @staticmethod
     def _get_field(recid, field):
@@ -110,7 +113,9 @@ class CommitRemoteInterface:
             recid = crm_db.query_recids(req)
 
             if not recid: return
-            assert len(recid) == 1
+
+            if len(recid) > 1:
+                raise AmbiguousReference
 
             return recid[0]
 
@@ -202,7 +207,9 @@ class CommitRemoteInterface:
             recid = crm_db.query_recids(req)
 
             if not recid: return
-            assert len(recid) == 1
+            
+            if len(recid) > 1:
+                raise AmbiguousReference
 
             return recid[0]
 

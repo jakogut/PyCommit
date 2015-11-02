@@ -198,12 +198,16 @@ class CommitRemoteInterface:
                 **kwargs
             )
 
-            map_str = "'\n,\n{}\n{}\n{}\n{}\n{}".format(
-                pycommit.AssetFields['AccountRecID'],
-                pycommit.AssetFields['Name'],
-                pycommit.AssetFields['Description'],
-                pycommit.AssetFields['Status'],
-                pycommit.AssetFields['Type'],
+        @staticmethod
+        def create(acct, name, desc, status = 'A', _type = 'H'):
+            return CommitRemoteInterface.asset.update(
+                **{
+                    pycommit.AssetFields['AccountRecID'] : acct,
+                    pycommit.AssetFields['Name'] : name,
+                    pycommit.AssetFields['Description'] : desc,
+                    pycommit.AssetFields['Status'] : status,
+                    pycommit.AssetFields['Type'] : _type
+                }
             )
 
             rec = pycommit.DBRecord(

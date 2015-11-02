@@ -21,27 +21,27 @@ def get_field(recid, field):
     data = crm_db.get_rec_data_by_recid(req)
     return data[field][0]
 
-    @staticmethod
-    def _update_record(entity, **kwargs):
-        if kwargs is None:
-            return
-        
-        data_str = ''
-        map_str = "'\n,\n"
-        
-        for key, value in kwargs.iteritems():
-            data_str += "'{}',".format(value)
-            map_str += "{}\n".format(key)
+def update_record(entity, **kwargs):
+    if kwargs is None:
+        return
+    
+    data_str = ''
+    map_str = "'\n,\n"
+    
+    for key, value in kwargs.items():
+        data_str += "'{}',".format(value)
+        map_str += "{}\n".format(key)
 
-        rec = pycommit.DBRecord(
-            entity,
-            data_str,
-            map_str
-        )
+    rec = pycommit.DBRecord(
+        entity,
+        data_str,
+        map_str
+    )
 
-        crm_db.update_rec(rec)
-        return rec.getRecID()
-        
+    crm_db.update_rec(rec)
+    return rec.getRecID()
+
+class CommitRemoteInterface:        
     class account:
         @staticmethod
         def fingerprint():
@@ -81,7 +81,7 @@ def get_field(recid, field):
 
         @staticmethod
         def get_contact(recid):
-            return CommitRemoteInterface._get_field(
+            return get_field(
                 recid,
                 pycommit.AccountFields['Contact']
             )
@@ -130,7 +130,7 @@ def get_field(recid, field):
         @staticmethod
         def get_acctrecid(tktno):
             tktrecid = CommitRemoteInterface.ticket.get_recid(tktno)
-            return CommitRemoteInterface._get_field(tktrecid, pycommit.TicketFields['AccountRecID'])
+            return get_field(tktrecid, pycommit.TicketFields['AccountRecID'])
 
         @staticmethod
         def get_recid(tktno):
@@ -153,12 +153,12 @@ def get_field(recid, field):
         @staticmethod
         def get_desc(tktno):
             recid = CommitRemoteInterface.ticket.get_recid(tktno)            
-            return CommitRemoteInterface._get_field(recid, pycommit.TicketFields['Description'])
+            return get_field(recid, pycommit.TicketFields['Description'])
 
         @staticmethod
         def get_assetrecid(tktno):
             recid = CommitRemoteInterface.ticket.get_recid(tktno)
-            return CommitRemoteInterface._get_field(recid, pycommit.TicketFields['AssetRecID'])
+            return get_field(recid, pycommit.TicketFields['AssetRecID'])
 
         @staticmethod
         def link_asset(tktno, asset_recid):

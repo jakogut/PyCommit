@@ -65,13 +65,21 @@ class CommitRemoteInterface:
                     query='FROM ACCOUNT SELECT {} WHERE {} = "{}"'.format(
                         pycommit.AccountFields['AccountRecID'],
                         f,
-                        acct_name
+                        search_str
                     )
                 )
 
                 # TODO: Handle multiple recids in an intelligible fashion
                 rec_ids = crm_db.query_recids(req)
                 if rec_ids is not None: return rec_ids[0]
+
+        @staticmethod
+        def find_by_email(email):
+            return CommitRemoteInterface.account.find(
+                email,
+                [ pycommit.AccountFields['Email1'],
+                  pycommit.AccountFields['Email2'] ]
+            )
 
         @staticmethod
         def get_contact(recid):

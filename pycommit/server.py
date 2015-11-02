@@ -22,6 +22,27 @@ class CommitRemoteInterface:
 
         data = crm_db.get_rec_data_by_recid(req)
         return data[field][0]
+
+    @staticmethod
+    def _update_record(entity, **kwargs):
+        if kwargs is None:
+            return
+        
+        data_str = ''
+        map_str = "'\n,\n"
+        
+        for key, value in kwargs.iteritems():
+            data_str += "'{}',".format(value)
+            map_str += "{}\n".format(key)
+
+        rec = pycommit.DBRecord(
+            entity,
+            data_str,
+            map_str
+        )
+
+        crm_db.update_rec(rec)
+        return rec.getRecID()
         
     class account:
         @staticmethod

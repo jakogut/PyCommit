@@ -124,8 +124,11 @@ class CommitRemoteInterface:
             return CommitRemoteInterface.ticket.get_desc(tktno)
 
         @staticmethod
-        def update():
-            pass
+        def update(**kwargs):
+            return update_record(
+                pycommit.Entity['Ticket'],
+                **kwargs
+            )    
 
         @staticmethod
         def get_acctrecid(tktno):

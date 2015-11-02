@@ -124,10 +124,12 @@ class CommitRemoteInterface:
             recid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)            
             return CommitRemoteInterface._get_field(recid, pycommit.TicketFields['Description'])
 
+        @staticmethod
         def assetrecid_from_tktno(tktno):
             recid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)
             return CommitRemoteInterface._get_field(recid, pycommit.TicketFields['AssetRecID'])
 
+        @staticmethod
         def link_asset(tktno, asset_recid):
             data_str = "'{}','{}'".format(tktno, asset_recid)
 
@@ -191,6 +193,7 @@ class CommitRemoteInterface:
 
             crm_db.update_rec(rec)
 
+        @staticmethod
         def find(uuid, acct):
             req = pycommit.DataRequest(
                 query = 'FROM ASSET SELECT {} WHERE {} = "{}" AND {} = "{}" AND {} = "{}"'.format(

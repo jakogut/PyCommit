@@ -7,7 +7,7 @@ import sys
 
 crm_db = pycommit.DBInterface()
 
-class AmbiguousReference(Exception):
+class AmbiguousValue(Exception):
     pass
 
 class CommitRemoteInterface:
@@ -148,7 +148,7 @@ class CommitRemoteInterface:
             if not recid: return
 
             if len(recid) > 1:
-                raise AmbiguousReference
+                raise AmbiguousValue
 
             return recid[0]
 
@@ -245,7 +245,7 @@ class CommitRemoteInterface:
             if not recid: return
             
             if len(recid) > 1:
-                raise AmbiguousReference
+                raise AmbiguousValue
 
             return recid[0]
 

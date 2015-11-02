@@ -7,6 +7,9 @@ import sys
 
 crm_db = pycommit.DBInterface(CRMPath='E:\COMMIT\CommitCRM')
 
+class AmbiguousReference(Exception):
+    pass
+
 class CommitRemoteInterface:
     @staticmethod
     def _get_field(recid, field):
@@ -57,23 +60,7 @@ class CommitRemoteInterface:
             )
 
         @staticmethod
-        def find_employee(search_str):
-            # This is much better, but it doesn't fucking work right now
-            # http://www.commitcrm.com/forum/showthread.php?t=3861
-            '''req = pycommit.DataRequest(
-                query = 'FROM ACCOUNT SELECT * WHERE {_user} = "{_search}"'.format(
-                    _user = pycommit.AccountFields['Contact'],
-                    _search = search_str
-                )
-            )
-
-            rec_ids = crm_db.query_recids(req)
-
-            if not rec_ids: return
-            #assert len(rec_ids) == 1
-
-            return rec_ids[0]'''
-            
+        def find_employee(search_str):            
             req = pycommit.DataRequest(
                 query='FROM ACCOUNT SELECT * WHERE {} = "{}"'.format(
                     pycommit.AccountFields['AccountType'],
@@ -97,7 +84,10 @@ class CommitRemoteInterface:
                 employees[_id] = contact
 
             for (key, value) in employees.items():
-                fname, lname = value.lower().split(' ')
+                try:
+                    fname, lname = value.lower().split(' ')
+                except ValueError:
+                    continue
                 if fname[0] + lname == search_str:
                     return key
 
@@ -123,7 +113,9 @@ class CommitRemoteInterface:
             recid = crm_db.query_recids(req)
 
             if not recid: return
-            assert len(recid) == 1
+
+            if len(recid) > 1:
+                raise AmbiguousReference
 
             return recid[0]
 
@@ -132,10 +124,12 @@ class CommitRemoteInterface:
             recid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)            
             return CommitRemoteInterface._get_field(recid, pycommit.TicketFields['Description'])
 
+        @staticmethod
         def assetrecid_from_tktno(tktno):
             recid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)
             return CommitRemoteInterface._get_field(recid, pycommit.TicketFields['AssetRecID'])
 
+        @staticmethod
         def link_asset(tktno, asset_recid):
             data_str = "'{}','{}'".format(tktno, asset_recid)
 
@@ -199,6 +193,7 @@ class CommitRemoteInterface:
 
             crm_db.update_rec(rec)
 
+        @staticmethod
         def find(uuid, acct):
             req = pycommit.DataRequest(
                 query = 'FROM ASSET SELECT {} WHERE {} = "{}" AND {} = "{}" AND {} = "{}"'.format(
@@ -215,7 +210,9 @@ class CommitRemoteInterface:
             recid = crm_db.query_recids(req)
 
             if not recid: return
-            assert len(recid) == 1
+            
+            if len(recid) > 1:
+                raise AmbiguousReference
 
             return recid[0]
 

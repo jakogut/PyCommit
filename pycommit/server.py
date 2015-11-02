@@ -29,7 +29,7 @@ class CommitRemoteInterface:
             pass
         
         @staticmethod
-        def find_account(search_str, fields=None):
+        def find(search_str, fields=None):
             if fields:
                 search_fields = fields
             else:
@@ -53,7 +53,7 @@ class CommitRemoteInterface:
                 if rec_ids is not None: return rec_ids[0]
 
         @staticmethod
-        def contact(recid):
+        def get_contact(recid):
             return CommitRemoteInterface._get_field(
                 recid,
                 pycommit.AccountFields['Contact']
@@ -97,12 +97,12 @@ class CommitRemoteInterface:
             return CommitRemoteInterface.ticket.tktdesc_from_tktno(tktno)
 
         @staticmethod
-        def acctrecid_from_tktno(tktno):
+        def get_acctrecid(tktno):
             tktrecid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)
             return CommitRemoteInterface._get_field(tktrecid, pycommit.TicketFields['AccountRecID'])
 
         @staticmethod
-        def tktrecid_from_tktno(tktno):
+        def get_recid(tktno):
             req = pycommit.DataRequest(
                 query = 'FROM TICKET SELECT * WHERE {} = "{}"'.format(
                     pycommit.TicketFields['TicketNumber'],
@@ -120,12 +120,12 @@ class CommitRemoteInterface:
             return recid[0]
 
         @staticmethod
-        def tktdesc_from_tktno(tktno):
+        def get_desc(tktno):
             recid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)            
             return CommitRemoteInterface._get_field(recid, pycommit.TicketFields['Description'])
 
         @staticmethod
-        def assetrecid_from_tktno(tktno):
+        def get_assetrecid(tktno):
             recid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)
             return CommitRemoteInterface._get_field(recid, pycommit.TicketFields['AssetRecID'])
 

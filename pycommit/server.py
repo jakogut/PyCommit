@@ -210,13 +210,14 @@ class CommitRemoteInterface:
                 }
             )
 
-            rec = pycommit.DBRecord(
-                pycommit.Entity['Asset'],
-                data_str,
-                map_str
+        @staticmethod
+        def update_desc(recid, desc):
+            return CommitRemoteInterface.asset.update(
+                **{
+                    pycommit.AssetFields['RecordID'] : recid,
+                    pycommit.AssetFields['Description'] : desc
+                }
             )
-
-            crm_db.update_rec(rec)
 
         @staticmethod
         def find(uuid, acct):

@@ -32,11 +32,7 @@ def update_record(entity, **kwargs):
         data_str += "'{}',".format(value)
         map_str += "{}\n".format(key)
 
-    rec = pycommit.DBRecord(
-        entity,
-        data_str,
-        map_str
-    )
+    rec = pycommit.DBRecord(entity, data_str, map_str)
 
     crm_db.update_rec(rec)
     return rec.getRecID()
@@ -125,10 +121,7 @@ class CommitRemoteInterface:
 
         @staticmethod
         def update(**kwargs):
-            return update_record(
-                pycommit.Entity['Ticket'],
-                **kwargs
-            )
+            return update_record(pycommit.Entity['Ticket'], **kwargs)
 
         @staticmethod
         def create(acct_recid, desc, mgr=''):

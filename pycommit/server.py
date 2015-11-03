@@ -128,7 +128,25 @@ class CommitRemoteInterface:
             return update_record(
                 pycommit.Entity['Ticket'],
                 **kwargs
-            )    
+            )
+
+        @staticmethod
+        def create(acct_recid, desc, mgr=''):
+            return CommmitRemoteInterface.ticket.update(
+                **{
+                    pycommit.TicketFields['AccountRecID'] : acct_recid,
+                    pycommit.TicketFields['Description'] : desc,
+                    pycommit.TicketFields['EmpRecID'] : mgr
+                }
+            )
+
+        def update_desc(tktno, desc):
+            return CommitRemoteInterace.ticket.update(
+                **{
+                    pycommit.TicketFields['TicketNumber'] : tktno,
+                    pycommit.TicketFields['Description'] : desc
+                }
+            )
 
         @staticmethod
         def get_acctrecid(tktno):

@@ -7,29 +7,44 @@ import sys
 
 crm_db = pycommit.DBInterface(CRMPath='E:\COMMIT\CommitCRM')
 
-class AmbiguousReference(Exception):
+class AmbiguousValue(Exception):
     pass
 
-class CommitRemoteInterface:
-    @staticmethod
-    def _get_field(recid, field):
-        req = pycommit.FieldAttributesRequest(
-            query = "FROM {} SELECT ({})".format(
-                recid,
-                field
-            )
+def get_field(recid, field):
+    req = pycommit.FieldAttributesRequest(
+        query = "FROM {} SELECT ({})".format(
+            recid,
+            field
         )
+    )
 
-        data = crm_db.get_rec_data_by_recid(req)
-        return data[field][0]
-        
+    data = crm_db.get_rec_data_by_recid(req)
+    return data[field][0]
+
+def update_record(entity, **kwargs):
+    if (entity is None) or (kwargs is None):
+        return
+    
+    data_str = ''
+    map_str = "'\n,\n"
+    
+    for key, value in kwargs.items():
+        data_str += "'{}',".format(value)
+        map_str += "{}\n".format(key)
+
+    rec = pycommit.DBRecord(entity, data_str, map_str)
+
+    crm_db.update_rec(rec)
+    return rec.getRecID()
+
+class CommitRemoteInterface:        
     class account:
         @staticmethod
         def fingerprint():
             pass
         
         @staticmethod
-        def find_account(search_str, fields=None):
+        def find(search_str, fields=None):
             if fields:
                 search_fields = fields
             else:
@@ -44,7 +59,7 @@ class CommitRemoteInterface:
                     query='FROM ACCOUNT SELECT {} WHERE {} = "{}"'.format(
                         pycommit.AccountFields['AccountRecID'],
                         f,
-                        acct_name
+                        search_str
                     )
                 )
 
@@ -53,8 +68,16 @@ class CommitRemoteInterface:
                 if rec_ids is not None: return rec_ids[0]
 
         @staticmethod
-        def contact(recid):
-            return CommitRemoteInterface._get_field(
+        def find_by_email(email):
+            return CommitRemoteInterface.account.find(
+                email,
+                [ pycommit.AccountFields['Email1'],
+                  pycommit.AccountFields['Email2'] ]
+            )
+
+        @staticmethod
+        def get_contact(recid):
+            return get_field(
                 recid,
                 pycommit.AccountFields['Contact']
             )
@@ -94,15 +117,37 @@ class CommitRemoteInterface:
     class ticket:
         @staticmethod
         def fingerprint(tktno):
-            return CommitRemoteInterface.ticket.tktdesc_from_tktno(tktno)
+            return CommitRemoteInterface.ticket.get_desc(tktno)
 
         @staticmethod
-        def acctrecid_from_tktno(tktno):
-            tktrecid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)
-            return CommitRemoteInterface._get_field(tktrecid, pycommit.TicketFields['AccountRecID'])
+        def update(**kwargs):
+            return update_record(pycommit.Entity['Ticket'], **kwargs)
 
         @staticmethod
-        def tktrecid_from_tktno(tktno):
+        def create(acct_recid, desc, mgr=''):
+            return CommmitRemoteInterface.ticket.update(
+                **{
+                    pycommit.TicketFields['AccountRecID'] : acct_recid,
+                    pycommit.TicketFields['Description'] : desc,
+                    pycommit.TicketFields['EmpRecID'] : mgr
+                }
+            )
+
+        def update_desc(tktno, desc):
+            return CommitRemoteInterace.ticket.update(
+                **{
+                    pycommit.TicketFields['TicketNumber'] : tktno,
+                    pycommit.TicketFields['Description'] : desc
+                }
+            )
+
+        @staticmethod
+        def get_acctrecid(tktno):
+            tktrecid = CommitRemoteInterface.ticket.get_recid(tktno)
+            return get_field(tktrecid, pycommit.TicketFields['AccountRecID'])
+
+        @staticmethod
+        def get_recid(tktno):
             req = pycommit.DataRequest(
                 query = 'FROM TICKET SELECT * WHERE {} = "{}"'.format(
                     pycommit.TicketFields['TicketNumber'],
@@ -115,19 +160,19 @@ class CommitRemoteInterface:
             if not recid: return
 
             if len(recid) > 1:
-                raise AmbiguousReference
+                raise AmbiguousValue
 
             return recid[0]
 
         @staticmethod
-        def tktdesc_from_tktno(tktno):
-            recid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)            
-            return CommitRemoteInterface._get_field(recid, pycommit.TicketFields['Description'])
+        def get_desc(tktno):
+            recid = CommitRemoteInterface.ticket.get_recid(tktno)            
+            return get_field(recid, pycommit.TicketFields['Description'])
 
         @staticmethod
-        def assetrecid_from_tktno(tktno):
-            recid = CommitRemoteInterface.ticket.tktrecid_from_tktno(tktno)
-            return CommitRemoteInterface._get_field(recid, pycommit.TicketFields['AssetRecID'])
+        def get_assetrecid(tktno):
+            recid = CommitRemoteInterface.ticket.get_recid(tktno)
+            return get_field(recid, pycommit.TicketFields['AssetRecID'])
 
         @staticmethod
         def link_asset(tktno, asset_recid):
@@ -149,49 +194,41 @@ class CommitRemoteInterface:
     class history:
         @staticmethod
         def insert_note(tkt, msg, employee_id):
-            data_str = "'{tktno}','{employee}','{desc}'".format(
-                tktno = tkt,
-                employee = employee_id,
-                desc = msg,
-            )
-
-            map_str = "'\n,\n{}\n{}\n{}".format(
-                pycommit.HistoryNoteFields['LinkRecID'],
-                pycommit.HistoryNoteFields['Employee'],
-                pycommit.HistoryNoteFields['Description'],
-            )
-
-            rec = pycommit.DBRecord(
+            return update_record(
                 pycommit.Entity['HistoryNote'],
-                data_str,
-                map_str
+                **{pycommit.HistoryNoteFields['LinkRecID'] : tkt,
+                pycommit.HistoryNoteFields['Employee'] : employee_id,
+                pycommit.HistoryNoteFields['Description'] : msg}
             )
-
-            crm_db.update_rec(rec)
-            return rec.getRecID()
 
     class asset:
         @staticmethod
-        def update(acct, name, desc, status = 'A', _type = 'H'):
-            data_str = "'{}','{}','{}','{}','{}'".format(
-                acct, name, desc, status, _type
-            )
-
-            map_str = "'\n,\n{}\n{}\n{}\n{}\n{}".format(
-                pycommit.AssetFields['AccountRecID'],
-                pycommit.AssetFields['Name'],
-                pycommit.AssetFields['Description'],
-                pycommit.AssetFields['Status'],
-                pycommit.AssetFields['Type'],
-            )
-
-            rec = pycommit.DBRecord(
+        def update(**kwargs):
+            return update_record(
                 pycommit.Entity['Asset'],
-                data_str,
-                map_str
+                **kwargs
             )
 
-            crm_db.update_rec(rec)
+        @staticmethod
+        def create(acct, name, desc, status = 'A', _type = 'H'):
+            return CommitRemoteInterface.asset.update(
+                **{
+                    pycommit.AssetFields['AccountRecID'] : acct,
+                    pycommit.AssetFields['Name'] : name,
+                    pycommit.AssetFields['Description'] : desc,
+                    pycommit.AssetFields['Status'] : status,
+                    pycommit.AssetFields['Type'] : _type
+                }
+            )
+
+        @staticmethod
+        def update_desc(recid, desc):
+            return CommitRemoteInterface.asset.update(
+                **{
+                    pycommit.AssetFields['RecordID'] : recid,
+                    pycommit.AssetFields['Description'] : desc
+                }
+            )
 
         @staticmethod
         def find(uuid, acct):
@@ -212,7 +249,7 @@ class CommitRemoteInterface:
             if not recid: return
             
             if len(recid) > 1:
-                raise AmbiguousReference
+                raise AmbiguousValue
 
             return recid[0]
 

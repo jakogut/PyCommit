@@ -22,7 +22,7 @@ def get_field(recid, field):
     return data[field][0]
 
 def update_record(entity, **kwargs):
-    if kwargs is None:
+    if (entity is None) or (kwargs is None):
         return
     
     data_str = ''

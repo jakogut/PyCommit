@@ -219,13 +219,13 @@ class DBInterface:
         def _init_db_eng_dll(self):
                 self.CmDBEngDll.CmtInitDbEngDll(self.appName, self.DBPath_bytes, byref(self.status))
 
-                if self.status.value != 1: raise RuntimeError(
+                if self.status.value != 1: raise QueryError(
                         "DB not initialized for writing. Error code {}".format(self.status))
 
         def _init_db_qry_dll(self):
                 self.CmDBQryDll.CmtInitDbQryDll(self.appName, self.DBPath_bytes, byref(self.status))
 
-                if self.status.value != 1: raise RuntimeError(
+                if self.status.value != 1: raise QueryError(
                         "DB not initialized for queries. Error code {}".format(self.status))
                 
         def update_rec(self, record):            
@@ -245,7 +245,7 @@ class DBInterface:
                                              record.errMsgBuff,
                                              byref(self.status))
 
-                if self.status.value != 1: raise RuntimeError(
+                if self.status.value != 1: raise QueryError(
                         "DB insertion failed with code {}.".format(self.status))
 
         def query_recids(self, req):
@@ -261,7 +261,7 @@ class DBInterface:
                                                 respBuffSize,
                                                 byref(self.status))
 
-                if self.status.value != 1: raise RuntimeError(
+                if self.status.value != 1: raise QueryError(
                     "DB query failed with code {}.".format(self.status))
 
                 resp = DataResponse(str(respBuff.value, encoding = "ascii"))
@@ -279,7 +279,7 @@ class DBInterface:
                                                         respBuffSize,
                                                         byref(self.status))
 
-                if self.status.value != 1: raise RuntimeError(
+                if self.status.value != 1: raise QueryError(
                     "DB query failed with code {}.".format(self.status))
 
                 resp = FieldAttributesResponse(str(respBuff.value, encoding = "ascii"))

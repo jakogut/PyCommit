@@ -138,7 +138,7 @@ class CommitRemoteInterface:
             )
 
         def update_desc(tktno, desc):
-            return CommitRemoteInterace.ticket.update(
+            return CommitRemoteInterface.ticket.update(
                 **{
                     pycommit.TicketFields['TicketNumber'] : tktno,
                     pycommit.TicketFields['Description'] : desc

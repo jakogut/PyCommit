@@ -9,6 +9,9 @@ import untangle
 from pycommit.entities import *
 from pyparsing import *
 
+class QueryError(Exception):
+    pass
+
 class DBRecord:
     def __init__(self, tableID, dataBuff, mapBuff, recID = ""):
         self.tableID            = tableID

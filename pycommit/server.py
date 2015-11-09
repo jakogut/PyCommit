@@ -42,6 +42,10 @@ class CommitRemoteInterface:
         @staticmethod
         def fingerprint():
             pass
+
+        @staticmethod
+        def update(**kwargs):
+            update_record(pycommit.Entity['Account'], **kwargs)
         
         @staticmethod
         def find(search_str, fields=None):

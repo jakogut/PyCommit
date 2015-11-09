@@ -158,8 +158,13 @@ class CommitRemoteInterface:
                     tktno
                 )
             )
+
+            recid = None
             
-            recid = crm_db.query_recids(req)
+            try:
+                recid = crm_db.query_recids(req)
+            except:
+                pass
 
             if not recid: return
 

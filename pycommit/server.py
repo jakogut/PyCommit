@@ -237,7 +237,8 @@ class CommitRemoteInterface:
         @staticmethod
         def find(uuid, acct):
             req = pycommit.DataRequest(
-                query = 'FROM ASSET SELECT {} WHERE {} = "{}" AND {} = "{}" AND {} = "{}"'.format(
+                query = 'FROM ASSET SELECT {} WHERE {} = "{}"' + \
+                        'AND {} = "{}" AND {} = "{}"'.format(
                     pycommit.AssetFields['RecordID'],
                     pycommit.AssetFields['Name'],
                     uuid,

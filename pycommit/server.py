@@ -75,8 +75,7 @@ class CommitRemoteInterface:
 
             for f in search_fields:
                 req = pycommit.DataRequest(
-                    query='FROM ACCOUNT SELECT {} WHERE {} = "{}"'.format(
-                        pycommit.AccountFields['AccountRecID'],
+                    query='FROM ACCOUNT SELECT * WHERE {} = "{}"'.format(
                         f,
                         search_str
                     )

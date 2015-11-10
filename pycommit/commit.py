@@ -315,8 +315,17 @@ class DBInterface:
         def _terminate_db_qry_dll(self):
                 self.CmDBQryDll.CmtTerminateDbQryDll()
                 
-        def get_desc_by_code(self, code, desc_size, desc):
-                pass
+        def get_desc_by_code(self, code):
+                size = 1024
+                buffer = create_string_buffer(size)
+
+                self.CmDBQryDll.CmtGetDescriptionByStatus(
+                    code,
+                    size,
+                    buffer
+                )
+
+                return str(buffer.value, encoding = 'ascii').strip()
                 
         def get_desc_by_status(self):
                 pass

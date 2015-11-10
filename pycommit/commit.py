@@ -255,7 +255,11 @@ class DBInterface:
                 )
 
                 if self.status.value != 1: raise QueryError(
-                        "DB insertion failed with code {}.".format(self.status))
+                    "DB insertion failed with code {}\n{}".format(
+                        self.status,
+                        self.get_desc_by_code(self.status)
+                    )
+                )
 
         def query_recids(self, req):
                 req_str = req.get_dom_tree_str()
@@ -271,7 +275,11 @@ class DBInterface:
                     byref(self.status))
 
                 if self.status.value != 1: raise QueryError(
-                    "DB query failed with code {}.".format(self.status))
+                    "DB query failed with code {}\n{}".format(
+                        self.status,
+                        self.get_desc_by_code(self.status)
+                    )
+                )
 
                 resp = DataResponse(str(respBuff.value, encoding = "ascii"))
                 return resp.get_recids()
@@ -291,7 +299,11 @@ class DBInterface:
                 )
 
                 if self.status.value != 1: raise QueryError(
-                    "DB query failed with code {}.".format(self.status))
+                    "DB query failed with code {}\n{}".format(
+                        self.status,
+                        self.get_desc_by_code(self.status)
+                    )
+                )
 
                 resp = FieldAttributesResponse(str(respBuff.value, encoding = "ascii"))
                 return resp.get_dictionary()

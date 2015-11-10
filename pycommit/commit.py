@@ -42,7 +42,7 @@ class DataRequest:
         self._create_dom_tree()
 
     def _parse_query(self, query):
-        operator = oneOf("= > >= < <= like not not like")
+        operator = oneOf("= > >= < <= ~ ! !~")
         joiner = oneOf('AND OR')
         
         _from = Suppress(Literal('FROM')) + Word(printables)
@@ -78,6 +78,8 @@ class DataRequest:
         self.whereElement = SubElement(self.queryElement, 'Where')
         self.queryContentElements = []
 
+        operator_map = {'~' : 'LIKE', '!' : 'NOT', '!~' : 'NOT LIKE'}
+
         for exp in self.parsed_query.WHERE:
             if isinstance(exp, str):
                 if exp in ['AND', 'OR']:
@@ -90,10 +92,15 @@ class DataRequest:
                     newElement.text = exp
                     self.queryContentElements.append(newElement)        
             elif isinstance(exp, ParseResults):
+                if exp[1] in operator_map:
+                    op_str = operator_map[exp[1]]
+                else:
+                    op_str = exp[1]
+                    
                 newElement = SubElement(
                     self.whereElement,
                     exp[0],
-                    {"op" : exp[1]}
+                    {"op" : op_str}
                 )
 
                 newElement.text = exp[2]

@@ -57,8 +57,6 @@ class CommitRemoteInterface:
                 )
             )
 
-            req.print_dom_tree()
-
             rec_ids = crm_db.query_recids(req)
             if rec_ids is not None: return rec_ids
         

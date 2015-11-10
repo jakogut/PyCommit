@@ -54,7 +54,8 @@ class CommitRemoteInterface:
             req = pycommit.DataRequest(
                 query = 'FROM ACCOUNT SELECT * WHERE {} ! ""'.format(
                     pycommit.AccountFields['AccountRecID']
-                )
+                ),
+                maxRecordCnt = 10000
             )
 
             rec_ids = crm_db.query_recids(req)

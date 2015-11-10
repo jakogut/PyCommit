@@ -239,18 +239,20 @@ class DBInterface:
                 flag = 1
                 tbd = 0
 
-                self.CmDBEngDll.CmtInsUpdRec(create_string_buffer(bytes(self.appName, "ascii")),
-                                             record.tableID,
-                                             record.dataBuff,
-                                             record.mapBuff,
-                                             flag, tbd,
-                                             record.recIDBuffSize,
-                                             record.errCodesBuffSize,
-                                             record.errMsgBuffSize,
-                                             record.recIDBuff,
-                                             record.errCodesBuff,
-                                             record.errMsgBuff,
-                                             byref(self.status))
+                self.CmDBEngDll.CmtInsUpdRec(
+                    create_string_buffer(bytes(self.appName, "ascii")),
+                    record.tableID,
+                    record.dataBuff,
+                    record.mapBuff,
+                    flag, tbd,
+                    record.recIDBuffSize,
+                     record.errCodesBuffSize,
+                     record.errMsgBuffSize,
+                     record.recIDBuff,
+                     record.errCodesBuff,
+                     record.errMsgBuff,
+                     byref(self.status)
+                )
 
                 if self.status.value != 1: raise QueryError(
                         "DB insertion failed with code {}.".format(self.status))
@@ -262,11 +264,11 @@ class DBInterface:
                 respBuff = create_string_buffer(respBuffSize)
                 
                 self.CmDBQryDll.CmtGetQueryRecIds(
-                                                create_string_buffer(req_str),
-                                                len(req_str),
-                                                respBuff,
-                                                respBuffSize,
-                                                byref(self.status))
+                    create_string_buffer(req_str),
+                    len(req_str),
+                    respBuff,
+                    respBuffSize,
+                    byref(self.status))
 
                 if self.status.value != 1: raise QueryError(
                     "DB query failed with code {}.".format(self.status))
@@ -280,11 +282,13 @@ class DBInterface:
                 respBuffSize = 16384
                 respBuff = create_string_buffer(respBuffSize)
 
-                self.CmDBQryDll.CmtGetRecordDataByRecId(create_string_buffer(req_str),
-                                                        len(req_str),
-                                                        respBuff,
-                                                        respBuffSize,
-                                                        byref(self.status))
+                self.CmDBQryDll.CmtGetRecordDataByRecId(
+                    create_string_buffer(req_str),
+                    len(req_str),
+                    respBuff,
+                    respBuffSize,
+                    byref(self.status)
+                )
 
                 if self.status.value != 1: raise QueryError(
                     "DB query failed with code {}.".format(self.status))
@@ -298,11 +302,12 @@ class DBInterface:
                 respBufferSize = 16384
                 respBuffer = create_string_buffer(respBufferSize)
 
-                self.CmDBQryDll.CmtGetRecordDataByRecId(create_string_buffer(req_str),
-                                                        len(req_str),
-                                                        respBuff,
-                                                        respBuffSize,
-                                                        byref(self.status))
+                self.CmDBQryDll.CmtGetRecordDataByRecId(
+                    create_string_buffer(req_str),
+                    len(req_str),
+                    respBuff,
+                    respBuffSize,
+                    byref(self.status))
                 
         def _terminate_db_eng_dll(self):
                 self.CmDBEngDll.CmtTerminateDbEngDll()

@@ -42,6 +42,25 @@ class CommitRemoteInterface:
         @staticmethod
         def fingerprint():
             pass
+
+        @staticmethod
+        def update(**kwargs):
+            update_record(pycommit.Entity['Account'], **kwargs)
+
+        @staticmethod        
+        def recid_list():
+            print('Entering function')
+            
+            req = pycommit.DataRequest(
+                query = 'FROM ACCOUNT SELECT * WHERE {} ! ""'.format(
+                    pycommit.AccountFields['AccountRecID']
+                )
+            )
+
+            req.print_dom_tree()
+
+            rec_ids = crm_db.query_recids(req)
+            if rec_ids is not None: return rec_ids
         
         @staticmethod
         def find(search_str, fields=None):
@@ -56,8 +75,7 @@ class CommitRemoteInterface:
 
             for f in search_fields:
                 req = pycommit.DataRequest(
-                    query='FROM ACCOUNT SELECT {} WHERE {} = "{}"'.format(
-                        pycommit.AccountFields['AccountRecID'],
+                    query='FROM ACCOUNT SELECT * WHERE {} = "{}"'.format(
                         f,
                         search_str
                     )
@@ -134,7 +152,7 @@ class CommitRemoteInterface:
             )
 
         def update_desc(tktno, desc):
-            return CommitRemoteInterace.ticket.update(
+            return CommitRemoteInterface.ticket.update(
                 **{
                     pycommit.TicketFields['TicketNumber'] : tktno,
                     pycommit.TicketFields['Description'] : desc
@@ -154,8 +172,13 @@ class CommitRemoteInterface:
                     tktno
                 )
             )
+
+            recid = None
             
-            recid = crm_db.query_recids(req)
+            try:
+                recid = crm_db.query_recids(req)
+            except:
+                pass
 
             if not recid: return
 
@@ -233,7 +256,8 @@ class CommitRemoteInterface:
         @staticmethod
         def find(uuid, acct):
             req = pycommit.DataRequest(
-                query = 'FROM ASSET SELECT {} WHERE {} = "{}" AND {} = "{}" AND {} = "{}"'.format(
+                query = 'FROM ASSET SELECT {} WHERE {} = "{}"' + \
+                        'AND {} = "{}" AND {} = "{}"'.format(
                     pycommit.AssetFields['RecordID'],
                     pycommit.AssetFields['Name'],
                     uuid,

@@ -9,6 +9,9 @@ import untangle
 from pycommit.entities import *
 from pyparsing import *
 
+class QueryError(Exception):
+    pass
+
 class DBRecord:
     def __init__(self, tableID, dataBuff, mapBuff, recID = ""):
         self.tableID            = tableID
@@ -39,7 +42,7 @@ class DataRequest:
         self._create_dom_tree()
 
     def _parse_query(self, query):
-        operator = oneOf("= > >= < <= like not not like")
+        operator = oneOf("= > >= < <= ~ ! !~")
         joiner = oneOf('AND OR')
         
         _from = Suppress(Literal('FROM')) + Word(printables)
@@ -75,6 +78,8 @@ class DataRequest:
         self.whereElement = SubElement(self.queryElement, 'Where')
         self.queryContentElements = []
 
+        operator_map = {'~' : 'LIKE', '!' : 'NOT', '!~' : 'NOT LIKE'}
+
         for exp in self.parsed_query.WHERE:
             if isinstance(exp, str):
                 if exp in ['AND', 'OR']:
@@ -87,10 +92,15 @@ class DataRequest:
                     newElement.text = exp
                     self.queryContentElements.append(newElement)        
             elif isinstance(exp, ParseResults):
+                if exp[1] in operator_map:
+                    op_str = operator_map[exp[1]]
+                else:
+                    op_str = exp[1]
+                    
                 newElement = SubElement(
                     self.whereElement,
                     exp[0],
-                    {"op" : exp[1]}
+                    {"op" : op_str}
                 )
 
                 newElement.text = exp[2]
@@ -216,34 +226,40 @@ class DBInterface:
         def _init_db_eng_dll(self):
                 self.CmDBEngDll.CmtInitDbEngDll(self.appName, self.DBPath_bytes, byref(self.status))
 
-                if self.status.value != 1: raise RuntimeError(
+                if self.status.value != 1: raise QueryError(
                         "DB not initialized for writing. Error code {}".format(self.status))
 
         def _init_db_qry_dll(self):
                 self.CmDBQryDll.CmtInitDbQryDll(self.appName, self.DBPath_bytes, byref(self.status))
 
-                if self.status.value != 1: raise RuntimeError(
+                if self.status.value != 1: raise QueryError(
                         "DB not initialized for queries. Error code {}".format(self.status))
                 
         def update_rec(self, record):            
                 flag = 1
                 tbd = 0
 
-                self.CmDBEngDll.CmtInsUpdRec(create_string_buffer(bytes(self.appName, "ascii")),
-                                             record.tableID,
-                                             record.dataBuff,
-                                             record.mapBuff,
-                                             flag, tbd,
-                                             record.recIDBuffSize,
-                                             record.errCodesBuffSize,
-                                             record.errMsgBuffSize,
-                                             record.recIDBuff,
-                                             record.errCodesBuff,
-                                             record.errMsgBuff,
-                                             byref(self.status))
+                self.CmDBEngDll.CmtInsUpdRec(
+                    create_string_buffer(bytes(self.appName, "ascii")),
+                    record.tableID,
+                    record.dataBuff,
+                    record.mapBuff,
+                    flag, tbd,
+                    record.recIDBuffSize,
+                     record.errCodesBuffSize,
+                     record.errMsgBuffSize,
+                     record.recIDBuff,
+                     record.errCodesBuff,
+                     record.errMsgBuff,
+                     byref(self.status)
+                )
 
-                if self.status.value != 1: raise RuntimeError(
-                        "DB insertion failed with code {}.".format(self.status))
+                if self.status.value != 1: raise QueryError(
+                    "DB insertion failed with code {}\n{}".format(
+                        self.status,
+                        self.get_desc_by_code(self.status)
+                    )
+                )
 
         def query_recids(self, req):
                 req_str = req.get_dom_tree_str()
@@ -252,14 +268,18 @@ class DBInterface:
                 respBuff = create_string_buffer(respBuffSize)
                 
                 self.CmDBQryDll.CmtGetQueryRecIds(
-                                                create_string_buffer(req_str),
-                                                len(req_str),
-                                                respBuff,
-                                                respBuffSize,
-                                                byref(self.status))
+                    create_string_buffer(req_str),
+                    len(req_str),
+                    respBuff,
+                    respBuffSize,
+                    byref(self.status))
 
-                if self.status.value != 1: raise RuntimeError(
-                    "DB query failed with code {}.".format(self.status))
+                if self.status.value != 1: raise QueryError(
+                    "DB query failed with code {}\n{}".format(
+                        self.status,
+                        self.get_desc_by_code(self.status)
+                    )
+                )
 
                 resp = DataResponse(str(respBuff.value, encoding = "ascii"))
                 return resp.get_recids()
@@ -270,14 +290,20 @@ class DBInterface:
                 respBuffSize = 16384
                 respBuff = create_string_buffer(respBuffSize)
 
-                self.CmDBQryDll.CmtGetRecordDataByRecId(create_string_buffer(req_str),
-                                                        len(req_str),
-                                                        respBuff,
-                                                        respBuffSize,
-                                                        byref(self.status))
+                self.CmDBQryDll.CmtGetRecordDataByRecId(
+                    create_string_buffer(req_str),
+                    len(req_str),
+                    respBuff,
+                    respBuffSize,
+                    byref(self.status)
+                )
 
-                if self.status.value != 1: raise RuntimeError(
-                    "DB query failed with code {}.".format(self.status))
+                if self.status.value != 1: raise QueryError(
+                    "DB query failed with code {}\n{}".format(
+                        self.status,
+                        self.get_desc_by_code(self.status)
+                    )
+                )
 
                 resp = FieldAttributesResponse(str(respBuff.value, encoding = "ascii"))
                 return resp.get_dictionary()
@@ -288,11 +314,12 @@ class DBInterface:
                 respBufferSize = 16384
                 respBuffer = create_string_buffer(respBufferSize)
 
-                self.CmDBQryDll.CmtGetRecordDataByRecId(create_string_buffer(req_str),
-                                                        len(req_str),
-                                                        respBuff,
-                                                        respBuffSize,
-                                                        byref(self.status))
+                self.CmDBQryDll.CmtGetRecordDataByRecId(
+                    create_string_buffer(req_str),
+                    len(req_str),
+                    respBuff,
+                    respBuffSize,
+                    byref(self.status))
                 
         def _terminate_db_eng_dll(self):
                 self.CmDBEngDll.CmtTerminateDbEngDll()
@@ -300,8 +327,17 @@ class DBInterface:
         def _terminate_db_qry_dll(self):
                 self.CmDBQryDll.CmtTerminateDbQryDll()
                 
-        def get_desc_by_code(self, code, desc_size, desc):
-                pass
+        def get_desc_by_code(self, code):
+                size = 1024
+                buffer = create_string_buffer(size)
+
+                self.CmDBQryDll.CmtGetDescriptionByStatus(
+                    code,
+                    size,
+                    buffer
+                )
+
+                return str(buffer.value, encoding = 'ascii').strip()
                 
         def get_desc_by_status(self):
                 pass

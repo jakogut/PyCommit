@@ -46,6 +46,21 @@ class CommitRemoteInterface:
         @staticmethod
         def update(**kwargs):
             update_record(pycommit.Entity['Account'], **kwargs)
+
+        @staticmethod        
+        def recid_list():
+            print('Entering function')
+            
+            req = pycommit.DataRequest(
+                query = 'FROM ACCOUNT SELECT * WHERE {} ! ""'.format(
+                    pycommit.AccountFields['AccountRecID']
+                )
+            )
+
+            req.print_dom_tree()
+
+            rec_ids = crm_db.query_recids(req)
+            if rec_ids is not None: return rec_ids
         
         @staticmethod
         def find(search_str, fields=None):

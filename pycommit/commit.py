@@ -264,7 +264,7 @@ class DBInterface:
         def query_recids(self, req):
                 req_str = req.get_dom_tree_str()
                 
-                respBuffSize = 16384
+                respBuffSize = req.maxRecordCnt * 32
                 respBuff = create_string_buffer(respBuffSize)
                 
                 self.CmDBQryDll.CmtGetQueryRecIds(

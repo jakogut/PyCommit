@@ -109,7 +109,7 @@ class DataRequest:
         self.orderElement = SubElement(self.queryElement, 'Order')
 
     def get_dom_tree_str(self):
-        return self.declaration + tostring(self.tree)
+        return self.declaration + tostring(self.tree, pretty_print=True)
 
     def print_dom_tree(self):
         print(self._prettify(self.get_dom_tree_str()))

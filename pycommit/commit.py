@@ -1,7 +1,7 @@
 import os
 from ctypes import *
 
-from xml.etree.cElementTree import ElementTree, Element, SubElement, Comment, tostring, fromstring
+from lxml.etree import ElementTree, Element, SubElement, Comment, tostring, fromstring
 from xml.dom import minidom
 
 import untangle

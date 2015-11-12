@@ -142,7 +142,7 @@ class CommitRemoteInterface:
 
         @staticmethod
         def create(acct_recid, desc, mgr=''):
-            return CommmitRemoteInterface.ticket.update(
+            return CommitRemoteInterface.ticket.update(
                 **{
                     pycommit.TicketFields['AccountRecID'] : acct_recid,
                     pycommit.TicketFields['Description'] : desc,

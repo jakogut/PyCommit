@@ -289,6 +289,27 @@ class CommitRemoteInterface:
 
             return recid[0]
 
+    class item:
+
+        @staticmethod
+        def update(**kwargs):
+            return update_record(
+                pycommit.Entity['Asset'],
+                **kwargs
+            )
+
+        @staticmethod
+        def create(code, group, name, price, desc):
+            return CommitRemoteInterface.item.update(
+                **{
+                    pycommit.ItemFields['ItemCode'] : code,
+                    pycommit.ItemFields['ItemGroup'] : group,
+                    pycommit.ItemFields['ItemName'] : name,
+                    pycommit.ItemFields['Price'] : price,
+                    pycommit.ItemFields['Description'] : desc,
+                }
+            )
+
 if __name__ == '__main__':
     addr = ('10.10.100.11', 8000)
     server = SimpleXMLRPCServer(addr, allow_none=True)

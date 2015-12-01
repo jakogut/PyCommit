@@ -282,7 +282,7 @@ if __name__ == '__main__':
     addr = ('10.10.100.11', 8000)
     server = SimpleXMLRPCServer(addr, allow_none = True)
 
-    server.register_introspection_functions()
+    #server.register_introspection_functions()
     server.register_instance(CommitRemoteInterface(), allow_dotted_names=True)
     
     print('Serving XML-RPC on: {}'.format(addr))

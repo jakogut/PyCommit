@@ -284,6 +284,8 @@ if __name__ == '__main__':
 
     #server.register_introspection_functions()
     server.register_instance(CommitRemoteInterface(), allow_dotted_names=True)
+    server.register_function(get_field)
+    server.register_function(update_record)
     
     print('Serving XML-RPC on: {}'.format(addr))
 

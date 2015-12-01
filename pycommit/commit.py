@@ -156,12 +156,18 @@ class FieldAttributesRequest:
         _select = Suppress('SELECT') + Suppress('(') + delimitedList(Word(alphas)) + Suppress(')')
 
         d = {}
-        d['FROM'] = _from.searchString(query)[0][0]
-        d['SELECT'] = _select.searchString(query)[0]
+
+        try:
+            d['FROM'] = _from.searchString(query)[0][0]
+            d['SELECT'] = _select.searchString(query)[0]
+        except IndexError:
+            return
 
         return d
 
     def _create_dom_tree(self):
+        if self.query is None: return
+        
         self.tree = Element('CommitCRMGetRecordDataRequest')
         self.nameElement = SubElement(self.tree, 'ExternalApplicationName')
         self.nameElement.text = self.extAppName
@@ -171,6 +177,7 @@ class FieldAttributesRequest:
         self.selectFieldsElement.text = ', '.join(self.query['SELECT'])
 
     def get_dom_tree_str(self):
+        if self.query is None: return None
         return self.declaration + tostring(self.tree)
 
     def print_dom_tree(self):
@@ -286,6 +293,7 @@ class DBInterface:
         
         def get_rec_data_by_recid(self, req):
                 req_str = req.get_dom_tree_str()
+                if req_str is None: return
 
                 respBuffSize = 16384
                 respBuff = create_string_buffer(respBuffSize)

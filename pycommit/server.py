@@ -19,6 +19,8 @@ def get_field(recid, field):
     )
 
     data = crm_db.get_rec_data_by_recid(req)
+
+    if data is None: return
     return data[field][0]
 
 def update_record(entity, **kwargs):

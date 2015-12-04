@@ -22,7 +22,7 @@ class CRMEntity(object):
         "KBArticles": 100
     }
 
-    def __init__(self, recid=None, crm_proxy=None, auto_populate=True):
+    def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
         self._recid = recid
         self._crm_proxy = crm_proxy
 
@@ -125,8 +125,8 @@ class Account(CRMEntity):
         "Field4": "FLDCRDUSER5"
     }
 
-    def __init__(self, recid=None, crm_proxy=None):
-        super().__init__(recid, crm_proxy)
+    def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
+        super().__init__(crm_proxy, recid, auto_populate)
 
 class Asset(CRMEntity):
     db_fields = {
@@ -176,8 +176,8 @@ class Asset(CRMEntity):
         "WarrExpDate": "FLDASTWARREXPDATE"
     }
 
-    def __init__(self, recid, crm_proxy=None):
-        super().__init__(recid)
+    def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
+        super().__init__(crm_proxy, recid, auto_populate)
         self._crm_proxy = crm_proxy
 
 class Charge(CRMEntity):
@@ -203,8 +203,8 @@ class Charge(CRMEntity):
         "CreateUser": "FLDSLPCREATEUSER"
     }
 
-    def __init__(self, recid, crm_proxy=None):
-        super(__init__(recid, crm_proxy))
+    def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
+        super(__init__(crm_proxy, recid, auto_populate))
 
 class HistoryNote(CRMEntity):
     db_fields = {
@@ -221,8 +221,8 @@ class HistoryNote(CRMEntity):
         "CreatedByUser": "FLDHISCREATEUSER"
     }
 
-    def __init__(self, recid, crm_proxy=None):
-        super(__init__(recid, crm_proxy))
+    def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
+        super(__init__(crm_proxy, recid, auto_populate))
 
 class Item(CRMEntity):
     db_fields = {
@@ -246,8 +246,8 @@ class Item(CRMEntity):
         "CreatedByUSer": "FLDITMCREATEUSER"
     }
 
-    def __init__(self, recid, crm_proxy=None):
-        super(__init__(recid, crm_proxy))
+    def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
+        super(__init__(crm_proxy, recid, auto_populate=True))
 
 class Ticket(CRMEntity):
     db_fields = {
@@ -269,8 +269,8 @@ class Ticket(CRMEntity):
         "Resolution": "FLDTKTSOLUTION"
     }
 
-    def __init__(self, recid, crm_proxy=None):
-        super().__init__(recid, crm_proxy)
+    def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
+        super().__init__(crm_proxy, recid, auto_populate)
 
 # legacy compatibility
 Entity = CRMEntity.types

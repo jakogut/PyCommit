@@ -246,12 +246,12 @@ class DBInterface:
                 tbd = 0
 
                 self.CmDBEngDll.CmtInsUpdRec(
-                    create_string_buffer(bytes(self.appName, "ascii")),
-                    record.tableID,
-                    record.dataBuff,
-                    record.mapBuff,
-                    flag, tbd,
-                    record.recIDBuffSize,
+                     create_string_buffer(bytes(self.appName, "ascii")),
+                     record.tableID,
+                     record.dataBuff,
+                     record.mapBuff,
+                     flag, tbd,
+                     record.recIDBuffSize,
                      record.errCodesBuffSize,
                      record.errMsgBuffSize,
                      record.recIDBuff,

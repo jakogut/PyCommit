@@ -6,7 +6,6 @@ from xml.dom import minidom
 
 import untangle
 
-from pycommit.entities import *
 from pyparsing import *
 
 class QueryError(Exception):

@@ -1,17 +1,17 @@
-import pycommit
+from . import commit, entities
 
 import xmlrpc
 from xmlrpc.server import SimpleXMLRPCServer
 
 import sys
 
-crm_db = pycommit.DBInterface(CRMPath='E:\COMMIT\CommitCRM')
+crm_db = commit.DBInterface(CRMPath='E:\COMMIT\CommitCRM')
 
 class AmbiguousValue(Exception):
     pass
 
 def get_field(recid, field):
-    req = pycommit.FieldAttributesRequest(
+    req = commit.FieldAttributesRequest(
         query = "FROM {} SELECT ({})".format(
             recid,
             field
@@ -34,7 +34,7 @@ def update_record(entity, **kwargs):
         data_str += "'{}',".format(value)
         map_str += "{}\n".format(key)
 
-    rec = pycommit.DBRecord(entity, data_str, map_str)
+    rec = commit.DBRecord(entity, data_str, map_str)
 
     crm_db.update_rec(rec)
     return rec.getRecID()
@@ -47,15 +47,15 @@ class CommitRemoteInterface:
 
         @staticmethod
         def update(**kwargs):
-            update_record(pycommit.Entity['Account'], **kwargs)
+            update_record(entities.Entity['Account'], **kwargs)
 
         @staticmethod        
         def recid_list():
             print('Entering function')
             
-            req = pycommit.DataRequest(
+            req = commit.DataRequest(
                 query = 'FROM ACCOUNT SELECT * WHERE {} ! ""'.format(
-                    pycommit.AccountFields['AccountRecID']
+                    entities.AccountFields['AccountRecID']
                 ),
                 maxRecordCnt = 10000
             )
@@ -69,13 +69,13 @@ class CommitRemoteInterface:
                 search_fields = fields
             else:
                 search_fields = [
-                    pycommit.AccountFields['Contact'],
-                    pycommit.AccountFields['CompanyName'],
-                    pycommit.AccountFields['Dear']
+                    entities.AccountFields['Contact'],
+                    entities.AccountFields['CompanyName'],
+                    entities.AccountFields['Dear']
                 ]
 
             for f in search_fields:
-                req = pycommit.DataRequest(
+                req = commit.DataRequest(
                     query='FROM ACCOUNT SELECT * WHERE {} = "{}"'.format(
                         f,
                         search_str
@@ -90,22 +90,22 @@ class CommitRemoteInterface:
         def find_by_email(email):
             return CommitRemoteInterface.account.find(
                 email,
-                [ pycommit.AccountFields['Email1'],
-                  pycommit.AccountFields['Email2'] ]
+                [ entities.AccountFields['Email1'],
+                  entities.AccountFields['Email2'] ]
             )
 
         @staticmethod
         def get_contact(recid):
             return get_field(
                 recid,
-                pycommit.AccountFields['Contact']
+                entities.AccountFields['Contact']
             )
 
         @staticmethod
         def find_employee(search_str):            
-            req = pycommit.DataRequest(
+            req = commit.DataRequest(
                 query='FROM ACCOUNT SELECT * WHERE {} = "{}"'.format(
-                    pycommit.AccountFields['AccountType'],
+                    entities.AccountFields['AccountType'],
                     '4'
                 )
             )
@@ -114,15 +114,15 @@ class CommitRemoteInterface:
 
             employees = {}
             for _id in rec_ids:
-                req = pycommit.FieldAttributesRequest(
+                req = commit.FieldAttributesRequest(
                     query = "FROM {} SELECT ({})".format(
                         _id,
-                        pycommit.AccountFields['Contact']
+                        entities.AccountFields['Contact']
                     )
                 )
 
                 data = crm_db.get_rec_data_by_recid(req)
-                contact = data[pycommit.AccountFields['Contact']][0]
+                contact = data[entities.AccountFields['Contact']][0]
                 employees[_id] = contact
 
             for (key, value) in employees.items():
@@ -140,36 +140,36 @@ class CommitRemoteInterface:
 
         @staticmethod
         def update(**kwargs):
-            return update_record(pycommit.Entity['Ticket'], **kwargs)
+            return update_record(entities.Entity['Ticket'], **kwargs)
 
         @staticmethod
         def create(acct_recid, desc, mgr=''):
             return CommitRemoteInterface.ticket.update(
                 **{
-                    pycommit.TicketFields['AccountRecID'] : acct_recid,
-                    pycommit.TicketFields['Description'] : desc,
-                    pycommit.TicketFields['EmpRecID'] : mgr
+                    entities.TicketFields['AccountRecID'] : acct_recid,
+                    entities.TicketFields['Description'] : desc,
+                    entities.TicketFields['EmpRecID'] : mgr
                 }
             )
 
         def update_desc(tktno, desc):
             return CommitRemoteInterface.ticket.update(
                 **{
-                    pycommit.TicketFields['TicketNumber'] : tktno,
-                    pycommit.TicketFields['Description'] : desc
+                    entities.TicketFields['TicketNumber'] : tktno,
+                    entities.TicketFields['Description'] : desc
                 }
             )
 
         @staticmethod
         def get_acctrecid(tktno):
             tktrecid = CommitRemoteInterface.ticket.get_recid(tktno)
-            return get_field(tktrecid, pycommit.TicketFields['AccountRecID'])
+            return get_field(tktrecid, entities.TicketFields['AccountRecID'])
 
         @staticmethod
         def get_recid(tktno):
-            req = pycommit.DataRequest(
+            req = commit.DataRequest(
                 query = 'FROM TICKET SELECT * WHERE {} = "{}"'.format(
-                    pycommit.TicketFields['TicketNumber'],
+                    entities.TicketFields['TicketNumber'],
                     tktno
                 )
             )
@@ -191,24 +191,24 @@ class CommitRemoteInterface:
         @staticmethod
         def get_desc(tktno):
             recid = CommitRemoteInterface.ticket.get_recid(tktno)            
-            return get_field(recid, pycommit.TicketFields['Description'])
+            return get_field(recid, entities.TicketFields['Description'])
 
         @staticmethod
         def get_assetrecid(tktno):
             recid = CommitRemoteInterface.ticket.get_recid(tktno)
-            return get_field(recid, pycommit.TicketFields['AssetRecID'])
+            return get_field(recid, entities.TicketFields['AssetRecID'])
 
         @staticmethod
         def link_asset(tktno, asset_recid):
             data_str = "'{}','{}'".format(tktno, asset_recid)
 
             map_str = "'\n,\n{}\n{}".format(
-                pycommit.TicketFields['TicketNumber'],
-                pycommit.TicketFields['AssetRecID'],
+                entities.TicketFields['TicketNumber'],
+                entities.TicketFields['AssetRecID'],
             )
 
-            rec = pycommit.DBRecord(
-                tableID = pycommit.Entity['Ticket'],
+            rec = commit.DBRecord(
+                tableID = entities.Entity['Ticket'],
                 dataBuff = data_str,
                 mapBuff = map_str,
             )
@@ -219,17 +219,17 @@ class CommitRemoteInterface:
         @staticmethod
         def insert_note(tkt, msg, employee_id):
             return update_record(
-                pycommit.Entity['HistoryNote'],
-                **{pycommit.HistoryNoteFields['LinkRecID'] : tkt,
-                pycommit.HistoryNoteFields['Employee'] : employee_id,
-                pycommit.HistoryNoteFields['Description'] : msg}
+                entities.Entity['HistoryNote'],
+                **{entities.HistoryNoteFields['LinkRecID'] : tkt,
+                entities.HistoryNoteFields['Employee'] : employee_id,
+                entities.HistoryNoteFields['Description'] : msg}
             )
 
     class asset:
         @staticmethod
         def update(**kwargs):
             return update_record(
-                pycommit.Entity['Asset'],
+                entities.Entity['Asset'],
                 **kwargs
             )
 
@@ -237,11 +237,11 @@ class CommitRemoteInterface:
         def create(acct, name, desc, status = 'A', _type = 'H'):
             return CommitRemoteInterface.asset.update(
                 **{
-                    pycommit.AssetFields['AccountRecID'] : acct,
-                    pycommit.AssetFields['Name'] : name,
-                    pycommit.AssetFields['Description'] : desc,
-                    pycommit.AssetFields['Status'] : status,
-                    pycommit.AssetFields['Type'] : _type
+                    entities.AssetFields['AccountRecID'] : acct,
+                    entities.AssetFields['Name'] : name,
+                    entities.AssetFields['Description'] : desc,
+                    entities.AssetFields['Status'] : status,
+                    entities.AssetFields['Type'] : _type
                 }
             )
 
@@ -249,22 +249,22 @@ class CommitRemoteInterface:
         def update_desc(recid, desc):
             return CommitRemoteInterface.asset.update(
                 **{
-                    pycommit.AssetFields['RecordID'] : recid,
-                    pycommit.AssetFields['Description'] : desc
+                    entities.AssetFields['RecordID'] : recid,
+                    entities.AssetFields['Description'] : desc
                 }
             )
 
         @staticmethod
         def find(uuid, acct):
-            req = pycommit.DataRequest(
+            req = commit.DataRequest(
                 query = 'FROM ASSET SELECT {} WHERE {} = "{}" \
                          AND {} = "{}" AND {} = "{}"'.format(
-                    pycommit.AssetFields['RecordID'],
-                    pycommit.AssetFields['Name'],
+                    entities.AssetFields['RecordID'],
+                    entities.AssetFields['Name'],
                     uuid,
-                    pycommit.AssetFields['Status'],
+                    entities.AssetFields['Status'],
                     'A',
-                    pycommit.AssetFields['AccountRecID'],
+                    entities.AssetFields['AccountRecID'],
                     acct
                 )
             )

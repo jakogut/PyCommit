@@ -22,15 +22,12 @@ class CRMEntity(object):
         "KBArticles": 100
     }
 
-    def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
+    def __init__(self, crm_proxy, recid=None, auto_populate=True):
         self._recid = recid
         self._crm_proxy = crm_proxy
 
         self.db_data = {}
         self.entity_type = None
-
-        if self._crm_proxy is None:
-            raise Exception
 
         if self._recid is not None and auto_populate is True:
             self._populate()
@@ -125,7 +122,7 @@ class Account(CRMEntity):
         "Field4": "FLDCRDUSER5"
     }
 
-    def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
+    def __init__(self, crm_proxy, recid=None, auto_populate=True):
         super().__init__(crm_proxy, recid, auto_populate)
 
 class Asset(CRMEntity):
@@ -176,7 +173,7 @@ class Asset(CRMEntity):
         "WarrExpDate": "FLDASTWARREXPDATE"
     }
 
-    def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
+    def __init__(self, crm_proxy, recid=None, auto_populate=True):
         super().__init__(crm_proxy, recid, auto_populate)
         self._crm_proxy = crm_proxy
 
@@ -203,7 +200,7 @@ class Charge(CRMEntity):
         "CreateUser": "FLDSLPCREATEUSER"
     }
 
-    def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
+    def __init__(self, crm_proxy, recid=None, auto_populate=True):
         super(__init__(crm_proxy, recid, auto_populate))
 
 class HistoryNote(CRMEntity):
@@ -221,7 +218,7 @@ class HistoryNote(CRMEntity):
         "CreatedByUser": "FLDHISCREATEUSER"
     }
 
-    def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
+    def __init__(self, crm_proxy, recid=None, auto_populate=True):
         super(__init__(crm_proxy, recid, auto_populate))
 
 class Item(CRMEntity):
@@ -246,7 +243,7 @@ class Item(CRMEntity):
         "CreatedByUSer": "FLDITMCREATEUSER"
     }
 
-    def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
+    def __init__(self, crm_proxy, recid=None, auto_populate=True):
         super(__init__(crm_proxy, recid, auto_populate=True))
 
 class Ticket(CRMEntity):
@@ -269,7 +266,7 @@ class Ticket(CRMEntity):
         "Resolution": "FLDTKTSOLUTION"
     }
 
-    def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
+    def __init__(self, crm_proxy, recid=None, auto_populate=True):
         super().__init__(crm_proxy, recid, auto_populate)
 
 # legacy compatibility

@@ -133,6 +133,7 @@ class Account(CRMEntity):
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
         self._recid_field = self.db_fields['AccountRecID']
         super().__init__(crm_proxy, recid, auto_populate)
+        self.entity_type = self.types['Account']
 
 class Asset(CRMEntity):
     db_fields = {
@@ -185,6 +186,7 @@ class Asset(CRMEntity):
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
         self._recid_field = self.db_fields['RecordID']
         super().__init__(crm_proxy, recid, auto_populate)
+        self.entity_type = self.types['Asset']
 
 class Charge(CRMEntity):
     db_fields = {
@@ -212,6 +214,7 @@ class Charge(CRMEntity):
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
         self._recid_field = self.db_fields['RecordID']
         super().__init__(crm_proxy, recid, auto_populate)
+        self.entity_type = self.types['Charge']
 
 class HistoryNote(CRMEntity):
     db_fields = {
@@ -231,6 +234,7 @@ class HistoryNote(CRMEntity):
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
         self._recid_field = self.db_fields['RecordID']
         super().__init__(crm_proxy, recid, auto_populate)
+        self.entity_type = self.types['HistoryNote']
 
 class Item(CRMEntity):
     db_fields = {
@@ -257,6 +261,7 @@ class Item(CRMEntity):
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
         self._recid_field = self.db_fields['RecordID']
         super().__init__(crm_proxy, recid, auto_populate=True)
+        self.entity_type = self.types['Item']
 
 class Ticket(CRMEntity):
     db_fields = {
@@ -281,6 +286,7 @@ class Ticket(CRMEntity):
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
         self._recid_field = self.db_fields['TicketNumber']
         super().__init__(crm_proxy, recid, auto_populate)
+        self.entity_type = self.types['Ticket']
 
 # legacy compatibility
 Entity = CRMEntity.types

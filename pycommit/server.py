@@ -23,6 +23,9 @@ def get_field(recid, field):
     if data is None: return
     return data[field][0]
 
+def update_record_from_dict(entity, data):
+    update_record(entity, **data)
+
 def update_record(entity, **kwargs):
     if (entity is None) or (kwargs is None):
         return
@@ -285,7 +288,7 @@ if __name__ == '__main__':
     #server.register_introspection_functions()
     server.register_instance(CommitRemoteInterface(), allow_dotted_names=True)
     server.register_function(get_field)
-    server.register_function(update_record)
+    server.register_function(update_record_from_dict)
     
     print('Serving XML-RPC on: {}'.format(addr))
 

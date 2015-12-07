@@ -210,8 +210,8 @@ class Charge(CRMEntity):
     }
 
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
-        super().__init__(crm_proxy, recid, auto_populate)
         self._recid_field = self.db_fields['RecordID']
+        super().__init__(crm_proxy, recid, auto_populate)
 
 class HistoryNote(CRMEntity):
     db_fields = {
@@ -229,8 +229,8 @@ class HistoryNote(CRMEntity):
     }
 
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
-        super().__init__(crm_proxy, recid, auto_populate)
         self._recid_field = self.db_fields['RecordID']
+        super().__init__(crm_proxy, recid, auto_populate)
 
 class Item(CRMEntity):
     db_fields = {
@@ -255,8 +255,8 @@ class Item(CRMEntity):
     }
 
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
-        super().__init__(crm_proxy, recid, auto_populate=True)
         self._recid_field = self.db_fields['RecordID']
+        super().__init__(crm_proxy, recid, auto_populate=True)
 
 class Ticket(CRMEntity):
     db_fields = {

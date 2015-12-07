@@ -5,7 +5,7 @@ from xmlrpc.server import SimpleXMLRPCServer
 
 import sys
 
-crm_db = commit.DBInterface(CRMPath='E:\COMMIT\CommitCRM')
+crm_db = commit.DBInterface(CRMPath='C:\CommitCRM')
 
 class AmbiguousValue(Exception):
     pass

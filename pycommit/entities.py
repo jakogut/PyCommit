@@ -57,7 +57,7 @@ class CRMEntity(object):
         self._db_sync(crm_proxy)
 
     def _db_sync(self, crm_proxy):
-        crm_proxy.update_record(self._recid, self.db_data)
+        crm_proxy.update_record_from_dict(self._recid, self.db_data)
 
     def populate(self, crm_proxy):
         field_names = []

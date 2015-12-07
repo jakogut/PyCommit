@@ -62,7 +62,7 @@ class CRMEntity(object):
         self._db_sync(crm_proxy)
 
     def _db_sync(self, crm_proxy):
-        crm_proxy.update_record_from_dict(self.type, self.db_data)
+        crm_proxy.update_record_from_dict(self.entity_type, self.db_data)
 
     def populate(self, crm_proxy):
         field_names = []
@@ -299,7 +299,7 @@ TicketFields = Ticket.db_fields
 
 if __name__ == '__main__':
     from xmlrpc.client import ServerProxy
-    crm_proxy = ServerProxy('http://10.10.100.11:8000')
-    acct = Account('CRDPX9UC9KOZB1ERMXUJ', crm_proxy)
+    crm_proxy = ServerProxy('http://10.10.200.67:8000', allow_none=True)
+    acct = Account(crm_proxy, 'CRDO4H7A4S453D55P4JJ')
 
     print(acct.db_data)

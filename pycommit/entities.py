@@ -25,7 +25,7 @@ class CRMEntity(object):
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
         self.db_data = {}
 
-        self.set_recid(recid)
+        if recid: self.set_recid(recid)
         self.entity_type = None
 
         if self.get_recid() is not None \

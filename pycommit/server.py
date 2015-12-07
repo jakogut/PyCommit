@@ -5,7 +5,7 @@ from xmlrpc.server import SimpleXMLRPCServer
 
 import sys
 
-crm_db = commit.DBInterface(CRMPath='E:\COMMIT\CommitCRM')
+crm_db = commit.DBInterface(CRMPath='C:\CommitCRM')
 
 class AmbiguousValue(Exception):
     pass
@@ -282,7 +282,7 @@ class CommitRemoteInterface:
             return recid[0]
 
 if __name__ == '__main__':
-    addr = ('10.10.100.11', 8000)
+    addr = ('0.0.0.0', 8000)
     server = SimpleXMLRPCServer(addr, allow_none = True)
 
     #server.register_introspection_functions()

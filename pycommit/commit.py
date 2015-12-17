@@ -261,9 +261,11 @@ class DBInterface:
                 )
 
                 if self.status.value != 1: raise QueryError(
-                    "DB insertion failed with code {}\n{}".format(
+                    "DB insertion failed with code {}: {}\n\n{}".format(
                         self.status,
-                        self.get_desc_by_code(self.status)
+                        self.get_desc_by_code(self.status),
+			            'data: ' + record.dataBuff + '\n' + \
+			            'map: ' + record.mapBuff
                     )
                 )
 
@@ -281,9 +283,10 @@ class DBInterface:
                     byref(self.status))
 
                 if self.status.value != 1: raise QueryError(
-                    "DB query failed with code {}\n{}".format(
+                    "DB query failed with code {}: {}\n\nRequest:\n{}".format(
                         self.status,
-                        self.get_desc_by_code(self.status)
+                        self.get_desc_by_code(self.status),
+                        req.get_dom_str()
                     )
                 )
 
@@ -306,9 +309,10 @@ class DBInterface:
                 )
 
                 if self.status.value != 1: raise QueryError(
-                    "DB query failed with code {}\n{}".format(
+                    "DB query failed with code {}: {}\n\nRequest:\n{}".format(
                         self.status,
-                        self.get_desc_by_code(self.status)
+                        self.get_desc_by_code(self.status),
+                        req.get_dom_str()
                     )
                 )
 

@@ -23,18 +23,23 @@ class CRMEntity(object):
     }
 
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
-        self._recid = recid
-
         self.db_data = {}
+
+        if recid: self.set_recid(recid)
         self.entity_type = None
 
-        if self._recid is not None \
+        if self.get_recid() is not None \
         and crm_proxy is not None \
         and auto_populate is True:
-            self.populate()
+            self.populate(crm_proxy)
+
+    def set_recid(self, recid):
+        self.db_data[self._recid_field] = recid
 
     def get_recid(self):
-        return self._recid
+        if self._recid_field in self.db_data:
+            return self.db_data[self._recid_field]
+        else: return None
 
     def get_field(self, field):
         mapped = self.db_fields[field]
@@ -45,24 +50,24 @@ class CRMEntity(object):
         self.db_data[mapped] = value
 
     def create(self, crm_proxy):
-        if self._recid is not None:
+        if self.get_recid() is not None:
             return
 
         self._db_sync(crm_proxy)
 
     def update(self, crm_proxy):
-        if self._recid is None:
+        if self.get_recid() is None:
             return
 
         self._db_sync(crm_proxy)
 
     def _db_sync(self, crm_proxy):
-        crm_proxy.update_record_from_dict(self._recid, self.db_data)
+        crm_proxy.update_record_from_dict(self.entity_type, self.db_data)
 
     def populate(self, crm_proxy):
         field_names = []
         for _, field_name in self.db_fields.items():
-            value = crm_proxy.get_field(self._recid, field_name)
+            value = crm_proxy.get_field(self.get_recid(), field_name)
             if value: self.db_data[field_name] = value
 
 class Account(CRMEntity):
@@ -126,7 +131,9 @@ class Account(CRMEntity):
     }
 
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
+        self._recid_field = self.db_fields['AccountRecID']
         super().__init__(crm_proxy, recid, auto_populate)
+        self.entity_type = self.types['Account']
 
 class Asset(CRMEntity):
     db_fields = {
@@ -177,8 +184,9 @@ class Asset(CRMEntity):
     }
 
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
+        self._recid_field = self.db_fields['RecordID']
         super().__init__(crm_proxy, recid, auto_populate)
-        self._crm_proxy = crm_proxy
+        self.entity_type = self.types['Asset']
 
 class Charge(CRMEntity):
     db_fields = {
@@ -204,7 +212,9 @@ class Charge(CRMEntity):
     }
 
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
-        super(__init__(crm_proxy, recid, auto_populate))
+        self._recid_field = self.db_fields['RecordID']
+        super().__init__(crm_proxy, recid, auto_populate)
+        self.entity_type = self.types['Charge']
 
 class HistoryNote(CRMEntity):
     db_fields = {
@@ -222,7 +232,9 @@ class HistoryNote(CRMEntity):
     }
 
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
-        super(__init__(crm_proxy, recid, auto_populate))
+        self._recid_field = self.db_fields['RecordID']
+        super().__init__(crm_proxy, recid, auto_populate)
+        self.entity_type = self.types['HistoryNote']
 
 class Item(CRMEntity):
     db_fields = {
@@ -247,7 +259,9 @@ class Item(CRMEntity):
     }
 
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
-        super(__init__(crm_proxy, recid, auto_populate=True))
+        self._recid_field = self.db_fields['RecordID']
+        super().__init__(crm_proxy, recid, auto_populate=True)
+        self.entity_type = self.types['Item']
 
 class Ticket(CRMEntity):
     db_fields = {
@@ -270,7 +284,9 @@ class Ticket(CRMEntity):
     }
 
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
+        self._recid_field = self.db_fields['TicketNumber']
         super().__init__(crm_proxy, recid, auto_populate)
+        self.entity_type = self.types['Ticket']
 
 # legacy compatibility
 Entity = CRMEntity.types
@@ -283,7 +299,7 @@ TicketFields = Ticket.db_fields
 
 if __name__ == '__main__':
     from xmlrpc.client import ServerProxy
-    crm_proxy = ServerProxy('http://10.10.100.11:8000')
-    acct = Account('CRDPX9UC9KOZB1ERMXUJ', crm_proxy)
+    crm_proxy = ServerProxy('http://10.10.200.67:8000', allow_none=True)
+    acct = Account(crm_proxy, 'CRDO4H7A4S453D55P4JJ')
 
     print(acct.db_data)

@@ -53,9 +53,7 @@ class CommitRemoteInterface:
             update_record(entities.Entity['Account'], **kwargs)
 
         @staticmethod        
-        def recid_list():
-            print('Entering function')
-            
+        def recid_list():            
             req = commit.DataRequest(
                 query = 'FROM ACCOUNT SELECT * WHERE {} ! ""'.format(
                     entities.AccountFields['AccountRecID']

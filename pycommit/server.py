@@ -24,16 +24,13 @@ def get_field(recid, field):
     return data[field][0]
 
 def update_record_from_dict(entity, data):
-    update_record(entity, **data)
-
-def update_record(entity, **kwargs):
-    if (entity is None) or (kwargs is None):
+    if (entity is None) or (data is None):
         return
     
     data_str = ''
     map_str = "'\n,\n"
     
-    for key, value in kwargs.items():
+    for key, value in data.items():
         data_str += "'{}',".format(value)
         map_str += "{}\n".format(key)
 
@@ -41,6 +38,9 @@ def update_record(entity, **kwargs):
 
     crm_db.update_rec(rec)
     return rec.getRecID()
+
+def update_record(entity, **kwargs):
+    return update_record_from_dict(entity, kwargs)
 
 class CommitRemoteInterface:        
     class account:

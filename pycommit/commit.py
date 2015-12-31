@@ -312,7 +312,7 @@ class DBInterface:
                     "DB query failed with code {}: {}\n\nRequest:\n{}".format(
                         self.status,
                         self.get_desc_by_code(self.status),
-                        req.get_dom_str()
+                        req.get_dom_tree_str()
                     )
                 )
 

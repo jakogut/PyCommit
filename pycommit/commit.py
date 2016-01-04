@@ -14,22 +14,22 @@ class QueryError(Exception):
 class DBRecord:
     def __init__(self, tableID, dataBuff, mapBuff, recID = ""):
         self.tableID            = tableID
-        self.dataBuff           = create_string_buffer(bytes(dataBuff, "ascii"))
-        self.mapBuff            = create_string_buffer(bytes(mapBuff, "ascii"))
+        self.dataBuff           = create_string_buffer(dataBuff.encode('ascii'))
+        self.mapBuff            = create_string_buffer(mapBuff.encode('ascii'))
 
         self.recIDBuffSize      = 20
         self.errCodesBuffSize   = 64
         self.errMsgBuffSize     = 1024
 
-        self.recIDBuff          = create_string_buffer(bytes(recID, "ascii"), self.recIDBuffSize)
+        self.recIDBuff          = create_string_buffer(recID.encode('ascii'), self.recIDBuffSize)
         self.errCodesBuff       = create_string_buffer(self.errCodesBuffSize)
         self.errMsgBuff         = create_string_buffer(self.errMsgBuffSize)
 
     def getRecID(self):
-        return str(self.recIDBuff.raw, encoding='ascii')
+        return self.recIDBuff.raw.decode('ascii')
 
 class DataRequest:
-    declaration = bytes('<?commitcrmxmlqueryrequest version="1.0" ?>', "ascii")
+    declaration = b'<?commitcrmxmlqueryrequest version="1.0" ?>'
     
     def __init__(self, query = None, name = "CommitAgent", maxRecordCnt = 255):
 
@@ -135,7 +135,7 @@ class DataResponse:
         return self.recIds
 
 class FieldAttributesRequest:
-    declaration = bytes('<?commitcrmxmlgetrecorddatarequest version="1.0" ?>', "ascii")
+    declaration = b'<?commitcrmxmlgetrecorddatarequest version="1.0" ?>'
     def __init__(self, query = None, name = "CommitAgent", maxRecordCnt = 255):
 
         self.query = self._query_to_dict(query)
@@ -189,7 +189,7 @@ class FieldAttributesRequest:
 class FieldAttributesResponse:
     def __init__(self, response):
         self.response_str = response
-        self.doc = untangle.parse(self.response_str)
+        self.doc = untangle.parse(self.response_str.decode('ascii'))
 
     def get_dictionary(self):
         try:
@@ -213,7 +213,7 @@ class DBInterface:
                 self.CRMPath = CRMPath
                 self.serverPath = CRMPath + r'\Server'
                 self.DBPath = CRMPath + r'\Db'
-                self.DBPath_bytes = create_string_buffer(bytes(self.DBPath, 'ascii'))
+                self.DBPath_bytes = create_string_buffer(self.DBPath.encode('ascii'))
                 self.appName = appName
 
                 os.environ['PATH'] = self.serverPath + ';' + os.environ['PATH']
@@ -246,7 +246,7 @@ class DBInterface:
                 tbd = 0
 
                 self.CmDBEngDll.CmtInsUpdRec(
-                     create_string_buffer(bytes(self.appName, "ascii")),
+                     create_string_buffer(self.appName.encode('ascii')),
                      record.tableID,
                      record.dataBuff,
                      record.mapBuff,
@@ -290,7 +290,7 @@ class DBInterface:
                     )
                 )
 
-                resp = DataResponse(str(respBuff.value, encoding = "ascii"))
+                resp = DataResponse(respBuff.value.decode('ascii'))
                 return resp.get_recids()
         
         def get_rec_data_by_recid(self, req):
@@ -316,7 +316,7 @@ class DBInterface:
                     )
                 )
 
-                resp = FieldAttributesResponse(str(respBuff.value, encoding = "ascii"))
+                resp = FieldAttributesResponse(bytes(respBuff.value))
                 return resp.get_dictionary()
 
         def get_field_attribs_by_recid(self, req):
@@ -348,7 +348,7 @@ class DBInterface:
                     buffer
                 )
 
-                return str(buffer.value, encoding = 'ascii').strip()
+                return bytes(buffer.value).strip()
                 
         def get_desc_by_status(self):
                 pass

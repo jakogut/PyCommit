@@ -14,19 +14,19 @@ class QueryError(Exception):
 class DBRecord:
     def __init__(self, tableID, dataBuff, mapBuff, recID = ""):
         self.tableID            = tableID
-        self.dataBuff           = create_string_buffer(dataBuff.encode('ascii'))
-        self.mapBuff            = create_string_buffer(mapBuff.encode('ascii'))
+        self.dataBuff           = create_string_buffer(dataBuff.encode('UTF-8'))
+        self.mapBuff            = create_string_buffer(mapBuff.encode('UTF-8'))
 
         self.recIDBuffSize      = 20
         self.errCodesBuffSize   = 64
         self.errMsgBuffSize     = 1024
 
-        self.recIDBuff          = create_string_buffer(recID.encode('ascii'), self.recIDBuffSize)
+        self.recIDBuff          = create_string_buffer(recID.encode('UTF-8'), self.recIDBuffSize)
         self.errCodesBuff       = create_string_buffer(self.errCodesBuffSize)
         self.errMsgBuff         = create_string_buffer(self.errMsgBuffSize)
 
     def getRecID(self):
-        return self.recIDBuff.raw.decode('ascii')
+        return self.recIDBuff.raw.decode('UTF-8')
 
 class DataRequest:
     declaration = b'<?commitcrmxmlqueryrequest version="1.0" ?>'
@@ -213,7 +213,7 @@ class DBInterface:
                 self.CRMPath = CRMPath
                 self.serverPath = CRMPath + r'\Server'
                 self.DBPath = CRMPath + r'\Db'
-                self.DBPath_bytes = create_string_buffer(self.DBPath.encode('ascii'))
+                self.DBPath_bytes = create_string_buffer(self.DBPath.encode('UTF-8'))
                 self.appName = appName
 
                 os.environ['PATH'] = self.serverPath + ';' + os.environ['PATH']
@@ -246,7 +246,7 @@ class DBInterface:
                 tbd = 0
 
                 self.CmDBEngDll.CmtInsUpdRec(
-                     create_string_buffer(self.appName.encode('ascii')),
+                     create_string_buffer(self.appName.encode('UTF-8')),
                      record.tableID,
                      record.dataBuff,
                      record.mapBuff,
@@ -264,8 +264,8 @@ class DBInterface:
                     "DB insertion failed with code {}: {}\n\n{}".format(
                         self.status,
                         self.get_desc_by_code(self.status),
-			            'data: ' + record.dataBuff.value.decode('ascii') + '\n' + \
-			            'map: ' + record.mapBuff.value.decode('ascii')
+			            'data: ' + record.dataBuff.value.decode('UTF-8') + '\n' + \
+			            'map: ' + record.mapBuff.value.decode('UTF-8')
                     )
                 )
 
@@ -290,7 +290,7 @@ class DBInterface:
                     )
                 )
 
-                resp = DataResponse(respBuff.value.decode('ascii'))
+                resp = DataResponse(respBuff.value.decode('UTF-8'))
                 return resp.get_recids()
         
         def get_rec_data_by_recid(self, req):

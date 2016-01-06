@@ -259,6 +259,9 @@ class Item(CRMEntity):
     }
 
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
+        code_recid = crm_proxy.item.get_recid(recid)
+        if code_recid: recid = code_recid
+        
         self._recid_field = self.db_fields['RecordID']
         super().__init__(crm_proxy, recid, auto_populate=True)
         self.entity_type = self.types['Item']

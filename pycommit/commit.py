@@ -264,8 +264,8 @@ class DBInterface:
                     "DB insertion failed with code {}: {}\n\n{}".format(
                         self.status,
                         self.get_desc_by_code(self.status),
-			            'data: ' + record.dataBuff + '\n' + \
-			            'map: ' + record.mapBuff
+			            'data: ' + record.dataBuff.value.decode('ascii') + '\n' + \
+			            'map: ' + record.mapBuff.value.decode('ascii')
                     )
                 )
 

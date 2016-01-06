@@ -279,6 +279,26 @@ class CommitRemoteInterface:
 
             return recid[0]
 
+    class item:
+        @staticmethod
+        def get_recid(code):
+            req = commit.DataRequest(
+            query = 'FROM ITEM SELECT * WHERE {} = "{}"'.format(
+                    entities.ItemFields['ItemCode'],
+                    code))
+
+            recid = None
+
+            try: recid = crm_db.query_recids(req)
+            except: pass
+
+            if not recid: return
+
+            if len(recid) > 1:
+                raise AmbiguousValue
+
+            return recid[0]
+
 if __name__ == '__main__':
     addr = ('0.0.0.0', 8000)
     server = SimpleXMLRPCServer(addr, allow_none = True)

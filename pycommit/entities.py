@@ -267,7 +267,7 @@ class Item(CRMEntity):
             if code_recid: recid = code_recid
 
         self._recid_field = self.db_fields['RecordID']
-        super().__init__(crm_proxy, recid, auto_populate=True)
+        super().__init__(crm_proxy, recid, auto_populate)
         self.entity_type = self.types['Item']
 
 class Ticket(CRMEntity):

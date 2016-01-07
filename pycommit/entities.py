@@ -64,11 +64,14 @@ class CRMEntity(object):
     def _db_sync(self, crm_proxy):
         crm_proxy.update_record_from_dict(self.entity_type, self.db_data)
 
+    def populate_field(self, crm_proxy, field_name):
+        value = crm_proxy.get_field(self.get_recid(), field_name)
+        if value: self.db_data[field_name] = value
+
     def populate(self, crm_proxy):
         field_names = []
         for _, field_name in self.db_fields.items():
-            value = crm_proxy.get_field(self.get_recid(), field_name)
-            if value: self.db_data[field_name] = value
+            self.populate_field(crm_proxy, field_name)
 
 class Account(CRMEntity):
     db_fields = {
@@ -258,10 +261,11 @@ class Item(CRMEntity):
         "CreatedByUSer": "FLDITMCREATEUSER"
     }
 
-    def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
-        code_recid = crm_proxy.item.get_recid(recid)
-        if code_recid: recid = code_recid
-        
+    def __init__(self, crm_proxy=None, recid=None, code=None, auto_populate=True):
+        if code is not None and recid is None:
+            code_recid = crm_proxy.item.get_recid(code)
+            if code_recid: recid = code_recid
+
         self._recid_field = self.db_fields['RecordID']
         super().__init__(crm_proxy, recid, auto_populate=True)
         self.entity_type = self.types['Item']

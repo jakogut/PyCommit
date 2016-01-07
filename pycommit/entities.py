@@ -261,6 +261,12 @@ class Item(CRMEntity):
         "CreatedByUSer": "FLDITMCREATEUSER"
     }
 
+    value_map = {
+        'Product/Part': 'P',
+        'per unit': 'N',
+        'Fixed Price': 'F',
+    }
+
     def __init__(self, crm_proxy=None, recid=None, code=None, auto_populate=True):
         if code is not None and recid is None:
             code_recid = crm_proxy.item.get_recid(code)
@@ -269,6 +275,13 @@ class Item(CRMEntity):
         self._recid_field = self.db_fields['RecordID']
         super().__init__(crm_proxy, recid, auto_populate)
         self.entity_type = self.types['Item']
+        self._sub_values()
+
+    # Commit will return values that are different from what it accepts.
+    def _sub_values(self):
+        for key, value in self.db_data.items():
+            if value in self.value_map:
+                self.db_data[key] = self.value_map[value]
 
 class Ticket(CRMEntity):
     db_fields = {

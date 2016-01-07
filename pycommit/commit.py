@@ -283,7 +283,7 @@ class DBInterface:
                     byref(self.status))
 
                 if self.status.value != 1: raise QueryError(
-                    "DB query failed with code {}: {}\n\nRequest:\n{}".format(
+                    "Record ID query failed with code {}: {}\n\nRequest:\n{}".format(
                         self.status,
                         self.get_desc_by_code(self.status),
                         req.get_dom_tree_str()
@@ -309,7 +309,7 @@ class DBInterface:
                 )
 
                 if self.status.value != 1: raise QueryError(
-                    "DB query failed with code {}: {}\n\nRequest:\n{}".format(
+                    "Record data query failed with code {}: {}\n\nRequest:\n{}".format(
                         self.status,
                         self.get_desc_by_code(self.status),
                         req.get_dom_tree_str()

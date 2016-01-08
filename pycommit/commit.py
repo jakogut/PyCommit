@@ -50,7 +50,7 @@ class DataRequest:
         _select = Suppress(Literal('SELECT')) + Word(printables)
         _select = _select.setResultsName('SELECT')
         
-        _val = QuotedString('"')
+        _val = QuotedString('"', escQuote="'", escChar='\\')
         _val = _val.setResultsName('VAL')
         
         _conditional = Word(printables) + operator + _val

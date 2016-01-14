@@ -152,7 +152,7 @@ class FieldAttributesRequest:
         operator = oneOf("= > >= < <= like not not like")
         
         _from = Suppress('FROM') + Word(alphanums)
-        _select = Suppress('SELECT') + Suppress('(') + delimitedList(Word(alphas)) + Suppress(')')
+        _select = Suppress('SELECT') + Suppress('(') + delimitedList(Word(alphanums)) + Suppress(')')
 
         d = {}
 

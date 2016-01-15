@@ -18,7 +18,10 @@ def get_field(recid, field):
         )
     )
 
-    data = crm_db.get_rec_data_by_recid(req)
+    try:
+        data = crm_db.get_rec_data_by_recid(req)
+    except pycommit.QueryError:
+        return ''
 
     if data is None: return
     return data[field][0]
@@ -281,11 +284,16 @@ class CommitRemoteInterface:
 
     class item:
         @staticmethod
-        def get_recid(code):
+        def get_recid(code, suspended=False):
+            suspend_flag = 'Y' if suspended == True else 'N'
+            
             req = commit.DataRequest(
-            query = 'FROM ITEM SELECT * WHERE {} = "{}"'.format(
+            query = 'FROM ITEM SELECT * WHERE {} = "{}" \
+                     AND {} = "{}"'.format(
                     entities.ItemFields['ItemCode'],
-                    code))
+                    code,
+                    entities.ItemFields['Suspend'],
+                    suspend_flag))
 
             recid = None
 

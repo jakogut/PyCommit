@@ -50,7 +50,7 @@ class DataRequest:
         _select = Suppress(Literal('SELECT')) + Word(printables)
         _select = _select.setResultsName('SELECT')
         
-        _val = QuotedString('"')
+        _val = QuotedString('"', escQuote="'", escChar='\\')
         _val = _val.setResultsName('VAL')
         
         _conditional = Word(printables) + operator + _val
@@ -152,7 +152,7 @@ class FieldAttributesRequest:
         operator = oneOf("= > >= < <= like not not like")
         
         _from = Suppress('FROM') + Word(alphanums)
-        _select = Suppress('SELECT') + Suppress('(') + delimitedList(Word(alphas)) + Suppress(')')
+        _select = Suppress('SELECT') + Suppress('(') + delimitedList(Word(alphanums)) + Suppress(')')
 
         d = {}
 

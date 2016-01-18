@@ -10,6 +10,23 @@ crm_db = commit.DBInterface(CRMPath='C:\CommitCRM')
 class AmbiguousValue(Exception):
     pass
 
+def get_recids(entity, search_criteria):
+    query = 'FROM {} SELECT * WHERE {} = "{}" '
+
+    search_keys = list(search_criteria.keys())
+
+    key = search_keys.pop()
+    query = query.format(entity, key, search_criteria.pop(key))
+
+    for _, _ in search_criteria.items():
+        key = search_keys.pop()
+        query += 'AND {} = "{}" '.format(key, search_criteria[key])
+
+    req = commit.DataRequest(query.format(entity=entity, **search_criteria))
+
+    rec_ids = crm_db.query_recids(req)
+    return rec_ids
+
 def get_field(recid, field):
     req = commit.FieldAttributesRequest(
         query = "FROM {} SELECT ({})".format(
@@ -313,6 +330,7 @@ if __name__ == '__main__':
 
     #server.register_introspection_functions()
     server.register_instance(CommitRemoteInterface(), allow_dotted_names=True)
+    server.register_function(get_recids)
     server.register_function(get_field)
     server.register_function(update_record_from_dict)
     

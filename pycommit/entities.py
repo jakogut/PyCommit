@@ -203,6 +203,7 @@ class Charge(CRMEntity):
         "Date": "FLDSLPSLIPDATE",
         "Description": "FLDSLPDESC",
         "Units": "FLDSLPQUANTITY",
+        "HoursAmount": "FLDSLPHOURSAMOUNT",
         "AdjustAmount": "FLDSLPADJUSTAMOUNT",
         "AdjustPercent": "FLDSLPADJUSTPERCENT",
         "FromTime": "FLDSLPSTARTTIME",

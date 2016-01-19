@@ -37,7 +37,7 @@ def get_field(recid, field):
 
     try:
         data = crm_db.get_rec_data_by_recid(req)
-    except pycommit.QueryError:
+    except commit.QueryError:
         return ''
 
     if data is None: return

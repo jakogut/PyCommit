@@ -127,6 +127,8 @@ class DataResponse:
                 RecordData = self.doc.CommitCRMQueryDataResponse.RecordData
         except IndexError:
                 return
+        except AttributeError:
+            return
             
         self.recIds = []
         for data in RecordData:

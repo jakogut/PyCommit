@@ -325,18 +325,19 @@ class CommitRemoteInterface:
             return recid[0]
 
 if __name__ == '__main__':
-    addr = ('0.0.0.0', 8000)
-    server = SimpleXMLRPCServer(addr, allow_none = True)
+    import argparse
+    parser = argparse.ArgumentParser(description='CommitCRM Remote Interface Server')
+    parser.add_argument('-a', action='store', dest='ip', default='0.0.0.0')
+    parser.add_argument('-p', action='store', dest='port', default=8000, type=int)
+    parser.add_argument('--crm-path', action='store', dest='crm_path', default='C:\CommitCRM')
+    args = parser.parse_args()
 
-    #server.register_introspection_functions()
-    server.register_instance(CommitRemoteInterface(), allow_dotted_names=True)
-    server.register_function(get_recids)
-    server.register_function(get_field)
-    server.register_function(update_record_from_dict)
-    
-    print('Serving XML-RPC on: {}'.format(addr))
+    addr = (args.ip, args.port)
+    server = SimpleXMLRPCServer(addr, allow_none = True, logRequests = False)
+    server.register_instance(CommitRemoteInterface(args.crm_path))
 
     try:
+        print('Serving XML-RPC on: {}'.format(addr))
         server.serve_forever()
     except KeyboardInterrupt:
         print('\nKeyboard interrupt received, exiting.')

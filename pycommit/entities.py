@@ -42,10 +42,10 @@ class CRMEntity(object):
         else: return None
 
     def get_field(self, field):
-        if field not in self.db_fields: return
+        if field not in self.db_fields: return ''
         mapped = self.db_fields[field]
 
-        if mapped not in self.db_data: return
+        if mapped not in self.db_data: return ''
         return self.db_data[mapped]
 
     def set_field(self, field, value):

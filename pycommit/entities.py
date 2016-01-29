@@ -321,10 +321,20 @@ class Ticket(CRMEntity):
         "Resolution": "FLDTKTSOLUTION"
     }
 
-    def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
-        self._recid_field = self.db_fields['TicketNumber']
+    def __init__(self, crm_proxy=None, recid=None, tktno=None, auto_populate=True):
+        if tktno and crm_proxy and not recid:
+            ticket_recid = self._tktno_to_recid(crm_proxy, tktno)
+            if ticket_recid: recid = ticket_recid
+            
+        self._recid_field = self.db_fields['TicketRecID']
         super().__init__(crm_proxy, recid, auto_populate)
         self.entity_type = self.types['Ticket']
+
+    def _tktno_to_recid(self, crm_proxy, tktno):
+        recid = crm_proxy.get_recids('TICKET', {TicketFields['TicketNumber']: tktno})
+
+        if len(recid) > 1: raise GeneralError
+        return recid[0]
 
 # legacy compatibility
 Entity = CRMEntity.types

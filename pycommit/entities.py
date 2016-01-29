@@ -268,9 +268,9 @@ class Item(CRMEntity):
         'Fixed Price': 'F',
     }
 
-    def __init__(self, crm_proxy=None, recid=None, code=None, auto_populate=True):
-        if code is not None and recid is None:
-            code_recid = crm_proxy.item.get_recid(code)
+    def __init__(self, crm_proxy=None, recid=None, code=None, suspended=False, auto_populate=True):
+        if code and crm_proxy and not recid:
+            code_recid = self._code_to_recid(crm_proxy, code, suspended)
             if code_recid: recid = code_recid
 
         self._recid_field = self.db_fields['RecordID']
@@ -283,6 +283,19 @@ class Item(CRMEntity):
         for key, value in self.db_data.items():
             if value in self.value_map:
                 self.db_data[key] = self.value_map[value]
+
+    def _code_to_recid(self, crm_proxy, code, suspended):
+        suspend_flag = 'Y' if suspended == True else 'N'
+
+        recid = crm_proxy.get_recids('ITEM',
+                {ItemFields['ItemCode']: code, ItemFields['Suspend']: suspend_flag})
+
+        if not recid: return
+
+        if len(recid) > 1:
+            raise GeneralError
+
+        return recid[0]
 
 class Ticket(CRMEntity):
     db_fields = {

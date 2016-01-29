@@ -85,8 +85,8 @@ class CommitRemoteInterface(object):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='CommitCRM Remote Interface Server')
-    parser.add_argument('-a', action='store', dest='ip', default='0.0.0.0')
-    parser.add_argument('-p', action='store', dest='port', default=8000, type=int)
+    parser.add_argument('-l', '--listen-address', action='store', dest='ip', default='0.0.0.0')
+    parser.add_argument('-p', '--port', action='store', dest='port', default=8000, type=int)
     parser.add_argument('--crm-path', action='store', dest='crm_path', default='C:\CommitCRM')
     args = parser.parse_args()
 

@@ -309,6 +309,7 @@ class Ticket(CRMEntity):
         "EmpRecID": "FLDTKTWORKERID",
         "Priority": "FLDTKTPRIORITY",
         "TicketNumber": "FLDTKTTICKETNO",
+        "TicketRecID":  "FLDTKTRECID",
         "Description": "FLDTKTPROBLEM",
         "TicketType": "FLDTKTKIND",
         "Source": "FLDTKTSOURCE",

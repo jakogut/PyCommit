@@ -28,7 +28,8 @@ class CommitRemoteInterface(object):
 
         try:
             rec_ids = self.crm_db.query_recids(req)
-        except commit.QueryError:
+        except commit.QueryError as e:
+            print(e)
             return
 
         return rec_ids
@@ -41,7 +42,8 @@ class CommitRemoteInterface(object):
             
             try:
                 rec_ids = self.crm_db.query_recids(req)
-            except commit.QueryError:
+            except commit.QueryError as e:
+                print(e)
                 return
             
             if rec_ids is not None: return rec_ids[0]
@@ -53,7 +55,8 @@ class CommitRemoteInterface(object):
 
         try:
             data = self.crm_db.get_rec_data_by_recid(req)
-        except commit.QueryError:
+        except commit.QueryError as e:
+            print(e)
             return ''
 
         if data is None: return
@@ -73,7 +76,8 @@ class CommitRemoteInterface(object):
 
         try:
             self.crm_db.update_rec(rec)
-        except commit.QueryError:
+        except commit.QueryError as e:
+            print(e)
             return
         
         return rec.getRecID()

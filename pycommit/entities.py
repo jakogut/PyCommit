@@ -229,6 +229,13 @@ class Charge(CRMEntity):
         "CreateUser": "FLDSLPCREATEUSER"
     }
 
+    value_map = {
+        'Billable': 'B',
+        'Not Billable': 'N',
+        'Draft' : 'D',
+        'Billed': 'B',
+    }
+
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
         self._recid_field = self.db_fields['RecordID']
         super().__init__(crm_proxy, recid, auto_populate)

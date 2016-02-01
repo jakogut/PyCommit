@@ -33,6 +33,17 @@ class CRMEntity(object):
         and auto_populate is True:
             self.populate(crm_proxy)
 
+        self._sub_values()
+
+    # Commit will return values that are different from what it accepts.
+    def _sub_values(self):
+        try:
+            for key, value in self.db_data.items():
+                if value in self.value_map:
+                    self.db_data[key] = self.value_map[value]
+        except AttributeError:
+            return
+
     def set_recid(self, recid):
         self.db_data[self._recid_field] = recid
 
@@ -280,12 +291,6 @@ class Item(CRMEntity):
         super().__init__(crm_proxy, recid, auto_populate)
         self.entity_type = self.types['Item']
         self._sub_values()
-
-    # Commit will return values that are different from what it accepts.
-    def _sub_values(self):
-        for key, value in self.db_data.items():
-            if value in self.value_map:
-                self.db_data[key] = self.value_map[value]
 
     def _code_to_recid(self, crm_proxy, code, suspended):
         suspend_flag = 'Y' if suspended == True else 'N'

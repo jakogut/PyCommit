@@ -81,6 +81,7 @@ class CRMEntity(object):
     def populate_field(self, crm_proxy, field_name):
         value = crm_proxy.get_field(self.get_recid(), field_name)
         if value: self.db_data[field_name] = value
+        self._sub_values()
 
     def populate(self, crm_proxy):
         field_names = []

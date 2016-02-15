@@ -286,7 +286,7 @@ class DBInterface:
                     "Record ID query failed with code {}: {}\n\nRequest:\n{}\n\n".format(
                         self.status,
                         self.get_desc_by_code(self.status),
-                        req.get_dom_tree_str()
+                        req.get_dom_tree_str().decode('UTF-8')
                     )
                 )
 
@@ -312,7 +312,7 @@ class DBInterface:
                     "Record data query failed with code {}: {}\n\nRequest:\n{}".format(
                         self.status,
                         self.get_desc_by_code(self.status),
-                        req.get_dom_tree_str()
+                        req.get_dom_tree_str().decode('UTF-8')
                     )
                 )
 

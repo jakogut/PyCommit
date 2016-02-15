@@ -107,15 +107,14 @@ class DataRequest:
         
         self.orderElement = SubElement(self.queryElement, 'Order')
 
-    def get_dom_tree_str(self):
-        return self.declaration + tostring(self.tree, pretty_print=True)
+    def get_dom_tree_str(self, pretty=True):
+        dom_str = self.declaration + tostring(self.tree)
 
-    def print_dom_tree(self):
-        print(self._prettify(self.get_dom_tree_str()))
+        if pretty:
+            reparsed = minidom.parseString(dom_str)
+            dom_str = reparsed.toprettyxml(indent='    ')
 
-    def _prettify(self, dom_str):
-        reparsed = minidom.parseString(dom_str)
-        return reparsed.toprettyxml(indent="    ")
+        return dom_str
 
 class DataResponse:
     def __init__(self, response):
@@ -177,16 +176,15 @@ class FieldAttributesRequest:
         self.selectFieldsElement = SubElement(self.tree, 'SelectFieldsList')
         self.selectFieldsElement.text = ', '.join(self.query['SELECT'])
 
-    def get_dom_tree_str(self):
+    def get_dom_tree_str(self, pretty=True):
         if self.query is None: return None
-        return self.declaration + tostring(self.tree)
+        dom_str = self.declaration + tostring(self.tree)
 
-    def print_dom_tree(self):
-        print(self._prettify(self.get_dom_tree_str()))
+        if pretty:
+            reparsed = minidom.parseString(dom_str)
+            dom_str = reparsed.toprettyxml(indent='    ')
 
-    def _prettify(self, dom_str):
-        reparsed = minidom.parseString(dom_str)
-        return reparsed.toprettyxml(indent="    ")
+        return dom_str
 
 class FieldAttributesResponse:
     def __init__(self, response):
@@ -285,7 +283,7 @@ class DBInterface:
                     byref(self.status))
 
                 if self.status.value != 1: raise QueryError(
-                    "Record ID query failed with code {}: {}\n\nRequest:\n{}".format(
+                    "Record ID query failed with code {}: {}\n\nRequest:\n{}\n\n".format(
                         self.status,
                         self.get_desc_by_code(self.status),
                         req.get_dom_tree_str()

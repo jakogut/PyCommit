@@ -114,7 +114,7 @@ class DataRequest:
             reparsed = minidom.parseString(dom_str)
             dom_str = reparsed.toprettyxml(indent='    ')
 
-        return dom_str
+        return dom_str.encode('UTF-8')
 
 class DataResponse:
     def __init__(self, response):
@@ -184,7 +184,7 @@ class FieldAttributesRequest:
             reparsed = minidom.parseString(dom_str)
             dom_str = reparsed.toprettyxml(indent='    ')
 
-        return dom_str
+        return dom_str.encode('UTF-8')
 
 class FieldAttributesResponse:
     def __init__(self, response):

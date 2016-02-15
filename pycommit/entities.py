@@ -287,7 +287,11 @@ class Item(CRMEntity):
     value_map = {
         'Product/Part': 'P',
         'per unit': 'N',
+        'per hour': 'Y',
         'Fixed Price': 'F',
+        'Labor': 'F',
+        'Expense': 'X',
+        'Part': 'P',
     }
 
     def __init__(self, crm_proxy=None, recid=None, code=None, suspended=False, auto_populate=True):

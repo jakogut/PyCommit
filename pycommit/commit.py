@@ -191,7 +191,7 @@ class FieldAttributesRequest:
 class FieldAttributesResponse:
     def __init__(self, response):
         self.response_str = response
-        self.doc = untangle.parse(self.response_str.decode('ascii'))
+        self.doc = untangle.parse(self.response_str.decode('UTF-8'))
 
     def get_dictionary(self):
         try:

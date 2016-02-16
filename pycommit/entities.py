@@ -81,6 +81,7 @@ class CRMEntity(object):
     def populate_field(self, crm_proxy, field_name):
         value = crm_proxy.get_field(self.get_recid(), field_name)
         if value: self.db_data[field_name] = value
+        self._sub_values()
 
     def populate(self, crm_proxy):
         field_names = []
@@ -286,7 +287,11 @@ class Item(CRMEntity):
     value_map = {
         'Product/Part': 'P',
         'per unit': 'N',
+        'per hour': 'Y',
         'Fixed Price': 'F',
+        'Labor': 'F',
+        'Expense': 'X',
+        'Part': 'P',
     }
 
     def __init__(self, crm_proxy=None, recid=None, code=None, suspended=False, auto_populate=True):

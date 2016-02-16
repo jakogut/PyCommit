@@ -28,7 +28,7 @@ class DBRecord:
     def getRecID(self):
         return self.recIDBuff.raw.decode('UTF-8')
 
-class DataRequest:
+class RecIDRequest
     declaration = b'<?commitcrmxmlqueryrequest version="1.0" ?>'
     
     def __init__(self, query = None, name = "CommitAgent", maxRecordCnt = 255):
@@ -116,7 +116,7 @@ class DataRequest:
 
         return dom_str.encode('UTF-8')
 
-class DataResponse:
+class RecIDResponse:
     def __init__(self, response):
         self.response_str = response
         self.doc = untangle.parse(self.response_str)

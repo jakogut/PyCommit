@@ -290,7 +290,7 @@ class DBInterface:
                     )
                 )
 
-                resp = DataResponse(respBuff.value.decode('UTF-8'))
+                resp = RecIDResponse(respBuff.value.decode('UTF-8'))
                 return resp.get_recids()
         
         def get_rec_data_by_recid(self, req):
@@ -316,7 +316,7 @@ class DBInterface:
                     )
                 )
 
-                resp = FieldAttributesResponse(bytes(respBuff.value))
+                resp = RecordDataResponse(bytes(respBuff.value))
                 return resp.get_dictionary()
                 
         def _terminate_db_eng_dll(self):

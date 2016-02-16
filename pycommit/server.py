@@ -24,7 +24,7 @@ class CommitRemoteInterface(object):
             key = search_keys.pop()
             query += 'AND {} = "{}" '.format(key, search_criteria[key])
 
-        req = commit.DataRequest(query.format(entity=entity, **search_criteria))
+        req = commit.RecIDRequest(query.format(entity=entity, **search_criteria))
 
         try:
             rec_ids = self.crm_db.query_recids(req)
@@ -36,7 +36,7 @@ class CommitRemoteInterface(object):
 
     def find_record(self, entity, value, fields):
         for f in fields:
-            req = commit.DataRequest(
+            req = commit.RecIDRequest(
                 query='FROM {} SELECT * WHERE {} = "{}"'.format(
                     entity, f, value))
             
@@ -49,7 +49,7 @@ class CommitRemoteInterface(object):
             if rec_ids is not None: return rec_ids[0]
 
     def get_field(self, recid, field):
-        req = commit.FieldAttributesRequest(
+        req = commit.RecordDataRequest(
             query = "FROM {} SELECT ({})".format(
                 recid, field))
 

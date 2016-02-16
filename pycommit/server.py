@@ -60,7 +60,7 @@ class CommitRemoteInterface(object):
             return ''
 
         if data is None: return
-        return data[field][0]
+        return data[field]
 
     def update_record_from_dict(self, entity, data):
         if (entity is None) or (data is None):

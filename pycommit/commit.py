@@ -28,7 +28,7 @@ class DBRecord:
     def getRecID(self):
         return self.recIDBuff.raw.decode('UTF-8')
 
-class DataRequest:
+class RecIDRequest:
     declaration = b'<?commitcrmxmlqueryrequest version="1.0" ?>'
     
     def __init__(self, query = None, name = "CommitAgent", maxRecordCnt = 255):
@@ -116,7 +116,7 @@ class DataRequest:
 
         return dom_str.encode('UTF-8')
 
-class DataResponse:
+class RecIDResponse:
     def __init__(self, response):
         self.response_str = response
         self.doc = untangle.parse(self.response_str)
@@ -135,7 +135,7 @@ class DataResponse:
 
         return self.recIds
 
-class FieldAttributesRequest:
+class RecordDataRequest:
     declaration = b'<?commitcrmxmlgetrecorddatarequest version="1.0" ?>'
     def __init__(self, query = None, name = "CommitAgent", maxRecordCnt = 255):
 
@@ -186,10 +186,10 @@ class FieldAttributesRequest:
 
         return dom_str.encode('UTF-8')
 
-class FieldAttributesResponse:
+class RecordDataResponse:
     def __init__(self, response):
         self.response_str = response
-        self.doc = untangle.parse(self.response_str.decode('ascii'))
+        self.doc = untangle.parse(self.response_str.decode('UTF-8'))
 
     def get_dictionary(self):
         try:
@@ -201,10 +201,10 @@ class FieldAttributesResponse:
 
         _dict = {}
         for e in elements:
-            if e._name not in _dict:
-                _dict[e._name] = [e.cdata]
+            if 'CmtRawData' not in e._attributes:
+                _dict[e._name] = e.cdata
             else:
-                _dict[e.name].append(e.cdata)
+                _dict[e._name] = e['CmtRawData']
 
         return _dict
                 
@@ -318,19 +318,6 @@ class DBInterface:
 
                 resp = FieldAttributesResponse(bytes(respBuff.value))
                 return resp.get_dictionary()
-
-        def get_field_attribs_by_recid(self, req):
-                req_str = req.get_dom_tree_str()
-
-                respBufferSize = 16384
-                respBuffer = create_string_buffer(respBufferSize)
-
-                self.CmDBQryDll.CmtGetRecordDataByRecId(
-                    create_string_buffer(req_str),
-                    len(req_str),
-                    respBuff,
-                    respBuffSize,
-                    byref(self.status))
                 
         def _terminate_db_eng_dll(self):
                 self.CmDBEngDll.CmtTerminateDbEngDll()
@@ -355,8 +342,3 @@ class DBInterface:
 
         def get_status(self):
                 return self.status.value
-                
-if __name__ == '__main__':
-        from tests import CommitTests
-        tests = CommitTests()
-        tests.run_all()

@@ -318,19 +318,6 @@ class DBInterface:
 
                 resp = FieldAttributesResponse(bytes(respBuff.value))
                 return resp.get_dictionary()
-
-        def get_field_attribs_by_recid(self, req):
-                req_str = req.get_dom_tree_str()
-
-                respBufferSize = 16384
-                respBuffer = create_string_buffer(respBufferSize)
-
-                self.CmDBQryDll.CmtGetRecordDataByRecId(
-                    create_string_buffer(req_str),
-                    len(req_str),
-                    respBuff,
-                    respBuffSize,
-                    byref(self.status))
                 
         def _terminate_db_eng_dll(self):
                 self.CmDBEngDll.CmtTerminateDbEngDll()

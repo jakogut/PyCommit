@@ -28,7 +28,7 @@ class DBRecord:
     def getRecID(self):
         return self.recIDBuff.raw.decode('UTF-8')
 
-class RecIDRequest
+class RecIDRequest:
     declaration = b'<?commitcrmxmlqueryrequest version="1.0" ?>'
     
     def __init__(self, query = None, name = "CommitAgent", maxRecordCnt = 255):
@@ -135,7 +135,7 @@ class RecIDResponse:
 
         return self.recIds
 
-class FieldAttributesRequest:
+class RecordDataRequest:
     declaration = b'<?commitcrmxmlgetrecorddatarequest version="1.0" ?>'
     def __init__(self, query = None, name = "CommitAgent", maxRecordCnt = 255):
 
@@ -186,7 +186,7 @@ class FieldAttributesRequest:
 
         return dom_str.encode('UTF-8')
 
-class FieldAttributesResponse:
+class RecordDataResponse:
     def __init__(self, response):
         self.response_str = response
         self.doc = untangle.parse(self.response_str.decode('UTF-8'))

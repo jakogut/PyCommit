@@ -203,10 +203,10 @@ class FieldAttributesResponse:
 
         _dict = {}
         for e in elements:
-            if e._name not in _dict:
-                _dict[e._name] = [e.cdata]
+            if 'CmtRawData' not in e._attributes:
+                _dict[e._name] = e.cdata
             else:
-                _dict[e.name].append(e.cdata)
+                _dict[e._name] = e['CmtRawData']
 
         return _dict
                 

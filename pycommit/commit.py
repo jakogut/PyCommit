@@ -355,8 +355,3 @@ class DBInterface:
 
         def get_status(self):
                 return self.status.value
-                
-if __name__ == '__main__':
-        from tests import CommitTests
-        tests = CommitTests()
-        tests.run_all()

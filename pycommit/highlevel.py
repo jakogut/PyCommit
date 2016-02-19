@@ -1,12 +1,12 @@
-from . import lowlevel, entities
+from pycommit import lowlevel, entities
 import sys
 
 class AmbiguousValue(Exception):
     pass
-
+        
 class DBInterface(object):
-    def __init__(self):
-        self.crm_db = lowlevel.DBInterface(CRMPath=args.crm_path)
+    def __init__(self, crm_path):
+        self.crm_db = lowlevel.DBInterface(CRMPath=crm_path)
 
     def get_recids(self, entity, search_criteria):
         query = 'FROM {} SELECT * WHERE {} = "{}" '
@@ -20,7 +20,8 @@ class DBInterface(object):
             key = search_keys.pop()
             query += 'AND {} = "{}" '.format(key, search_criteria[key])
 
-        req = lowlevel.RecIDRequest(query.format(entity=entity, **search_criteria))
+        req = lowlevel.RecIDRequest(query.format(entity=entity, **search_criteria),
+                                    maxRecordCnt = 32768)
 
         try:
             rec_ids = self.crm_db.query_recids(req)
@@ -42,7 +43,9 @@ class DBInterface(object):
                 print(e)
                 return
             
-            if rec_ids is not None: return rec_ids[0]
+            recid = None
+            if rec_ids is not None: recid = rec_ids[0]
+            return recid
 
     def get_field(self, recid, field):
         req = lowlevel.RecordDataRequest(
@@ -56,7 +59,8 @@ class DBInterface(object):
             return ''
 
         if data is None: return
-        return data[field]
+        ret = data[field]
+        return ret
 
     def update_record_from_dict(self, entity, data):
         if (entity is None) or (data is None):
@@ -75,9 +79,15 @@ class DBInterface(object):
         except lowlevel.QueryError as e:
             print(e)
             return
-        
-        return rec.getRecID()
 
-    # Named arguments don't work with built-in XML-RPC
+        recid = rec.getRecID()
+        return recid
+
     def update_record(self, entity, **kwargs):
         return update_record_from_dict(entity, kwargs)
+
+if __name__ == '__main__':
+    crm_db = DBInterface('c:\CommitCRM')
+    
+    while(True):
+        crm_db.get_field('TKTTLCFP4TTEC9V8QZ8K', 'FLDTKTPROBLEM')

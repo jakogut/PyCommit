@@ -1,5 +1,6 @@
 import os
 from ctypes import *
+from ctypes.wintypes import *
 
 from lxml.etree import ElementTree, Element, SubElement, Comment, tostring, fromstring
 from xml.dom import minidom
@@ -137,6 +138,7 @@ class RecIDResponse:
 
 class RecordDataRequest:
     declaration = b'<?commitcrmxmlgetrecorddatarequest version="1.0" ?>'
+
     def __init__(self, query = None, name = "CommitAgent", maxRecordCnt = 255):
 
         self.query = self._query_to_dict(query)
@@ -189,7 +191,7 @@ class RecordDataRequest:
 class RecordDataResponse:
     def __init__(self, response):
         self.response_str = response
-        self.doc = untangle.parse(self.response_str.decode('UTF-8'))
+        self.doc = untangle.parse(self.response_str)
 
     def get_dictionary(self):
         try:
@@ -240,10 +242,15 @@ class DBInterface:
 
                 if self.status.value != 1: raise QueryError(
                         "DB not initialized for queries. Error code {}".format(self.status))
-                
+
+        def _terminate_db_eng_dll(self):
+                self.CmDBEngDll.CmtTerminateDbEngDll()
+
+        def _terminate_db_qry_dll(self):
+                self.CmDBQryDll.CmtTerminateDbQryDll()
+
         def update_rec(self, record):            
-                flag = 1
-                tbd = 0
+                flag, tbd = 1, 0
 
                 self.CmDBEngDll.CmtInsUpdRec(
                      create_string_buffer(self.appName.encode('UTF-8')),
@@ -263,7 +270,7 @@ class DBInterface:
                 if self.status.value != 1: raise QueryError(
                     "DB insertion failed with code {}: {}\n\n{}".format(
                         self.status,
-                        self.get_desc_by_code(self.status),
+                        self.get_desc_by_code(status),
 			            'data: ' + record.dataBuff.value.decode('UTF-8') + '\n' + \
 			            'map: ' + record.mapBuff.value.decode('UTF-8')
                     )
@@ -285,14 +292,16 @@ class DBInterface:
                 if self.status.value != 1: raise QueryError(
                     "Record ID query failed with code {}: {}\n\nRequest:\n{}\n\n".format(
                         self.status,
-                        self.get_desc_by_code(self.status),
+                        self.get_desc_by_code(status),
                         req.get_dom_tree_str()
                     )
                 )
 
                 resp = RecIDResponse(respBuff.value.decode('UTF-8'))
+                respBuff = None
+                
                 return resp.get_recids()
-        
+
         def get_rec_data_by_recid(self, req):
                 req_str = req.get_dom_tree_str()
                 if req_str is None: return
@@ -311,20 +320,16 @@ class DBInterface:
                 if self.status.value != 1: raise QueryError(
                     "Record data query failed with code {}: {}\n\nRequest:\n{}".format(
                         self.status,
-                        self.get_desc_by_code(self.status),
+                        self.get_desc_by_code(status),
                         req.get_dom_tree_str()
                     )
                 )
 
-                resp = RecordDataResponse(bytes(respBuff.value))
+                resp = RecordDataResponse(respBuff.value.decode('UTF-8'))
+                respBuff = None
+                
                 return resp.get_dictionary()
-                
-        def _terminate_db_eng_dll(self):
-                self.CmDBEngDll.CmtTerminateDbEngDll()
 
-        def _terminate_db_qry_dll(self):
-                self.CmDBQryDll.CmtTerminateDbQryDll()
-                
         def get_desc_by_code(self, code):
                 size = 1024
                 buffer = create_string_buffer(size)
@@ -336,48 +341,4 @@ class DBInterface:
                 )
 
                 return bytes(buffer.value).strip()
-                
-        def get_desc_by_status(self):
-                pass
-
-        def get_status(self):
-                return self.status.value
-
-crm_db = DBInterface()
-def update_record_from_dict(entity, data):
-        if (entity is None) or (data is None):
-            return
-        
-        data_str, map_str = '', "'\n,\n"
-        
-        for key, value in data.items():
-            data_str += "'{}',".format(value)
-            map_str += "{}\n".format(key)
-
-        rec = DBRecord(entity, data_str, map_str)
-
-        try:
-            crm_db.update_rec(rec)
-        except QueryError as e:
-            print(e)
-            return
-        
-        return rec.getRecID()
-
-import random, string
-def rand_string():
-    return ''.join(random.choice(string.digits) for _ in range(16))
-
-if __name__ == '__main__':
-    import pycommit.entities
-    import time
-
-    start = time.time()
-    counter = 0
     
-    while(time.time() < start + 60):
-        recid = update_record_from_dict(80, {pycommit.entities.ItemFields['ItemCode']: rand_string(),
-                                             pycommit.entities.ItemFields['ItemGroup']: 'P',
-                                             pycommit.entities.ItemFields['ItemName']: 'Memory Leak Check'})
-        counter += 1
-    print(counter)

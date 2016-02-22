@@ -15,6 +15,8 @@ if __name__ == '__main__':
 
     addr = (args.ip, args.port)
     hl_dbi = highlevel.DBInterface(args.crm_path)
+
+    print('Address:', args.ip)
     
     try:
         daemon = Pyro4.Daemon.serveSimple({hl_dbi: 'highlevel.DBInterface'},

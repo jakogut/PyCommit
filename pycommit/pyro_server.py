@@ -2,7 +2,7 @@ from pycommit import highlevel
 
 import Pyro4
 
-#Pyro4.config.COMPRESSION = True
+Pyro4.config.COMPRESSION = True
 Pyro4.config.SERVERTYPE = 'multiplex'
 
 if __name__ == '__main__':

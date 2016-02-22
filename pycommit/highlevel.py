@@ -3,12 +3,26 @@ import sys
 
 class AmbiguousValue(Exception):
     pass
-        
+
 class DBInterface(object):
     def __init__(self, crm_path):
-        self.crm_db = lowlevel.DBInterface(CRMPath=crm_path)
+        self.crm_path = crm_path
+        self.crm_db = None
+        
+        self.calls_per_handle = 1000
+        self.db_call_cnt = 0
+
+    # This is a hack to free up memory from the low level DB interface
+    def db_operation(self):
+        if self.db_call_cnt > self.calls_per_handle or not self.crm_db:
+            self.crm_db = lowlevel.DBInterface(CRMPath=self.crm_path)
+            self.db_call_cnt = 0
+        else:
+            self.db_call_cnt += 1
 
     def get_recids(self, entity, search_criteria):
+        self.db_operation()
+        
         query = 'FROM {} SELECT * WHERE {} = "{}" '
 
         search_keys = list(search_criteria.keys())
@@ -32,6 +46,8 @@ class DBInterface(object):
         return rec_ids
 
     def find_record(self, entity, value, fields):
+        self.db_operation()
+        
         for f in fields:
             req = lowlevel.RecIDRequest(
                 query='FROM {} SELECT * WHERE {} = "{}"'.format(
@@ -48,6 +64,8 @@ class DBInterface(object):
             return recid
 
     def get_field(self, recid, field):
+        self.db_operation()
+        
         req = lowlevel.RecordDataRequest(
             query = "FROM {} SELECT ({})".format(
                 recid, field))
@@ -63,6 +81,8 @@ class DBInterface(object):
         return ret
 
     def update_record_from_dict(self, entity, data):
+        self.db_operation()
+        
         if (entity is None) or (data is None):
             return
         

@@ -19,10 +19,10 @@ if __name__ == '__main__':
     print('Address:', args.ip)
     
     try:
-        daemon = Pyro4.Daemon.serveSimple({hl_dbi: 'highlevel.DBInterface'},
-                                  host = args.ip,
-                                  port = args.port,
-                                  ns = True)
+        daemon = Pyro4.Daemon.serveSimple(
+            {hl_dbi: 'highlevel.DBInterface'},
+             host = args.ip, port = args.port, ns = True)
+        
     except KeyboardInterrupt:
         print('\nKeyboard interrupt received, exiting.')
         daemon.close()

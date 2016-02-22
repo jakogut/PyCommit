@@ -13,6 +13,8 @@ class DBInterface(object):
         self.db_call_cnt = 0
 
     # This is a hack to free up memory from the low level DB interface
+    # Commit appears to suffer from a memory leak, as documented here:
+    # http://www.commitcrm.com/forum/showthread.php?t=3969
     def db_operation(self):
         if self.db_call_cnt > self.calls_per_handle or not self.crm_db:
             self.crm_db = lowlevel.DBInterface(CRMPath=self.crm_path)

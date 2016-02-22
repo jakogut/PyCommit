@@ -105,9 +105,3 @@ class DBInterface(object):
 
     def update_record(self, entity, **kwargs):
         return update_record_from_dict(entity, kwargs)
-
-if __name__ == '__main__':
-    crm_db = DBInterface('c:\CommitCRM')
-    
-    while(True):
-        crm_db.get_field('TKTTLCFP4TTEC9V8QZ8K', 'FLDTKTPROBLEM')

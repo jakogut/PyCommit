@@ -270,7 +270,7 @@ class DBInterface:
                 if self.status.value != 1: raise QueryError(
                     "DB insertion failed with code {}: {}\n\n{}".format(
                         self.status,
-                        self.get_desc_by_code(status),
+                        self.get_desc_by_code(self.status),
 			            'data: ' + record.dataBuff.value.decode('UTF-8') + '\n' + \
 			            'map: ' + record.mapBuff.value.decode('UTF-8')
                     )
@@ -292,7 +292,7 @@ class DBInterface:
                 if self.status.value != 1: raise QueryError(
                     "Record ID query failed with code {}: {}\n\nRequest:\n{}\n\n".format(
                         self.status,
-                        self.get_desc_by_code(status),
+                        self.get_desc_by_code(self.status),
                         req.get_dom_tree_str()
                     )
                 )
@@ -320,7 +320,7 @@ class DBInterface:
                 if self.status.value != 1: raise QueryError(
                     "Record data query failed with code {}: {}\n\nRequest:\n{}".format(
                         self.status,
-                        self.get_desc_by_code(status),
+                        self.get_desc_by_code(self.status),
                         req.get_dom_tree_str()
                     )
                 )

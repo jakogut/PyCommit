@@ -386,6 +386,7 @@ class Ticket(CRMEntity):
 Entity = CRMEntity.types
 AccountFields = Account.db_fields
 AssetFields = Asset.db_fields
+EventFields = Event.db_fields
 ChargeFields = Charge.db_fields
 HistoryNoteFields = HistoryNote.db_fields
 ItemFields = Item.db_fields

@@ -1,5 +1,6 @@
 import os
 from ctypes import *
+from ctypes.wintypes import *
 
 from lxml.etree import ElementTree, Element, SubElement, Comment, tostring, fromstring
 from xml.dom import minidom
@@ -137,6 +138,7 @@ class RecIDResponse:
 
 class RecordDataRequest:
     declaration = b'<?commitcrmxmlgetrecorddatarequest version="1.0" ?>'
+
     def __init__(self, query = None, name = "CommitAgent", maxRecordCnt = 255):
 
         self.query = self._query_to_dict(query)
@@ -189,7 +191,7 @@ class RecordDataRequest:
 class RecordDataResponse:
     def __init__(self, response):
         self.response_str = response
-        self.doc = untangle.parse(self.response_str.decode('UTF-8'))
+        self.doc = untangle.parse(self.response_str)
 
     def get_dictionary(self):
         try:
@@ -240,10 +242,15 @@ class DBInterface:
 
                 if self.status.value != 1: raise QueryError(
                         "DB not initialized for queries. Error code {}".format(self.status))
-                
+
+        def _terminate_db_eng_dll(self):
+                self.CmDBEngDll.CmtTerminateDbEngDll()
+
+        def _terminate_db_qry_dll(self):
+                self.CmDBQryDll.CmtTerminateDbQryDll()
+
         def update_rec(self, record):            
-                flag = 1
-                tbd = 0
+                flag, tbd = 1, 0
 
                 self.CmDBEngDll.CmtInsUpdRec(
                      create_string_buffer(self.appName.encode('UTF-8')),
@@ -286,13 +293,15 @@ class DBInterface:
                     "Record ID query failed with code {}: {}\n\nRequest:\n{}\n\n".format(
                         self.status,
                         self.get_desc_by_code(self.status),
-                        req.get_dom_tree_str()
+                        req.get_dom_tree_str().decode('UTF-8')
                     )
                 )
 
                 resp = RecIDResponse(respBuff.value.decode('UTF-8'))
+                respBuff = None
+                
                 return resp.get_recids()
-        
+
         def get_rec_data_by_recid(self, req):
                 req_str = req.get_dom_tree_str()
                 if req_str is None: return
@@ -312,19 +321,15 @@ class DBInterface:
                     "Record data query failed with code {}: {}\n\nRequest:\n{}".format(
                         self.status,
                         self.get_desc_by_code(self.status),
-                        req.get_dom_tree_str()
+                        req.get_dom_tree_str().decode('UTF-8')
                     )
                 )
 
-                resp = RecordDataResponse(bytes(respBuff.value))
+                resp = RecordDataResponse(respBuff.value.decode('UTF-8'))
+                respBuff = None
+                
                 return resp.get_dictionary()
-                
-        def _terminate_db_eng_dll(self):
-                self.CmDBEngDll.CmtTerminateDbEngDll()
 
-        def _terminate_db_qry_dll(self):
-                self.CmDBQryDll.CmtTerminateDbQryDll()
-                
         def get_desc_by_code(self, code):
                 size = 1024
                 buffer = create_string_buffer(size)

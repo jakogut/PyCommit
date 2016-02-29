@@ -76,7 +76,7 @@ class CRMEntity(object):
         self._db_sync(crm_proxy)
 
     def _db_sync(self, crm_proxy):
-        crm_proxy.update_record_from_dict(self.entity_type, self.db_data)
+        crm_proxy.update_record(self.entity_type, **(self.db_data))
 
     def populate_field(self, crm_proxy, field_name):
         value = crm_proxy.get_field(self.get_recid(), field_name)
@@ -205,6 +205,35 @@ class Asset(CRMEntity):
         self._recid_field = self.db_fields['RecordID']
         super().__init__(crm_proxy, recid, auto_populate)
         self.entity_type = self.types['Asset']
+
+class Event(CRMEntity):
+    db_fields = {
+        "RecordID": "FLDEVTRECID",
+        "EventType": "FLDEVTWRITETOID",
+        "EmployeeRecID": "FLDEVTWORKERID",
+        "PrivateUser": "FLDEVTPRIVATEID",
+        "Account": "FLDEVTCARDID",
+        "Contact": "FLDEVTCONTACTID",
+        "Document": "FLDEVTDOCID",
+        "Done": "FLDEVTDONE",
+        "Date": "FLDEVTEVENTDATE",
+        "Description": "FLDEVTFREETEXT",
+        "StartTime": "FLDEVTFROMTIME",
+        "EndTime": "FLDEVTTOTIME",
+        "LinkedEntity": "FLDEVTLINKRECID",
+        "Field1": "FLDEVTFAMILY",
+        "Field2": "FLDEVTACTION",
+        "Field3": "FLDEVTPLACE",
+        "Field4": "FLDEVTPLACE1",
+        "Field5": "FLDEVTPLACE2",
+        "CreatedByUser": "FLDEVTCREATEUSERID",
+        "UpdatedByUser": "FLDEVTUPDATEUSER",
+    }
+
+    def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
+        self._recid_field = self.db_fields['RecordID']
+        super().__init__(crm_proxy, recid, auto_populate)
+        self.entity_type = self.types['Event']
 
 class Charge(CRMEntity):
     db_fields = {
@@ -386,6 +415,7 @@ class Ticket(CRMEntity):
 Entity = CRMEntity.types
 AccountFields = Account.db_fields
 AssetFields = Asset.db_fields
+EventFields = Event.db_fields
 ChargeFields = Charge.db_fields
 HistoryNoteFields = HistoryNote.db_fields
 ItemFields = Item.db_fields

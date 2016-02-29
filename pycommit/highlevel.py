@@ -1,14 +1,30 @@
-from . import lowlevel, entities
+from pycommit import lowlevel, entities
 import sys
 
 class AmbiguousValue(Exception):
     pass
 
 class DBInterface(object):
-    def __init__(self):
-        self.crm_db = lowlevel.DBInterface(CRMPath=args.crm_path)
+    def __init__(self, crm_path):
+        self.crm_path = crm_path
+        self.crm_db = None
+        
+        self.calls_per_handle = 1000
+        self.db_call_cnt = 0
+
+    # This is a hack to free up memory from the low level DB interface
+    # Commit appears to suffer from a memory leak, as documented here:
+    # http://www.commitcrm.com/forum/showthread.php?t=3969
+    def db_operation(self):
+        if self.db_call_cnt > self.calls_per_handle or not self.crm_db:
+            self.crm_db = lowlevel.DBInterface(CRMPath=self.crm_path)
+            self.db_call_cnt = 0
+        else:
+            self.db_call_cnt += 1
 
     def get_recids(self, entity, search_criteria):
+        self.db_operation()
+        
         query = 'FROM {} SELECT * WHERE {} = "{}" '
 
         search_keys = list(search_criteria.keys())
@@ -20,7 +36,8 @@ class DBInterface(object):
             key = search_keys.pop()
             query += 'AND {} = "{}" '.format(key, search_criteria[key])
 
-        req = lowlevel.RecIDRequest(query.format(entity=entity, **search_criteria))
+        req = lowlevel.RecIDRequest(query.format(entity=entity, **search_criteria),
+                                    maxRecordCnt = 32768)
 
         try:
             rec_ids = self.crm_db.query_recids(req)
@@ -31,6 +48,8 @@ class DBInterface(object):
         return rec_ids
 
     def find_record(self, entity, value, fields):
+        self.db_operation()
+        
         for f in fields:
             req = lowlevel.RecIDRequest(
                 query='FROM {} SELECT * WHERE {} = "{}"'.format(
@@ -42,9 +61,13 @@ class DBInterface(object):
                 print(e)
                 return
             
-            if rec_ids is not None: return rec_ids[0]
+            recid = None
+            if rec_ids is not None: recid = rec_ids[0]
+            return recid
 
     def get_field(self, recid, field):
+        self.db_operation()
+        
         req = lowlevel.RecordDataRequest(
             query = "FROM {} SELECT ({})".format(
                 recid, field))
@@ -56,9 +79,12 @@ class DBInterface(object):
             return ''
 
         if data is None: return
-        return data[field]
+        ret = data[field]
+        return ret
 
     def update_record_from_dict(self, entity, data):
+        self.db_operation()
+        
         if (entity is None) or (data is None):
             return
         
@@ -75,9 +101,9 @@ class DBInterface(object):
         except lowlevel.QueryError as e:
             print(e)
             return
-        
-        return rec.getRecID()
 
-    # Named arguments don't work with built-in XML-RPC
+        recid = rec.getRecID()
+        return recid
+
     def update_record(self, entity, **kwargs):
         return update_record_from_dict(entity, kwargs)

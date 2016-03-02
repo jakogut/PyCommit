@@ -114,7 +114,7 @@ class Account(CRMEntity):
         "Department": "FLDCRDDEPARTMENT",
         "DocStorDir": "FLDCRDDOCSFOLDER",
         "Email1": "FLDCRDEMAIL1",
-        "Email2": "FLDCRDEMAIL1",
+        "Email2": "FLDCRDEMAIL2",
         "AccountType": "FLDCRDENTITYKIND",
         "FaxNumber": "FLDCRDFAX1",
         "FaxExt": "FLDCRDFAXDESC1",

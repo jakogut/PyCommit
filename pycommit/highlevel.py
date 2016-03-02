@@ -106,4 +106,4 @@ class DBInterface(object):
         return recid
 
     def update_record(self, entity, **kwargs):
-        return update_record_from_dict(entity, kwargs)
+        return self.update_record_from_dict(entity, kwargs)

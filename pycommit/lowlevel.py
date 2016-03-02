@@ -341,4 +341,9 @@ class DBInterface:
                 )
 
                 return bytes(buffer.value).strip()
-    
+                
+        def get_desc_by_status(self):
+                pass
+
+        def get_status(self):
+                return self.status.value

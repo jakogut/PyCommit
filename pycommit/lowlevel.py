@@ -85,7 +85,7 @@ class RecIDRequest:
                 if exp in ['AND', 'OR']:
                     tag = 'Link'
                     newElement = SubElement(
-                        self.whereElement,
+                        ' ' + self.whereElement + ' ',
                         tag
                     )
                     

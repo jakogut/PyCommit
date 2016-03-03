@@ -64,6 +64,7 @@ class DBInterface(object):
             query = "FROM {} SELECT ({})".format(
                 recid, field))
 
+        data = None
         try: data = self.crm_db.get_rec_data_by_recid(req)
         except lowlevel.QueryError as e: print(e)
 

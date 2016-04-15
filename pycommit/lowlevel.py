@@ -6,6 +6,7 @@ from lxml.etree import ElementTree, Element, SubElement, Comment, tostring, from
 from xml.dom import minidom
 
 import untangle
+import logging
 
 from pyparsing import *
 
@@ -85,11 +86,11 @@ class RecIDRequest:
                 if exp in ['AND', 'OR']:
                     tag = 'Link'
                     newElement = SubElement(
-                        ' ' + self.whereElement + ' ',
+                        self.whereElement,
                         tag
                     )
                     
-                    newElement.text = exp
+                    newElement.text = ' ' + exp + ' '
                     self.queryContentElements.append(newElement)        
             elif isinstance(exp, ParseResults):
                 if exp[1] in operator_map:
@@ -211,12 +212,13 @@ class RecordDataResponse:
         return _dict
                 
 class DBInterface:        
-        def __init__(self, appName = 'CommitAgent', CRMPath = r'C:\CommitCRM'):
+        def __init__(self, appName = 'PyCommit', CRMPath = r'C:\CommitCRM'):
                 self.CRMPath = CRMPath
                 self.serverPath = CRMPath + r'\Server'
                 self.DBPath = CRMPath + r'\Db'
                 self.DBPath_bytes = create_string_buffer(self.DBPath.encode('UTF-8'))
                 self.appName = appName
+                self.logger = logging.getLogger()
 
                 os.environ['PATH'] = self.serverPath + ';' + os.environ['PATH']
                 self.CmDBEngDll = windll.LoadLibrary(self.serverPath + r'\cmtdbeng.dll')
@@ -244,10 +246,12 @@ class DBInterface:
                         "DB not initialized for queries. Error code {}".format(self.status))
 
         def _terminate_db_eng_dll(self):
+            if hasattr(self, 'CmDBQryDll'):
                 self.CmDBEngDll.CmtTerminateDbEngDll()
 
         def _terminate_db_qry_dll(self):
-                self.CmDBQryDll.CmtTerminateDbQryDll()
+                if hasattr(self, 'CmDBQryDll'):
+                    self.CmDBQryDll.CmtTerminateDbQryDll()
 
         def update_rec(self, record):            
                 flag, tbd = 1, 0

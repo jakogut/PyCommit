@@ -23,6 +23,11 @@ class DBInterface(object):
         else:
             self.db_call_cnt += 1
 
+    def refresh_handle(self):       
+        del self.crm_db
+        self.crm_db = lowlevel.DBInterface(CRMPath=self.crm_path)
+        self.db_call_cnt = 0
+
     def get_recids(self, entity, search_criteria):
         self.db_operation()
         

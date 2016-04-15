@@ -16,7 +16,8 @@ class DBInterface(object):
     # Commit appears to suffer from a memory leak, as documented here:
     # http://www.commitcrm.com/forum/showthread.php?t=3969
     def db_operation(self):
-        if self.db_call_cnt > self.calls_per_handle or not self.crm_db:
+        if self.db_call_cnt > self.calls_per_handle \
+        or not hasattr(self, 'crm_db') or not self.crm_db:
             self.crm_db = lowlevel.DBInterface(CRMPath=self.crm_path)
             self.db_call_cnt = 0
         else:
@@ -39,12 +40,9 @@ class DBInterface(object):
         req = lowlevel.RecIDRequest(query.format(entity=entity, **search_criteria),
                                     maxRecordCnt = 32768)
 
-        try:
-            rec_ids = self.crm_db.query_recids(req)
-        except lowlevel.QueryError as e:
-            print(e)
-            return
-
+        rec_ids = []
+        try: rec_ids = self.crm_db.query_recids(req)
+        except lowlevel.QueryError as e: print(e)
         return rec_ids
 
     def find_record(self, entity, value, fields):
@@ -55,32 +53,24 @@ class DBInterface(object):
                 query='FROM {} SELECT * WHERE {} = "{}"'.format(
                     entity, f, value))
             
-            try:
-                rec_ids = self.crm_db.query_recids(req)
-            except lowlevel.QueryError as e:
-                print(e)
-                return
-            
-            recid = None
-            if rec_ids is not None: recid = rec_ids[0]
-            return recid
+            rec_ids = []
+            try: rec_ids = self.crm_db.query_recids(req)
+            except lowlevel.QueryError as e: print(e)
+            if rec_ids: return rec_ids[0]
 
     def get_field(self, recid, field):
         self.db_operation()
-        
+
         req = lowlevel.RecordDataRequest(
             query = "FROM {} SELECT ({})".format(
                 recid, field))
 
-        try:
-            data = self.crm_db.get_rec_data_by_recid(req)
-        except lowlevel.QueryError as e:
-            print(e)
-            return ''
+        data = None
+        try: data = self.crm_db.get_rec_data_by_recid(req)
+        except lowlevel.QueryError as e: print(e)
 
-        if data is None: return
-        ret = data[field]
-        return ret
+        if not data: return ''
+        return data[field]
 
     def update_record_from_dict(self, entity, data):
         self.db_operation()
@@ -96,11 +86,8 @@ class DBInterface(object):
 
         rec = lowlevel.DBRecord(entity, data_str, map_str)
 
-        try:
-            self.crm_db.update_rec(rec)
-        except lowlevel.QueryError as e:
-            print(e)
-            return
+        try: self.crm_db.update_rec(rec)
+        except lowlevel.QueryError as e: print(e)
 
         recid = rec.getRecID()
         return recid

@@ -114,7 +114,7 @@ class Account(CRMEntity):
         "Department": "FLDCRDDEPARTMENT",
         "DocStorDir": "FLDCRDDOCSFOLDER",
         "Email1": "FLDCRDEMAIL1",
-        "Email2": "FLDCRDEMAIL1",
+        "Email2": "FLDCRDEMAIL2",
         "AccountType": "FLDCRDENTITYKIND",
         "FaxNumber": "FLDCRDFAX1",
         "FaxExt": "FLDCRDFAXDESC1",
@@ -270,35 +270,6 @@ class Charge(CRMEntity):
         self._recid_field = self.db_fields['RecordID']
         super().__init__(crm_proxy, recid, auto_populate)
         self.entity_type = self.types['Charge']
-
-class Event(CRMEntity):
-    db_fields = {
-        "RecordID": "FLDEVTRECID",
-        "EventType": "FLDEVTWRITETOID",
-        "Employee": "FLDEVTWORKERID",
-        "PrivateUser": "FLDEVTPRIVATEID",
-        "Account": "FLDEVTCARDID",
-        "Contact": "FLDEVTCONTACTID",
-        "Document": "FLDEVTDOCID",
-        "Done": "FLDEVTDONE",
-        "Date": "FLDEVTEVENTDATE",
-        "Description": "FLDEVTFREETEXT",
-        "StartTime": "FLDEVTFROMTIME",
-        "EndTime": "FLDEVTTOTIME",
-        "Opporunity": "FLDEVTLINKRECID",
-        "Field1": "FLDEVTFAMILY",
-        "Field2": "FLDEVTACTION",
-        "Field3": "FLDEVTPLACE",
-        "Field4": "FLDEVTPLACE1",
-        "Field5": "FLDEVTPLACE2",
-        "CreatedByUser": "FLDEVTCREATEUSERID",
-        "ModifiedByUser": "FLDEVTUPDATEUSER",
-    }
-    
-    def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
-        self._recid_field = self.db_fields['RecordID']
-        super().__init__(crm_proxy, recid, auto_populate)
-        self.entity_type = self.types['Event']
 
 class HistoryNote(CRMEntity):
     db_fields = {

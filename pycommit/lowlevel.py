@@ -299,8 +299,8 @@ class DBInterface:
                 self.CmDBEngDll.CmtTerminateDbEngDll()
 
         def _terminate_db_qry_dll(self):
-                if hasattr(self, 'CmDBQryDll'):
-                    self.CmDBQryDll.CmtTerminateDbQryDll()
+            if hasattr(self, 'CmDBQryDll'):
+                self.CmDBQryDll.CmtTerminateDbQryDll()
 
         def update_rec(self, record):            
             """Update a record in the CommitCRM database

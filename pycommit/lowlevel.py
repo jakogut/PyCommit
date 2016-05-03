@@ -295,7 +295,7 @@ class DBInterface:
                         "DB not initialized for queries. Error code {}".format(self.status))
 
         def _terminate_db_eng_dll(self):
-            if hasattr(self, 'CmDBQryDll'):
+            if hasattr(self, 'CmDBEngDll'):
                 self.CmDBEngDll.CmtTerminateDbEngDll()
 
         def _terminate_db_qry_dll(self):

@@ -9,7 +9,7 @@ class DBInterface(object):
         self.crm_path = crm_path
         self.crm_db = None
         
-        self.calls_per_handle = 1000
+        self.calls_per_handle = 3000
         self.db_call_cnt = 0
 
     # This is a hack to free up memory from the low level DB interface

@@ -15,6 +15,15 @@ class QueryError(Exception):
 
 class DBRecord:
     def __init__(self, tableID, dataBuff, mapBuff, recID = ""):
+        """Object for formatting and storing record data to the Commit DB API
+        Args:
+            tableID (str): Identifies the table to be written to
+            dataBuff (str): String containing formatted data to be written
+            mapBuff (str): String identifying fields corresponding to dataBuff
+            recID (Optional[str]): record ID to be modified
+                If not specified, creates a new record
+        Returns: None
+        """
         self.tableID            = tableID
         self.dataBuff           = create_string_buffer(dataBuff.encode('UTF-8'))
         self.mapBuff            = create_string_buffer(mapBuff.encode('UTF-8'))
@@ -28,13 +37,21 @@ class DBRecord:
         self.errMsgBuff         = create_string_buffer(self.errMsgBuffSize)
 
     def getRecID(self):
+        """Return recordID of object"""
         return self.recIDBuff.raw.decode('UTF-8')
 
 class RecIDRequest:
     declaration = b'<?commitcrmxmlqueryrequest version="1.0" ?>'
     
     def __init__(self, query = None, name = "CommitAgent", maxRecordCnt = 255):
-
+    """Object containing data for record ID requests
+    Args:
+        query (str): SQL-like query, formatted like so:
+            "FROM [table] SELECT * WHERE [column] = [value]"
+        name (optional[str]): String that identifies the app/user making the request
+        maxRecordCnt (int): Maximum number of results to return
+    Returns: None
+    """
         self.query = self._parse_query(query)
         
         self.extAppName = name
@@ -110,6 +127,10 @@ class RecIDRequest:
         self.orderElement = SubElement(self.queryElement, 'Order')
 
     def get_dom_tree_str(self, pretty=True):
+        """Return generated XML request
+        Args:
+            pretty (bool): Format XMl before returning, defaults to True
+        """
         dom_str = self.declaration + tostring(self.tree)
 
         if pretty:
@@ -120,10 +141,15 @@ class RecIDRequest:
 
 class RecIDResponse:
     def __init__(self, response):
+        """Parses and formats the XMl response returned by Commit
+        Args:
+            response (bytes): bytes object containing XML response
+        """
         self.response_str = response
         self.doc = untangle.parse(self.response_str)
 
     def get_recids(self):
+        """Returns list of record IDs from parsed XML response"""
         try:
                 RecordData = self.doc.CommitCRMQueryDataResponse.RecordData
         except IndexError:
@@ -141,7 +167,14 @@ class RecordDataRequest:
     declaration = b'<?commitcrmxmlgetrecorddatarequest version="1.0" ?>'
 
     def __init__(self, query = None, name = "CommitAgent", maxRecordCnt = 255):
-
+    """Object containing request for record data
+    Args:
+        query (str): SQL-like query, formatted like so:
+            "FROM [table] SELECT * WHERE [column] = [value]"
+        name (optional[str]): String that identifies the app/user making the request
+        maxRecordCnt (int): Maximum number of results to return
+    Returns: None
+    """
         self.query = self._query_to_dict(query)
         
         self.extAppName = name
@@ -191,10 +224,12 @@ class RecordDataRequest:
 
 class RecordDataResponse:
     def __init__(self, response):
+        """Parses and formats XML response"""
         self.response_str = response
         self.doc = untangle.parse(self.response_str)
 
     def get_dictionary(self):
+        """Returns dictionary from parsed XML response"""
         try:
                 RecordData = self.doc.CommitCRMGetRecordDataResponse.RecordData
         except IndexError:
@@ -213,6 +248,16 @@ class RecordDataResponse:
                 
 class DBInterface:        
         def __init__(self, appName = 'PyCommit', CRMPath = r'C:\CommitCRM'):
+            """Initialize the low level interface to Commit's API
+            Args:
+                appName (str): The string used to identify the user
+                    responsible for changes inside Commit
+                
+                CRMPath: (str): Path to CommitCRM installation, defaults
+                    to default installation path on volume C:
+
+            Returns: None
+            """
                 self.CRMPath = CRMPath
                 self.serverPath = CRMPath + r'\Server'
                 self.DBPath = CRMPath + r'\Db'
@@ -230,6 +275,7 @@ class DBInterface:
                 self._init_db_qry_dll()
 
         def __del__(self):
+                """Unload the Commit API DLL, and free up the memory"""
                 self._terminate_db_eng_dll()
                 self._terminate_db_qry_dll()
 
@@ -257,6 +303,15 @@ class DBInterface:
                     self.CmDBQryDll.CmtTerminateDbQryDll()
 
         def update_rec(self, record):            
+            """Update a record in the CommitCRM database
+
+            Args:
+                record (DBRecord): Object containing record data to update.
+            Returns:
+                None
+            Raises:
+                QueryError: If status != 1
+            """
                 flag, tbd = 1, 0
 
                 self.CmDBEngDll.CmtInsUpdRec(
@@ -284,6 +339,13 @@ class DBInterface:
                 )
 
         def query_recids(self, req):
+            """Request a list of record IDs matching the specified criteria
+
+            Args:
+                req (RecIDRequest): Object containing criteria for selection
+            Returns: list of record ids
+            Raises: QueryError if status != 1
+            """
                 req_str = req.get_dom_tree_str()
                 
                 respBuffSize = req.maxRecordCnt * 32
@@ -310,6 +372,14 @@ class DBInterface:
                 return resp.get_recids()
 
         def get_rec_data_by_recid(self, req):
+            """Get record data from a record specified by record ID
+            Args:
+                req (RecordDataRequest): Object containing query for record data
+            Returns:
+                dictionary containing requested fields from record
+            Raises:
+                QueryError: If status != 1
+            """
                 req_str = req.get_dom_tree_str()
                 if req_str is None: return
 
@@ -338,6 +408,12 @@ class DBInterface:
                 return resp.get_dictionary()
 
         def get_desc_by_code(self, code):
+            """Get English status text from Commit
+            Args:
+                code (int): status code
+            Returns:
+                bytes: bytre string containing status text
+            """
                 size = 1024
                 buffer = create_string_buffer(size)
 

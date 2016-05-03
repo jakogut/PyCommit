@@ -16,10 +16,17 @@ class DBInterface(object):
     # Commit appears to suffer from a memory leak, as documented here:
     # http://www.commitcrm.com/forum/showthread.php?t=3969
     def db_operation(self):
-        if self.db_call_cnt > self.calls_per_handle \
-        or not hasattr(self, 'crm_db') or not self.crm_db:
-            self.crm_db = lowlevel.DBInterface(CRMPath=self.crm_path)
-            self.db_call_cnt = 0
+        try:
+            canary = self.crm_db.CmDBEngDll.CmtInitDbEngDll
+        except AttributeError:
+            print('Canary is dead')
+            canary = None
+            
+        if self.db_call_cnt > self.calls_per_handle or not canary:
+            if canary:
+                print('DB call count exceeded')
+            print('refreshing DB handle')
+            self.refresh_handle()
         else:
             self.db_call_cnt += 1
 

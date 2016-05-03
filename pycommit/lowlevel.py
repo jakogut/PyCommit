@@ -233,6 +233,9 @@ class DBInterface:
                 self._terminate_db_eng_dll()
                 self._terminate_db_qry_dll()
 
+                [ctypes.windll.kernel32.FreeLibrary(handle)
+                    for handle in [self.CmDBEngDll._handle, self.CmDBQryDll._handle]]
+
         def _init_db_eng_dll(self):
                 self.CmDBEngDll.CmtInitDbEngDll(self.appName, self.DBPath_bytes, byref(self.status))
 

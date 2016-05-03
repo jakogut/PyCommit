@@ -44,14 +44,14 @@ class RecIDRequest:
     declaration = b'<?commitcrmxmlqueryrequest version="1.0" ?>'
     
     def __init__(self, query = None, name = "CommitAgent", maxRecordCnt = 255):
-    """Object containing data for record ID requests
-    Args:
-        query (str): SQL-like query, formatted like so:
-            "FROM [table] SELECT * WHERE [column] = [value]"
-        name (optional[str]): String that identifies the app/user making the request
-        maxRecordCnt (int): Maximum number of results to return
-    Returns: None
-    """
+        """Object containing data for record ID requests
+        Args:
+            query (str): SQL-like query, formatted like so:
+                "FROM [table] SELECT * WHERE [column] = [value]"
+            name (optional[str]): String that identifies the app/user making the request
+            maxRecordCnt (int): Maximum number of results to return
+        Returns: None
+        """
         self.query = self._parse_query(query)
         
         self.extAppName = name
@@ -167,14 +167,14 @@ class RecordDataRequest:
     declaration = b'<?commitcrmxmlgetrecorddatarequest version="1.0" ?>'
 
     def __init__(self, query = None, name = "CommitAgent", maxRecordCnt = 255):
-    """Object containing request for record data
-    Args:
-        query (str): SQL-like query, formatted like so:
-            "FROM [table] SELECT * WHERE [column] = [value]"
-        name (optional[str]): String that identifies the app/user making the request
-        maxRecordCnt (int): Maximum number of results to return
-    Returns: None
-    """
+        """Object containing request for record data
+        Args:
+            query (str): SQL-like query, formatted like so:
+                "FROM [table] SELECT * WHERE [column] = [value]"
+            name (optional[str]): String that identifies the app/user making the request
+            maxRecordCnt (int): Maximum number of results to return
+        Returns: None
+        """
         self.query = self._query_to_dict(query)
         
         self.extAppName = name
@@ -258,41 +258,41 @@ class DBInterface:
 
             Returns: None
             """
-                self.CRMPath = CRMPath
-                self.serverPath = CRMPath + r'\Server'
-                self.DBPath = CRMPath + r'\Db'
-                self.DBPath_bytes = create_string_buffer(self.DBPath.encode('UTF-8'))
-                self.appName = appName
-                self.logger = logging.getLogger()
+            self.CRMPath = CRMPath
+            self.serverPath = CRMPath + r'\Server'
+            self.DBPath = CRMPath + r'\Db'
+            self.DBPath_bytes = create_string_buffer(self.DBPath.encode('UTF-8'))
+            self.appName = appName
+            self.logger = logging.getLogger()
 
-                os.environ['PATH'] = self.serverPath + ';' + os.environ['PATH']
-                self.CmDBEngDll = windll.LoadLibrary(self.serverPath + r'\cmtdbeng.dll')
-                self.CmDBQryDll = windll.LoadLibrary(self.serverPath + r'\cmtdbqry.dll')
+            os.environ['PATH'] = self.serverPath + ';' + os.environ['PATH']
+            self.CmDBEngDll = windll.LoadLibrary(self.serverPath + r'\cmtdbeng.dll')
+            self.CmDBQryDll = windll.LoadLibrary(self.serverPath + r'\cmtdbqry.dll')
 
-                self.status = c_int()
+            self.status = c_int()
 
-                self._init_db_eng_dll()
-                self._init_db_qry_dll()
+            self._init_db_eng_dll()
+            self._init_db_qry_dll()
 
         def __del__(self):
-                """Unload the Commit API DLL, and free up the memory"""
-                self._terminate_db_eng_dll()
-                self._terminate_db_qry_dll()
+            """Unload the Commit API DLL, and free up the memory"""
+            self._terminate_db_eng_dll()
+            self._terminate_db_qry_dll()
 
-                [ctypes.windll.kernel32.FreeLibrary(handle)
-                    for handle in [self.CmDBEngDll._handle, self.CmDBQryDll._handle]]
+            [ctypes.windll.kernel32.FreeLibrary(handle)
+                for handle in [self.CmDBEngDll._handle, self.CmDBQryDll._handle]]
 
         def _init_db_eng_dll(self):
-                self.CmDBEngDll.CmtInitDbEngDll(self.appName, self.DBPath_bytes, byref(self.status))
+            self.CmDBEngDll.CmtInitDbEngDll(self.appName, self.DBPath_bytes, byref(self.status))
 
-                if self.status.value != 1: raise QueryError(
-                        "DB not initialized for writing. Error code {}".format(self.status))
+            if self.status.value != 1: raise QueryError(
+                    "DB not initialized for writing. Error code {}".format(self.status))
 
         def _init_db_qry_dll(self):
-                self.CmDBQryDll.CmtInitDbQryDll(self.appName, self.DBPath_bytes, byref(self.status))
+            self.CmDBQryDll.CmtInitDbQryDll(self.appName, self.DBPath_bytes, byref(self.status))
 
-                if self.status.value != 1: raise QueryError(
-                        "DB not initialized for queries. Error code {}".format(self.status))
+            if self.status.value != 1: raise QueryError(
+                    "DB not initialized for queries. Error code {}".format(self.status))
 
         def _terminate_db_eng_dll(self):
             if hasattr(self, 'CmDBEngDll'):
@@ -302,7 +302,7 @@ class DBInterface:
             if hasattr(self, 'CmDBQryDll'):
                 self.CmDBQryDll.CmtTerminateDbQryDll()
 
-        def update_rec(self, record):            
+        def update_rec(self, record):
             """Update a record in the CommitCRM database
 
             Args:
@@ -312,31 +312,31 @@ class DBInterface:
             Raises:
                 QueryError: If status != 1
             """
-                flag, tbd = 1, 0
+            flag, tbd = 1, 0
 
-                self.CmDBEngDll.CmtInsUpdRec(
-                     create_string_buffer(self.appName.encode('UTF-8')),
-                     record.tableID,
-                     record.dataBuff,
-                     record.mapBuff,
-                     flag, tbd,
-                     record.recIDBuffSize,
-                     record.errCodesBuffSize,
-                     record.errMsgBuffSize,
-                     record.recIDBuff,
-                     record.errCodesBuff,
-                     record.errMsgBuff,
-                     byref(self.status)
-                )
+            self.CmDBEngDll.CmtInsUpdRec(
+                 create_string_buffer(self.appName.encode('UTF-8')),
+                 record.tableID,
+                 record.dataBuff,
+                 record.mapBuff,
+                 flag, tbd,
+                 record.recIDBuffSize,
+                 record.errCodesBuffSize,
+                 record.errMsgBuffSize,
+                 record.recIDBuff,
+                 record.errCodesBuff,
+                 record.errMsgBuff,
+                 byref(self.status)
+            )
 
-                if self.status.value != 1: raise QueryError(
-                    "DB insertion failed with code {}: {}\n\n{}".format(
-                        self.status,
-                        self.get_desc_by_code(self.status),
-			            'data: ' + record.dataBuff.value.decode('UTF-8') + '\n' + \
-			            'map: ' + record.mapBuff.value.decode('UTF-8')
-                    )
+            if self.status.value != 1: raise QueryError(
+                "DB insertion failed with code {}: {}\n\n{}".format(
+                    self.status,
+                    self.get_desc_by_code(self.status),
+                                'data: ' + record.dataBuff.value.decode('UTF-8') + '\n' + \
+                                'map: ' + record.mapBuff.value.decode('UTF-8')
                 )
+            )
 
         def query_recids(self, req):
             """Request a list of record IDs matching the specified criteria
@@ -346,30 +346,30 @@ class DBInterface:
             Returns: list of record ids
             Raises: QueryError if status != 1
             """
-                req_str = req.get_dom_tree_str()
-                
-                respBuffSize = req.maxRecordCnt * 32
-                respBuff = create_string_buffer(respBuffSize)
-                
-                self.CmDBQryDll.CmtGetQueryRecIds(
-                    create_string_buffer(req_str),
-                    len(req_str),
-                    respBuff,
-                    respBuffSize,
-                    byref(self.status))
+            req_str = req.get_dom_tree_str()
+            
+            respBuffSize = req.maxRecordCnt * 32
+            respBuff = create_string_buffer(respBuffSize)
+            
+            self.CmDBQryDll.CmtGetQueryRecIds(
+                create_string_buffer(req_str),
+                len(req_str),
+                respBuff,
+                respBuffSize,
+                byref(self.status))
 
-                if self.status.value != 1: raise QueryError(
-                    "Record ID query failed with code {}: {}\n\nRequest:\n{}\n\n".format(
-                        self.status,
-                        self.get_desc_by_code(self.status),
-                        req.get_dom_tree_str().decode('UTF-8')
-                    )
+            if self.status.value != 1: raise QueryError(
+                "Record ID query failed with code {}: {}\n\nRequest:\n{}\n\n".format(
+                    self.status,
+                    self.get_desc_by_code(self.status),
+                    req.get_dom_tree_str().decode('UTF-8')
                 )
+            )
 
-                resp = RecIDResponse(respBuff.value.decode('UTF-8'))
-                respBuff = None
-                
-                return resp.get_recids()
+            resp = RecIDResponse(respBuff.value.decode('UTF-8'))
+            respBuff = None
+            
+            return resp.get_recids()
 
         def get_rec_data_by_recid(self, req):
             """Get record data from a record specified by record ID
@@ -380,32 +380,32 @@ class DBInterface:
             Raises:
                 QueryError: If status != 1
             """
-                req_str = req.get_dom_tree_str()
-                if req_str is None: return
+            req_str = req.get_dom_tree_str()
+            if req_str is None: return
 
-                respBuffSize = 16384
-                respBuff = create_string_buffer(respBuffSize)
+            respBuffSize = 16384
+            respBuff = create_string_buffer(respBuffSize)
 
-                self.CmDBQryDll.CmtGetRecordDataByRecId(
-                    create_string_buffer(req_str),
-                    len(req_str),
-                    respBuff,
-                    respBuffSize,
-                    byref(self.status)
+            self.CmDBQryDll.CmtGetRecordDataByRecId(
+                create_string_buffer(req_str),
+                len(req_str),
+                respBuff,
+                respBuffSize,
+                byref(self.status)
+            )
+
+            if self.status.value != 1: raise QueryError(
+                "Record data query failed with code {}: {}\n\nRequest:\n{}".format(
+                    self.status,
+                    self.get_desc_by_code(self.status),
+                    req.get_dom_tree_str().decode('UTF-8')
                 )
+            )
 
-                if self.status.value != 1: raise QueryError(
-                    "Record data query failed with code {}: {}\n\nRequest:\n{}".format(
-                        self.status,
-                        self.get_desc_by_code(self.status),
-                        req.get_dom_tree_str().decode('UTF-8')
-                    )
-                )
-
-                resp = RecordDataResponse(respBuff.value.decode('UTF-8'))
-                respBuff = None
-                
-                return resp.get_dictionary()
+            resp = RecordDataResponse(respBuff.value.decode('UTF-8'))
+            respBuff = None
+            
+            return resp.get_dictionary()
 
         def get_desc_by_code(self, code):
             """Get English status text from Commit
@@ -414,16 +414,16 @@ class DBInterface:
             Returns:
                 bytes: bytre string containing status text
             """
-                size = 1024
-                buffer = create_string_buffer(size)
+            size = 1024
+            buffer = create_string_buffer(size)
 
-                self.CmDBQryDll.CmtGetDescriptionByStatus(
-                    code,
-                    size,
-                    buffer
-                )
+            self.CmDBQryDll.CmtGetDescriptionByStatus(
+                code,
+                size,
+                buffer
+            )
 
-                return bytes(buffer.value).strip()
+            return bytes(buffer.value).strip()
                 
         def get_status(self):
-                return self.status.value
+            return self.status.value

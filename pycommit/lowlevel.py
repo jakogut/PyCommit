@@ -304,7 +304,7 @@ class DBWorker(multiprocessing.Process):
 
             self.CmDBEngDll.CmtInsUpdRec(
                  ctypes.create_string_buffer(self.appName.encode('UTF-8')),
-                 ctypes.create_string_buffer(tableID.encode('UTF-8')),
+                 tableID,
                  ctypes.create_string_buffer(data.encode('UTF-8')),
                  ctypes.create_string_buffer(map.encode('UTF-8')),
                  flag, tbd,

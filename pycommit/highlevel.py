@@ -1,3 +1,6 @@
+import multiprocessing
+import Pyro4
+
 from pycommit import lowlevel, entities
 import sys
 
@@ -7,32 +10,35 @@ class AmbiguousValue(Exception):
 class DBInterface(object):
     def __init__(self, crm_path):
         self.crm_path = crm_path
+        self.db_worker = None
         self.crm_db = None
         
-        self.calls_per_handle = 3000
+        self.calls_per_handle = 10000
         self.db_call_cnt = 0
+
+        self.db_uri = 'PYRO:lowlevel.DBInterface@localhost:8001'
+        self.refresh_handle()
 
     # This is a hack to free up memory from the low level DB interface
     # Commit appears to suffer from a memory leak, as documented here:
     # http://www.commitcrm.com/forum/showthread.php?t=3969
-    def db_operation(self):
-        try:
-            canary = self.crm_db.CmDBEngDll.CmtInitDbEngDll
-        except AttributeError:
-            print('Canary is dead')
-            canary = None
-            
-        if self.db_call_cnt > self.calls_per_handle or not canary:
-            if canary:
-                print('DB call count exceeded')
+    def db_operation(self):            
+        if self.db_call_cnt > self.calls_per_handle:
             print('refreshing DB handle')
             self.refresh_handle()
         else:
             self.db_call_cnt += 1
 
     def refresh_handle(self):       
-        del self.crm_db
-        self.crm_db = lowlevel.DBInterface(CRMPath=self.crm_path)
+        try:
+            self.db_worker.terminate()
+        except AttributeError:
+            pass
+
+        self.db_worker = lowlevel.DBWorker(CRMPath=self.crm_path)
+        self.db_worker.start()
+        
+        self.crm_db = Pyro4.Proxy(self.db_uri)
         self.db_call_cnt = 0
 
     def get_recids(self, entity, search_criteria):
@@ -49,36 +55,26 @@ class DBInterface(object):
             key = search_keys.pop()
             query += 'AND {} = "{}" '.format(key, search_criteria[key])
 
-        req = lowlevel.RecIDRequest(query.format(entity=entity, **search_criteria),
-                                    maxRecordCnt = 32768)
-
         rec_ids = []
-        try: rec_ids = self.crm_db.query_recids(req)
+        try: rec_ids = self.crm_db.query_recids(
+            query=query.format(entity=entity, **search_criteria), maxRecordCnt=32768)
         except lowlevel.QueryError as e: print(e)
         return rec_ids
 
     def find_record(self, entity, value, fields):
         self.db_operation()
-        
-        for f in fields:
-            req = lowlevel.RecIDRequest(
-                query='FROM {} SELECT * WHERE {} = "{}"'.format(
-                    entity, f, value))
             
-            rec_ids = []
-            try: rec_ids = self.crm_db.query_recids(req)
-            except lowlevel.QueryError as e: print(e)
-            if rec_ids: return rec_ids[0]
+        rec_ids = []
+        try: rec_ids = self.crm_db.query_recids(
+            query='FROM {} SELECT * WHERE {} = "{}"'.format(entity, f, value))
+        except lowlevel.QueryError as e: print(e)
+        if rec_ids: return rec_ids[0]
 
     def get_field(self, recid, field):
         self.db_operation()
 
-        req = lowlevel.RecordDataRequest(
-            query = "FROM {} SELECT ({})".format(
-                recid, field))
-
         data = None
-        try: data = self.crm_db.get_rec_data_by_recid(req)
+        try: data = self.crm_db.get_rec_data_by_recid(query="FROM {} SELECT ({})".format(recid, field))
         except lowlevel.QueryError as e: print(e)
 
         if not data: return ''
@@ -96,12 +92,8 @@ class DBInterface(object):
             data_str += "'{}',".format(value)
             map_str += "{}\n".format(key)
 
-        rec = lowlevel.DBRecord(entity, data_str, map_str)
-
-        try: self.crm_db.update_rec(rec)
+        try: recid = self.crm_db.update_rec(entity, data_str, map_str)
         except lowlevel.QueryError as e: print(e)
-
-        recid = rec.getRecID()
         return recid
 
     def update_record(self, entity, **kwargs):

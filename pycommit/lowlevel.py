@@ -11,9 +11,6 @@ import logging
 
 from pyparsing import *
 
-class QueryError(Exception):
-    pass
-
 class RecIDRequest:
     declaration = b'<?commitcrmxmlqueryrequest version="1.0" ?>'
     
@@ -220,7 +217,7 @@ class RecordDataResponse:
 
         return _dict
                 
-class DBWorker(multiprocessing.Process):        
+class DBWorker(multiprocessing.Process):
         def __init__(self, appName = 'PyCommit', CRMPath = r'C:\CommitCRM'):
             """Initialize the low level interface to Commit's API
             Args:
@@ -257,7 +254,6 @@ class DBWorker(multiprocessing.Process):
             Pyro4.Daemon.serveSimple(
                 {self: 'lowlevel.DBInterface'},
                 port=8001, ns=False, verbose=False)
-            print('Running pyro server')
 
         def __del__(self):
             """Unload the Commit API DLL, and free up the memory"""
@@ -267,13 +263,13 @@ class DBWorker(multiprocessing.Process):
         def _init_db_eng_dll(self):
             self.CmDBEngDll.CmtInitDbEngDll(self.appName, self.DBPath_bytes, ctypes.byref(self.status))
 
-            if self.status.value != 1: raise QueryError(
+            if self.status.value != 1: raise Exception(
                     "DB not initialized for writing. Error code {}".format(self.status))
 
         def _init_db_qry_dll(self):
             self.CmDBQryDll.CmtInitDbQryDll(self.appName, self.DBPath_bytes, ctypes.byref(self.status))
 
-            if self.status.value != 1: raise QueryError(
+            if self.status.value != 1: raise Exception(
                     "DB not initialized for queries. Error code {}".format(self.status))
 
         def _terminate_db_eng_dll(self):
@@ -317,7 +313,7 @@ class DBWorker(multiprocessing.Process):
                  ctypes.byref(self.status)
             )
 
-            if self.status.value != 1: raise QueryError(
+            if self.status.value != 1: raise Exception(
                 "DB insertion failed with code {}: {}\n\n{}".format(
                     self.status,
                     self.get_desc_by_code(self.status),
@@ -349,7 +345,7 @@ class DBWorker(multiprocessing.Process):
                 respBuffSize,
                 ctypes.byref(self.status))
 
-            if self.status.value != 1: raise QueryError(
+            if self.status.value != 1: raise Exception(
                 "Record ID query failed with code {}: {}\n\nRequest:\n{}\n\n".format(
                     self.status,
                     self.get_desc_by_code(self.status),
@@ -386,7 +382,7 @@ class DBWorker(multiprocessing.Process):
                 ctypes.byref(self.status)
             )
 
-            if self.status.value != 1: raise QueryError(
+            if self.status.value != 1: raise Exception(
                 "Record data query failed with code {}: {}\n\nRequest:\n{}".format(
                     self.status,
                     self.get_desc_by_code(self.status),

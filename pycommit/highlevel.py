@@ -32,7 +32,7 @@ class DBInterface(object):
     def refresh_handle(self):       
         try:
             self.db_worker.terminate()
-        except AttributeError:
+        except:
             pass
 
         self.db_worker = lowlevel.DBWorker(CRMPath=self.crm_path)
@@ -58,7 +58,7 @@ class DBInterface(object):
         rec_ids = []
         try: rec_ids = self.crm_db.query_recids(
             query=query.format(entity=entity, **search_criteria), maxRecordCnt=32768)
-        except lowlevel.QueryError as e: print(e)
+        except Exception as e: print(e)
         return rec_ids
 
     def find_record(self, entity, value, fields):
@@ -67,7 +67,7 @@ class DBInterface(object):
         rec_ids = []
         try: rec_ids = self.crm_db.query_recids(
             query='FROM {} SELECT * WHERE {} = "{}"'.format(entity, f, value))
-        except lowlevel.QueryError as e: print(e)
+        except Exception as e: print(e)
         if rec_ids: return rec_ids[0]
 
     def get_field(self, recid, field):
@@ -75,7 +75,7 @@ class DBInterface(object):
 
         data = None
         try: data = self.crm_db.get_rec_data_by_recid(query="FROM {} SELECT ({})".format(recid, field))
-        except lowlevel.QueryError as e: print(e)
+        except Exception as e: print(e)
 
         if not data: return ''
         return data[field]
@@ -93,7 +93,7 @@ class DBInterface(object):
             map_str += "{}\n".format(key)
 
         try: recid = self.crm_db.update_rec(entity, data_str, map_str)
-        except lowlevel.QueryError as e: print(e)
+        except Exception as e: print(e)
         return recid
 
     def update_record(self, entity, **kwargs):

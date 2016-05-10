@@ -1,3 +1,5 @@
+"""API Reference: http://www.commitcrm.com/wiki/API_Reference_Manual#API_Functions"""
+
 import os
 import _ctypes, ctypes
 
@@ -284,7 +286,9 @@ class DBWorker(multiprocessing.Process):
             """Update a record in the CommitCRM database
 
             Args:
-                record (DBRecord): Object containing record data to update.
+                tableID (int): ID of table to update
+                data (str): Values to insert into fields, delimited by commas
+                map (str): Field map for data arg, delimited by newlines
             Returns:
                 None
             Raises:

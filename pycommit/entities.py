@@ -33,17 +33,6 @@ class CRMEntity(object):
         and auto_populate is True:
             self.populate(crm_proxy)
 
-        self._sub_values()
-
-    # Commit will return values that are different from what it accepts.
-    def _sub_values(self):
-        try:
-            for key, value in self.db_data.items():
-                if value in self.value_map:
-                    self.db_data[key] = self.value_map[value]
-        except AttributeError:
-            return
-
     def set_recid(self, recid):
         self.db_data[self._recid_field] = recid
 
@@ -81,10 +70,8 @@ class CRMEntity(object):
     def populate_field(self, crm_proxy, field_name):
         value = crm_proxy.get_field(self.get_recid(), field_name)
         if value: self.db_data[field_name] = value
-        self._sub_values()
 
     def populate(self, crm_proxy):
-        field_names = []
         for _, field_name in self.db_fields.items():
             self.populate_field(crm_proxy, field_name)
 
@@ -259,13 +246,6 @@ class Charge(CRMEntity):
         "CreateUser": "FLDSLPCREATEUSER"
     }
 
-    value_map = {
-        'Billable': 'B',
-        'Not Billable': 'N',
-        'Draft' : 'D',
-        'Billed': 'B',
-    }
-
     def __init__(self, crm_proxy=None, recid=None, auto_populate=True):
         self._recid_field = self.db_fields['RecordID']
         super().__init__(crm_proxy, recid, auto_populate)
@@ -310,17 +290,7 @@ class Item(CRMEntity):
         "Notes": "FLDITMNOTES",
         "Field1": "FLDITMUSER1",
         "CreateUser": "FLDITMCREATEUSER",
-        "CreatedByUSer": "FLDITMCREATEUSER"
-    }
-
-    value_map = {
-        'Product/Part': 'P',
-        'per unit': 'N',
-        'per hour': 'Y',
-        'Fixed Price': 'F',
-        'Labor': 'F',
-        'Expense': 'X',
-        'Part': 'P',
+        "CreatedByUser": "FLDITMCREATEUSER"
     }
 
     def __init__(self, crm_proxy=None, recid=None, code=None, suspended=False, auto_populate=True):
@@ -331,7 +301,6 @@ class Item(CRMEntity):
         self._recid_field = self.db_fields['RecordID']
         super().__init__(crm_proxy, recid, auto_populate)
         self.entity_type = self.types['Item']
-        self._sub_values()
 
     def _code_to_recid(self, crm_proxy, code, suspended):
         suspend_flag = 'Y' if suspended == True else 'N'

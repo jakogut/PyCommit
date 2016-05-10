@@ -42,6 +42,12 @@ class DBInterface(object):
         self.db_call_cnt = 0
 
     def get_recids(self, entity, search_criteria):
+        """Query record ids of entities using dictionary
+        Args:
+            entity (str): Identifies the table to query
+            search_criteria (dict): Key/value mapping of fields to match
+                Currently, only supports selecting exact matches (i.e. no operators for NOT or LIKE)
+        """
         self.db_operation()
         
         query = 'FROM {} SELECT * WHERE {} = "{}" '
@@ -62,6 +68,7 @@ class DBInterface(object):
         return rec_ids
 
     def find_record(self, entity, value, fields):
+        """Find record of type [entity] where [value] matches field in [fields]"""
         self.db_operation()
             
         rec_ids = []
@@ -71,6 +78,7 @@ class DBInterface(object):
         if rec_ids: return rec_ids[0]
 
     def get_field(self, recid, field):
+        """Retrieve value of [field] from record with id [recid]"""
         self.db_operation()
 
         data = None
@@ -81,6 +89,7 @@ class DBInterface(object):
         return data[field]
 
     def update_record_from_dict(self, entity, data):
+        """Update/insert record of type [entity] using key/value store [data]"""
         self.db_operation()
         
         if (entity is None) or (data is None):
